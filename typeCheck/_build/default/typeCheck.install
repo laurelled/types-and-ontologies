@@ -1,0 +1,8 @@
+lib: [
+  "_build/install/default/lib/typeCheck/META"
+  "_build/install/default/lib/typeCheck/dune-package"
+  "_build/install/default/lib/typeCheck/opam"
+]
+bin: [
+  "_build/install/default/bin/typeCheck"
+]

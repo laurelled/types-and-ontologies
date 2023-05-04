@@ -1,0 +1,8 @@
+lib: [
+  "_build/install/default/lib/prova/META"
+  "_build/install/default/lib/prova/dune-package"
+  "_build/install/default/lib/prova/opam"
+]
+bin: [
+  "_build/install/default/bin/prova"
+]

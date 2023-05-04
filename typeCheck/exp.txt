@@ -1,0 +1,1 @@
+query x <- (x type Margherita AND x hasTopping y AND y type GorgonzolaTopping)

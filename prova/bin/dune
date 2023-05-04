@@ -1,4 +1,5 @@
 (executable
- (public_name prova)
- (name main)
- (libraries prova))
+ (public_name calc)
+ (name calc)
+ (libraries lib)
+ (module))

@@ -1,0 +1,6 @@
+(executable
+ (public_name typeCheck)
+ (name calc)
+ (modules Calc MyLexer MyParser)
+ (libraries lib)
+ )

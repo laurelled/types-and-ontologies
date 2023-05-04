@@ -1,0 +1,3 @@
+ocamlyacc bin/myParser.mly
+ocamllex bin/myLexer.mll
+dune build
