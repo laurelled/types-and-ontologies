@@ -1,0 +1,9 @@
+Per eseguire il codice inserire la query che vuoi decidere se sia abitata o meno 
+nel file "queryFile.txt", successivamente lanciare il comando 
+
+    CON DUNE: 
+            > cd typeCheck
+            > dune exec typeCheck
+
+    CON OCAML
+            > 

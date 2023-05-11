@@ -1,1 +1,1 @@
-bin/myParser.ml: Lexing Lib List Obj Parsing
+bin/myParser.ml: Lexing Lib Obj Parsing

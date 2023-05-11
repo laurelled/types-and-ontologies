@@ -2,6 +2,7 @@ type token =
   | VAR of (string)
   | OBJECT of (string)
   | ROLE of (string)
+  | INVROLE of (string)
   | LPAREN
   | RPAREN
   | TYPE
@@ -13,58 +14,61 @@ type token =
 open Parsing;;
 let _ = parse_error;;
 let yytransl_const = [|
-  260 (* LPAREN *);
-  261 (* RPAREN *);
-  262 (* TYPE *);
-  263 (* ARROW *);
-  264 (* QUERY *);
-  265 (* AND *);
-  266 (* EOL *);
+  261 (* LPAREN *);
+  262 (* RPAREN *);
+  263 (* TYPE *);
+  264 (* ARROW *);
+  265 (* QUERY *);
+  266 (* AND *);
+  267 (* EOL *);
     0|]
 
 let yytransl_block = [|
   257 (* VAR *);
   258 (* OBJECT *);
   259 (* ROLE *);
+  260 (* INVROLE *);
     0|]
 
 let yylhs = "\255\255\
-\001\000\002\000\002\000\003\000\003\000\003\000\003\000\000\000"
+\001\000\002\000\002\000\003\000\003\000\003\000\004\000\004\000\
+\004\000\000\000"
 
 let yylen = "\002\000\
-\006\000\001\000\003\000\003\000\003\000\003\000\003\000\002\000"
+\006\000\001\000\003\000\003\000\003\000\003\000\001\000\001\000\
+\001\000\002\000"
 
 let yydefred = "\000\000\
-\000\000\000\000\000\000\008\000\000\000\000\000\000\000\000\000\
-\000\000\000\000\000\000\000\000\000\000\000\000\001\000\000\000\
-\007\000\005\000\004\000\006\000\003\000"
+\000\000\000\000\000\000\010\000\000\000\000\000\000\000\000\000\
+\000\000\000\000\000\000\008\000\009\000\007\000\000\000\000\000\
+\001\000\000\000\006\000\004\000\005\000\003\000"
 
 let yydgoto = "\002\000\
-\004\000\010\000\011\000"
+\004\000\010\000\011\000\015\000"
 
-let yysindex = "\005\000\
-\255\254\000\000\007\255\000\000\002\255\006\255\000\255\253\254\
-\008\255\009\255\004\255\003\255\010\255\014\255\000\000\000\255\
-\000\000\000\000\000\000\000\000\000\000"
+let yysindex = "\006\000\
+\255\254\000\000\008\255\000\000\002\255\006\255\001\255\253\254\
+\253\254\007\255\005\255\000\000\000\000\000\000\004\255\011\255\
+\000\000\001\255\000\000\000\000\000\000\000\000"
 
 let yyrindex = "\000\000\
 \000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\
-\000\000\000\000\011\255\000\000\000\000\000\000\000\000\000\000\
-\000\000\000\000\000\000\000\000\000\000"
+\000\000\000\000\010\255\000\000\000\000\000\000\000\000\000\000\
+\000\000\000\000\000\000\000\000\000\000\000\000"
 
 let yygindex = "\000\000\
-\000\000\001\000\000\000"
+\000\000\252\255\000\000\008\000"
 
 let yytablesize = 17
 let yytable = "\012\000\
-\008\000\009\000\013\000\017\000\018\000\001\000\003\000\005\000\
-\006\000\007\000\014\000\019\000\016\000\015\000\020\000\002\000\
-\021\000"
+\013\000\008\000\009\000\014\000\019\000\020\000\001\000\003\000\
+\005\000\006\000\007\000\021\000\017\000\022\000\018\000\002\000\
+\016\000"
 
 let yycheck = "\003\001\
-\001\001\002\001\006\001\001\001\002\001\001\000\008\001\001\001\
-\007\001\004\001\003\001\002\001\009\001\005\001\001\001\005\001\
-\016\000"
+\004\001\001\001\002\001\007\001\001\001\002\001\001\000\009\001\
+\001\001\008\001\005\001\001\001\006\001\018\000\010\001\006\001\
+\009\000"
 
 let yynames_const = "\
   LPAREN\000\
@@ -80,6 +84,7 @@ let yynames_block = "\
   VAR\000\
   OBJECT\000\
   ROLE\000\
+  INVROLE\000\
   "
 
 let yyact = [|
@@ -88,62 +93,72 @@ let yyact = [|
     let _2 = (Parsing.peek_val __caml_parser_env 4 : string) in
     let _5 = (Parsing.peek_val __caml_parser_env 1 : 'gp) in
     Obj.repr(
-# 20 "bin/myParser.mly"
-                                                           (_5)
-# 94 "bin/myParser.ml"
-               : Lib.axiom list))
+# 21 "bin/myParser.mly"
+                                                           (Q (V _2 , _5))
+# 99 "bin/myParser.ml"
+               : Lib.query))
 ; (fun __caml_parser_env ->
     let _1 = (Parsing.peek_val __caml_parser_env 0 : 'clause) in
     Obj.repr(
-# 24 "bin/myParser.mly"
+# 25 "bin/myParser.mly"
                                        (_1)
-# 101 "bin/myParser.ml"
+# 106 "bin/myParser.ml"
                : 'gp))
 ; (fun __caml_parser_env ->
     let _1 = (Parsing.peek_val __caml_parser_env 2 : 'clause) in
     let _3 = (Parsing.peek_val __caml_parser_env 0 : 'gp) in
     Obj.repr(
-# 25 "bin/myParser.mly"
-                                       ( List.append _1 _3 )
-# 109 "bin/myParser.ml"
+# 26 "bin/myParser.mly"
+                                       ( CP (_1 , _3)  )
+# 114 "bin/myParser.ml"
                : 'gp))
 ; (fun __caml_parser_env ->
     let _1 = (Parsing.peek_val __caml_parser_env 2 : string) in
-    let _3 = (Parsing.peek_val __caml_parser_env 0 : string) in
-    Obj.repr(
-# 29 "bin/myParser.mly"
-                                   ((_1 , Atomic _3) :: [] )
-# 117 "bin/myParser.ml"
-               : 'clause))
-; (fun __caml_parser_env ->
-    let _1 = (Parsing.peek_val __caml_parser_env 2 : string) in
-    let _2 = (Parsing.peek_val __caml_parser_env 1 : string) in
+    let _2 = (Parsing.peek_val __caml_parser_env 1 : 'role) in
     let _3 = (Parsing.peek_val __caml_parser_env 0 : string) in
     Obj.repr(
 # 30 "bin/myParser.mly"
-                                   ((_1 , Exist(Property _2, Atomic _3)) :: [])
-# 126 "bin/myParser.ml"
+                                   (SP (V _1 , _2 , O _3))
+# 123 "bin/myParser.ml"
                : 'clause))
 ; (fun __caml_parser_env ->
     let _1 = (Parsing.peek_val __caml_parser_env 2 : string) in
-    let _2 = (Parsing.peek_val __caml_parser_env 1 : string) in
+    let _2 = (Parsing.peek_val __caml_parser_env 1 : 'role) in
     let _3 = (Parsing.peek_val __caml_parser_env 0 : string) in
     Obj.repr(
 # 31 "bin/myParser.mly"
-                                   ((_3 , Exist(PropertyInverse _2, Atomic _1)) :: [])
-# 135 "bin/myParser.ml"
+                                   (OP (O _1 , _2 , V _3))
+# 132 "bin/myParser.ml"
                : 'clause))
 ; (fun __caml_parser_env ->
     let _1 = (Parsing.peek_val __caml_parser_env 2 : string) in
-    let _2 = (Parsing.peek_val __caml_parser_env 1 : string) in
+    let _2 = (Parsing.peek_val __caml_parser_env 1 : 'role) in
     let _3 = (Parsing.peek_val __caml_parser_env 0 : string) in
     Obj.repr(
 # 32 "bin/myParser.mly"
-                                   ((_1 , Exist(Property _2, Atomic _3)) :: 
-                                    (_3 , Exist(PropertyInverse _2, Atomic _1)) :: 
-                                    [])
-# 146 "bin/myParser.ml"
+                                   (DP (V _1 , _2 , V _3))
+# 141 "bin/myParser.ml"
                : 'clause))
+; (fun __caml_parser_env ->
+    Obj.repr(
+# 36 "bin/myParser.mly"
+                     (Type)
+# 147 "bin/myParser.ml"
+               : 'role))
+; (fun __caml_parser_env ->
+    let _1 = (Parsing.peek_val __caml_parser_env 0 : string) in
+    Obj.repr(
+# 37 "bin/myParser.mly"
+                     (P (_1))
+# 154 "bin/myParser.ml"
+               : 'role))
+; (fun __caml_parser_env ->
+    let _1 = (Parsing.peek_val __caml_parser_env 0 : string) in
+    Obj.repr(
+# 38 "bin/myParser.mly"
+                     (I (_1))
+# 161 "bin/myParser.ml"
+               : 'role))
 (* Entry main *)
 ; (fun __caml_parser_env -> raise (Parsing.YYexit (Parsing.peek_val __caml_parser_env 0)))
 |]
@@ -165,5 +180,5 @@ let yytables =
     Parsing.names_const=yynames_const;
     Parsing.names_block=yynames_block }
 let main (lexfun : Lexing.lexbuf -> token) (lexbuf : Lexing.lexbuf) =
-   (Parsing.yyparse yytables 1 lexfun lexbuf : Lib.axiom list)
+   (Parsing.yyparse yytables 1 lexfun lexbuf : Lib.query)
 ;;
