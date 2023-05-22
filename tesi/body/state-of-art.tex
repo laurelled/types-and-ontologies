@@ -9,9 +9,9 @@ Il World Wide Web è ormai una gigantesca e consolidata rete di conoscenza, che 
 Nel corso degli anni, nella letteratura sono state presentate diverse soluzioni: dagli albori di questo ambito, in cui i dati erano rappresentati in maniera strutturata e formale dalle ontologie, si è giunti alla rappresentazione superficiale ma efficiente del paradigma dei Linked (Open) Data. Questa sezione vuole introdurre agli standard di rappresentazione e recupero dei dati citati in questo lavoro.
 
 \subsection[Resource Description Framework]{Resource Description Framework}
-Il Resource Description Framework\footnote{https://www.w3.org/RDF/} (RDF d'ora in poi) è una specifica W3C (World Wide Web Consortium) che fornisce un modello per descrivere risorse nel Web attraverso delle annotazioni. Un termine (o \emph{tripla}) RDF è della forma:
+Il Resource Description Framework\footnote{\url{https://www.w3.org/RDF/}} (RDF d'ora in poi) è una specifica W3C (World Wide Web Consortium) che fornisce un modello per descrivere risorse nel Web attraverso delle annotazioni. Un termine (o \emph{tripla}) RDF è della forma:
 \[ < \text{soggetto},\ \text{proprietà},\ \text{oggetto} > \]
-Un'insieme di triple, chiamato un grafo RDF, permettono di descrivere un grafo diretto etichettato dove le risorse descritte sono i nodi e le proprietà sono gli archi.
+Un insieme di triple, chiamato un grafo RDF, permettono di descrivere un grafo diretto etichettato dove le risorse descritte sono i nodi e le proprietà sono gli archi.
 \begin{figure}[h]
   \begin{minipage}{0.3\linewidth}
     \centering
@@ -42,4 +42,12 @@ Un'insieme di triple, chiamato un grafo RDF, permettono di descrivere un grafo d
   \caption{Esempio di un grafo RDF $G_1$ (sx.) e sotto forma di insieme di triple (dx.)}
 \end{figure}
 
-Invece di chiamare un nodo semplicemente \singlenodegraph{Margherita}. I valori di queste classi (in letteratura \emph{letterali}) possono essere riferimenti tramite URI a risorse Web, oppure
+\noindent
+Invece di etichettare un nodo semplicemente con \singlenodegraph{Margherita}, si utilizzano i \emph{Unique Resource Identifiers (URI)} per rappresentare univocamente una risorsa del Web. Un URL - utilizzato per riferirsi simbolicamente a un sito web - è un tipo specifico di URI, che richiede che la risorsa sia esposta in una rete di computer connessi fra di loro.
+
+\subsection{Ontologie}
+\subsubsection[Ontologie come tipi per RDF]{Ontologie come tipi per annotazioni RDF}
+\section{Sistemi formali nel Web Semantico}
+Il Web Semantico ha necessità di una base formale per definire in maniera chiara e precisa il dominio di ogni operazione. Come accennato nell'introduzione, l'obiettivo di questa tesi è di assistere la creatività umana tramite strumenti di cui è possibile dimostrare formalmente la bontà. In particolare, ci concentreremo sui sistemi di tipo. Questo capitolo darà una panoramica dell'attuale stato dell'arte sull'utilizzo in questo campo dei linguaggi funzionali (specialmente Haskell\footnote{\url{https://www.haskell.org/}}), dei sistemi di tipo e le formalizzazioni delle metodologie per la creazione e il riutilizzo delle ontologie.
+
+\subsection{Linguaggi funzionali nel Web Semantico}
