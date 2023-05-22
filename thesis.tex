@@ -11,10 +11,10 @@
 
 %% DOCUMENT CLASS (alternative to book is 'report')
 % Print just right page or both sides (comment the other one)
-\documentclass[12pt,a4paper,openright,oneside]{book}	%%One sided
+\documentclass[12pt,a4paper,openright,oneside, draft]{book}	%%One sided
 %\documentclass[12pt,a4paper,openright,twoside]{book}	%%Double sided
 
-
+\input{macros}
 %% SET MARGINS OF THE PAGES
 \usepackage{geometry}
 \geometry{a4paper,portrait, left=35mm, right=20mm, top=35mm, bottom=30mm}
@@ -79,6 +79,10 @@
 \usepackage[babel]{csquotes}
 %% CODE LISTINGS
 \usepackage{listings}		%%allow to use code listings
+
+\usepackage{tikz}
+\usetikzlibrary{positioning, 
+                quotes}
 
 %% HYPENATON
 \hyphenation{te-si pip-po paperino}	%manual hyphenation
