@@ -1,0 +1,48 @@
+\chapter[Concetti preliminari]{Concetti preliminari}
+Per poter considerare l'utilizzo dei tipi per il Web Semantico, è necessario analizzare lo stato dell'arte in cui si ritrova questo ambito di ricerca.
+Questo capitolo si presta utile per apprendere il vocabolario utilizzato durante tutta la tesi, nonché fornire approfondimenti su nozioni che potrebbero essere date per scontate.
+Verranno riassunte le basi dei linguaggi funzionali, così come le componenti del Web Semantico.
+\section[Linguaggi funzionali]{Linguaggi funzionali}
+\section[Web Semantico]{Web Semantico}
+Il World Wide Web è ormai una gigantesca e consolidata rete di conoscenza, che però nasconde un difetto fondamentale per l'utilizzo di queste informazioni da parte di un agente artificiale. Infatti il linguaggio di rappresentazione, HTML, è stato pensato per la fruizione umana dei suoi contenuti piuttosto che di una macchina. Ciò rende difficile per quest'ultime capire il significato delle informazioni presenti nel web. Uno degli obiettivi del Web Semantico, presentato per la prima volta nel 2001 in \cite{berners2001semantic}, è cambiare questo paradigma human-centered, permettendo agli agenti artificiali di interpretare e processare la conoscenza presente senza alcun tipo di aiuto umano. È necessario descrivere le informazioni attraverso metadati espressivi, strutturandoli arbitrariamente, che ne spieghino la semantica in un modo che una macchina possa comprenderla.\\
+Nel corso degli anni, nella letteratura sono state presentate diverse soluzioni: dagli albori di questo ambito, in cui i dati erano rappresentati in maniera strutturata e formale dalle ontologie, si è giunti alla rappresentazione superficiale ma efficiente del paradigma dei Linked (Open) Data. Questa sezione vuole introdurre agli standard di rappresentazione e recupero dei dati citati in questo lavoro.
+
+\subsection[Resource Description Framework]{Resource Description Framework}
+Il Resource Description Framework\footnote{\url{https://www.w3.org/RDF/}} (RDF d'ora in poi) è una specifica W3C (World Wide Web Consortium) che fornisce un modello per descrivere risorse nel Web attraverso delle annotazioni. Un termine (o \emph{tripla}) RDF è della forma:
+\[ < \text{soggetto},\ \text{proprietà},\ \text{oggetto} > \]
+Un insieme di triple, chiamato un grafo RDF, permettono di descrivere un grafo diretto etichettato dove le risorse descritte sono i nodi e le proprietà sono gli archi.
+\begin{figure}[h]
+    \begin{minipage}{0.3\linewidth}
+        \centering
+        \begin{tikzpicture}[
+                node distance = 15mm and 15mm,
+                V/.style = {rounded corners, draw, fill=gray!30},
+                every edge quotes/.style = {auto, font=\footnotesize, sloped}
+            ]
+            \begin{scope}[nodes=V]
+                \node (1)   {Pizza};
+                \node (2) [right=of 1]    {Margherita};
+                \node (3) [below =of 2]    {Mozzarella};
+                \node (4) [left=of 3]    {Vegetarian};
+            \end{scope}
+            \draw[->, ultra thick]   (2)  edge["isA"] (1)
+            (2)  edge["madeOf"] (3)
+            (4)  edge["canEat"] (2);
+        \end{tikzpicture}
+    \end{minipage}
+    \hspace{5mm}
+    \begin{minipage}{0.7\linewidth}
+        \begin{alignat*}{4}
+            G_1 = \{ (\  & \text{Margherita},\  &  & isA,      &  & \text{Pizza}        &  & ),  \\
+            (\           & \text{Margherita},\  &  & madeOf,\  &  & \text{Mozzarella}\  &  & ),  \\
+            (\           & \text{Vegetarian},\  &  & canEat,\  &  & \text{Mozzarella}\  &  & )\}
+        \end{alignat*}
+    \end{minipage}
+    \caption{Esempio di un grafo RDF $G_1$ (sx.) e sotto forma di insieme di triple (dx.)}
+\end{figure}
+
+\noindent
+Invece di etichettare un nodo semplicemente con \singlenodegraph{Margherita}, si utilizzano i \emph{Unique Resource Identifiers (URI)} per rappresentare univocamente una risorsa del Web. Un URL - utilizzato per riferirsi simbolicamente a un sito web - è un tipo specifico di URI, che richiede che la risorsa sia esposta in una rete di computer connessi fra di loro.
+
+\subsection{Ontologie}
+\subsubsection[Ontologie come tipi per RDF]{Ontologie come tipi per annotazioni RDF}
