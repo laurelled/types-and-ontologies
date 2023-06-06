@@ -8,9 +8,9 @@ Il World Wide Web è ormai una gigantesca e consolidata rete di conoscenza, che 
 Nel corso degli anni, nella letteratura sono state presentate diverse soluzioni: dagli albori di questo ambito, in cui i dati erano rappresentati in maniera strutturata e formale dalle ontologie, si è giunti alla rappresentazione superficiale ma efficiente del paradigma dei Linked (Open) Data. Questa sezione vuole introdurre agli standard di rappresentazione e recupero dei dati citati in questo lavoro.
 
 \subsection[Resource Description Framework]{Resource Description Framework}
-Il Resource Description Framework\footnote{\url{https://www.w3.org/RDF/}} (RDF d'ora in poi) è una specifica W3C (World Wide Web Consortium) che fornisce un modello per descrivere risorse nel Web attraverso delle annotazioni. Un termine (o \emph{tripla}) RDF è della forma:
-\[ < \text{soggetto},\ \text{proprietà},\ \text{oggetto} > \]
-Un insieme di triple, chiamato un grafo RDF, permettono di descrivere un grafo diretto etichettato dove le risorse descritte sono i nodi e le proprietà sono gli archi.
+Il Resource Description Framework \cite{RDFspecification} (RDF d'ora in poi) è una serie di specifiche create da W3C (World Wide Web Consortium) che includono un modello per descrivere risorse web attraverso delle annotazioni, sotto forma di \textbf{triple}. Esse consistono in:
+\[ < \text{soggetto},\ \text{predicato},\ \text{oggetto} > \]
+Un insieme di queste triple, chiamato \textbf{grafo RDF}, può essere rappresentato come un grafo diretto etichettato in cui ogni tripla descrive un arco dal nodo soggetto al nodo oggetto.
 \begin{figure}[h]
     \begin{minipage}{0.3\linewidth}
         \centering
@@ -38,11 +38,31 @@ Un insieme di triple, chiamato un grafo RDF, permettono di descrivere un grafo d
             (\           & \text{Vegetarian},\  &  & canEat,\  &  & \text{Mozzarella}\  &  & )\}
         \end{alignat*}
     \end{minipage}
-    \caption{Esempio di un grafo RDF $G_1$ (sx.) e sotto forma di insieme di triple (dx.)}
+    \caption{Un grafo RDF $G_1$ come grafo diretto (sx.) e insieme di triple (dx.)}
+    \label{fig:grafoRDF}
 \end{figure}
 
 \noindent
-Invece di etichettare un nodo semplicemente con \singlenodegraph{Margherita}, si utilizzano i \emph{Unique Resource Identifiers (URI)} per rappresentare univocamente una risorsa del Web. Un URL - utilizzato per riferirsi simbolicamente a un sito web - è un tipo specifico di URI, che richiede che la risorsa sia esposta in una rete di computer connessi fra di loro.
+Per essere più precisi, \textit{in RDF sia i nodi che i predicati sono risorse}, cioè delle entità nell'universo del discorso d'interesse. A seconda che la risorsa sia una stringa (come Margherita nella \autoref{fig:grafoRDF}) oppure un concetto più astratto è possibile identificarla in due modi diversi: tramite IRI oppure come un letterale. In ogni caso, definire una tripla RDF significa dire che la relazione indicata dal predicato vale fra le risorse indicate dal soggetto e dall'oggetto. Parliamo meglio di questi metodi d'identificazione:
+\begin{description}
+	\item[IRI (International Resource Identifier)]  Un formato generalizzato di URI che ricorre a un range più ampio di caratteri Unicode, che permette di identificare univocamente una risorsa. È importante sapere che solamente gli IRI vengono utilizzati per identificare i predicati in una tripla, e denotano una \textbf{proprietà}, cioè una risorsa che può essere vista come una relazione binaria.
+	Un insieme di IRI destinati all'uso in un grafo RDF è chiamato \textbf{vocabolario RDF} e di solito tutti gli identificatori di uno stesso vocabolario condividono una sotto stringa iniziale comune, che prende il nome di \textbf{namespace}. Per migliorare la leggibilità dei documenti RDF, si utilizza un \textbf{prefisso}, che sostituisce il namespace per abbreviare la lunghezza del identificatore. Ad esempio, per l'IRI \verb|http://example.org/#Margherita| si potrebbe definire il namespace\\ \verb|http://example.org/#| con prefisso \verb|example|; in questo modo la risorsa Margherita può essere identificata con il più corto e leggibile \verb|example:Margherita|. Alcuni esempi concreti possono esseri trovati in \cite{RDFSspecification}.
+	\item[Letterali] Rappresentano risorse nel senso di valori numerici, date o stringhe. La codifica di un qualsiasi valore di un letterale è come stringa Unicode, ma è possibile specificare il tipo, identificato da un IRI (e.g. il tipo delle date è \verb|xsd:date|), per permettere di risalire alla vera semantica del valore.
+\end{description}
+Esiste anche un altro termine che permette di affermare la presenza di un nodo per cui sussiste la relazione, senza nominarlo in maniera esplicita: il \textbf{blank node}. Per fare un paragone, possono essere considerati come variabili esistenziale, in cui il valore non è conosciuto ma si assume che sia presente.
+
+\begin{definition}[Tripla RDF]
+	Siano \textbf{I}, \textbf{L} e \textbf{B} rispettivamente gli insiemi infiniti e disgiunti uno a uno delle stringhe IRI, dei letterali e dei blank nodes. Una tripla RDF è una tupla $(s, p, o) \in \textbf{U}\ \cup \textbf{B} \times \textbf{U} \times \textbf{U}\ \cup \textbf{B}\ \cup \textbf{L}.$ in cui s è chiamato soggetto, p il predicato e o l'oggetto.
+\end{definition}
+\begin{definition}[Grafo RDF]
+	Un grafo RDF è un insieme finito di triple RDF.
+\end{definition}
+\begin{definition}[Grafo RDF]
+	Un grafo RDF è un insieme finito di triple RDF.
+\end{definition}
+IRI (International Resource Identifier),
+
+
 
 \subsection{Ontologie}
 \subsubsection[Ontologie come tipi per RDF]{Ontologie come tipi per annotazioni RDF}

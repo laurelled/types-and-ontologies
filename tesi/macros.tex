@@ -1,11 +1,3 @@
 \newcommand{\singlenodegraph}[1]{
-  \begin{tikzpicture}[
-      V/.style = {rounded corners, draw, fill=gray!30},
-      every edge quotes/.style = {auto, font=\footnotesize, sloped}
-    ]
-    \begin{scope}[nodes=V]
-      \node (1) {#1};
-    \end{scope}
-    \draw (1);
-  \end{tikzpicture}
+  \tikz{\node [rounded corners, scale=0.9, draw, fill=gray!30, font=\footnotesize] {#1}}
 }

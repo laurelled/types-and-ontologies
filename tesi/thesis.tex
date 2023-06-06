@@ -11,7 +11,7 @@
 
 %% DOCUMENT CLASS (alternative to book is 'report')
 % Print just right page or both sides (comment the other one)
-\documentclass[12pt,a4paper,openright,oneside, draft]{book}	%%One sided
+\documentclass[12pt,a4paper,openright,oneside]{book}	%%One sided
 %\documentclass[12pt,a4paper,openright,twoside]{book}	%%Double sided
 
 \input{macros}
@@ -42,9 +42,14 @@
 }
 %% ALLOW PAGE ROTATION
 \usepackage{lscape}
-
+\usepackage[english, italian]{babel} %%Set Italian as main language of the document
 %% HYPERTEXT SETUP
 \usepackage{hyperref}
+
+%% redefinition of /autoref naming conventions to italian names
+\addto\extrasitalian{
+	\def\figureautorefname{Figura}
+}
 \hypersetup{
     colorlinks,
     citecolor=black,
@@ -65,8 +70,12 @@
 \usepackage{amsfonts}		%%fonts for the mathematical rendering of formulas
 \usepackage{amssymb}
 \usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{thmtools}
+
+\newtheorem{definition}{Definizione}
 %% CHAPTERS STRUCTURE
-\usepackage[english]{babel} %%Set English as main language of the document
+
 %% FIGURES
 \usepackage{graphicx}
 \usepackage{subfigure}		%%allow side by side figures with single caption
@@ -139,8 +148,8 @@
 \clearemptydoublepage
 %bibliography
 \addcontentsline{toc}{chapter}{Bibliography}
-\bibliography{bibliography/bibThesis}
 \bibliographystyle{acm}
+\bibliography{bibliography/bibThesis}
 \clearemptydoublepage
 
 
