@@ -70,20 +70,118 @@ Il software si pone l'obiettivo di verificare se una query e l'utilizzo del suo 
         
         Infine, la lista viene convertita in stringa secondo la sintassi \(A_{x} : C\). Viene dunque invocato il -Reasoner e gli viene passato come parametro la lista in formato stringa. La risposta, true o false, viene poi mostrata a video all'utente. 
     
+    \newpage
     \section{Type Checking}
-        \textbf{migliorare l'introduzione aggiungendo i datatype utilizzati}
-        \\\\
-        Il type checking del $\boldsymbol{\lambda_{DL}}$ proposto da Leinberger è basato su un semplice $\boldsymbol{\lambda}$\textbf{-calcolo tipato} con \textbf{Record} e \textbf{Liste}, insieme a nuove regole per tipare i nuovi construtti introdotti.
-        In particolare è necessario assegnare dei tipi a:
-        \begin{itemize}
-            \item Query SPAQRL CQ
-            \item Nodi dei grafi RDF ottenuti dalla esecuzione delle query 
-        \end{itemize}
-        Il primo caso è spiegato nelle sezioni precedenti. mentre il secondo richide l'aggiunta di un nuovo construttore di tipo. Siccome la logica descrittiva si pone
-        l'obiettivo di dare struttura a una knowledge base, le \textbf{concept expressions} sono una scelta adeguata, in particolare è necessario controllare che i tipi dati alle query, ai nodi e alle proiezioni rispettino i vicoli imposti dagli assiomi 
-        della ontologia di riferimento. Per questo motivo durante il type checking è necessario andare ad interrogare la knowledge base.
-        \\Nelle successive sezioni commenteremo più nel dettaglio ogni regola rilevante del type system del linguaggio, mostrando una possibile implementazione in OCaml.
+        Per implementare il type checking abbiamo usato come base il lambda calcolo tipato proposto dal libro di \textbf{Benjamin C. Pierce "Types and Programming Languages"}.
+        Nella tesi parleremo strettamente delle regole di tipo e della loro implementazione per quanto riguarda la valutazioni si veda il libro di Pierce e la tesi di Leinberger.
+        Il linguaggio presenta le principali caratteristiche di un \textbf{ $\boldsymbol{\lambda}$-calcolo tipato} con l'aggiunta dei \textbf{Record}, le \textbf{Liste} e le \textbf{Query}.
+        \begin{figure}[h] 
+            \begin{minted}{ocaml}
+                type Term =
+                      TmVar of info * int * int 
+                    | TmTrue of info 
+                    | TmFalse of info 
+                    | TmIf of info * term * term * term 
+                    | TmRecord of info * (string * term) list 
+                    | TmProj of info * term * string 
+                    | TmAbs of info * string * ty * term 
+                    | TmApp of info * term * term 
+                    | TmLet of info * string * term * term 
+                    | TmFix of info * term 
+                    | TmZero of info 
+                    | TmSucc of info * term 
+                    | TmPred of info * term 
+                    | TmIsZero of info * term 
+                    | TmNil of info * ty 
+                    | TmCons of info * term * term 
+                    | TmIsNil of info * term 
+                    | TmHead of info * term 
+                    | TmTail of info * term  
+                    | TmQuery of info * var * gp
+                    | TmRoleProj of info * term * role
+                    | TmEq of info * term * term
+                    | TmNode of info * string
+            \end{minted}
+        \caption{termini del $\lambda_{DL}$}
+        \end{figure}
+        TmRecord e quello che ci permette di avere nel nostro linguaggio termini come:
+        \begin{minted}{OCaml}
+        {x = 4; y = 0; z = 4}
+        \end{minted}
+        dove $x, y, z$ sono le etichette del record, mentre $4, 0, 4$ sono i termini associati alle etichette. Nella implementazione corrispondono rispettivamente alla
+        stringa e al termine della lista. TmProj invece è la proiezione di un record su una etichetta, quindi riprentendo dall'esmpio precedente 
+        \begin{minted}{Ocaml}
+        {x = 4; y = 0; z = 4}.x
+        \end{minted}
+        il record proiettato su x, come ci si aspetta, sarà valutato nel valore associato alla etichetta: 4.
+        Le liste sono costruite ricorsivamente con \textbf{TmNil} e \textbf{TmCons} e sono presenti delle operazioni sulle liste espresse dai termini \textbf{TmIsNil},
+        \textbf{TmHead} e \textbf{TmTail}
+        \begin{figure}[h]
+            \begin{minted}[escapeinside =|, autogobble]{python}
+                [1, 0]   #TmCons (TmSucc (TmZero)) (TmCons (TmZero) (TmNil))
+                head  [1, 0] #TmHead (TmCons (TmSucc (TmZero)) (TmCons (TmZero) (TmNil)))
+                tail  [1, 0] #TmTail (TmCons (TmSucc (TmZero)) (TmCons (TmZero) (TmNil)))
+                isNil [1, 0] #TmIsNil (TmCons (TmSucc (TmZero)) (TmCons (TmZero) (TmNil)))
+            \end{minted}
+        \caption{esempi di termini con liste}
+        \end{figure}
+        Infine le query sono implementate come descritto nella sezione precedente.
+        \\I tipi hanno un datatype apposito. Oltre ad avere i classici tipi booleani (TyBool), numeri natoruali (TyNat) e il tipo freccia (TyArr) 
+        sono presenti i tipi per i nuovi costrutti (TyRecord, TyList, TyConcept). Il tipo \textbf{Top} è usato per il subtyping, in particolare per
+        qualsiasi tipo $T$ vale che $\boldsymbol{T <: Top}$. La figura sottostante mostra il datatype costruito in OCaml.
+        \begin{minted}{ocaml}
+            type Ty =
+                  TyTop 
+                | TyBool 
+                | TyRecord of (string * ty) list 
+                | TyArr of ty * ty 
+                | TyNat 
+                | TyList of ty
+                | TyConcept of ce
+        \end{minted}
+        Alcuni esempi di tipi assegnati ai relativi termini possono essere:
+        \begin{minted}{ocaml}
+            {x = 4; y = 0; z = 4} : {x : Nat, y : Nat, z = Nat}
+            [1, 0] : List Nat
+            query x <- x type students : List {x : Ax}
+        \end{minted}
+        dove i tipi segnati sono un versione semplificata e più leggibile per indicare il termine costruito dal datatype ty:
+        \begin{minted}{ocaml}
+            TyRecord([("x", TyNat); ("y", TyNat); ("z", TyNat)])
+            TyList TyNat
+            TyConcept Atomic("x")
+        \end{minted}
+        Ora che abbiamo introdotto i costruttori di tipi utilizzati possiamo paralre dell'algoritmo di typing.
+        Come suggerito dal libro "Types and Programming Languages" viene utilizzata una funzione ricorsiva per determinare il tipo di un termine da un contesto
+        inizialmente vuoto.
+        \begin{minted}{ocaml}
+            typeof : Context -> Term -> Ty
+        \end{minted}
+        typeof effettua pattern matching sul termine passato come argomento per decidere quale regola applicare. La maggior parte delle regole sono puramente
+        sintattiche quindi typeof è sufficiente per la loro implementazione, altre come le regole di subtyping o T-ADD è necessario utilizzare funzioni di supporto
+        oppure modificare l'implementazione delle regole precedenti. Un semplice esempio di implementazione di una regola di tipo è quello di T-APP.
+        $$\myruleN{\Gamma \vdash t_1 : T_1 \rightarrow T_2 \quad \Gamma \vdash t_2 : T_1}{\Gamma \vdash t_1 \: t_2 : T_2}{T-APP}$$
+        la cui implementazione diventerà:
+        \begin{minted}[escapeinside=||,mathescape=true, autogobble]{ocaml}
+            let rec typeof ctx t =
+                match t with
+                |$\vdots $|
+                TmApp(fi,t1,t2) ->
+                    let tyT1 = typeof ctx t1 in
+                    let tyT2 = typeof ctx t2 in
+                    (match ctx tyT1 with
+                        TyArr(tyT11,tyT12) ->
+                          if subtype ctx tyT2 tyT11 then tyT12
+                          else error fi "parameter type mismatch"
+                        | _ -> error fi "arrow type expected")
 
+                |$\vdots$|
+        \end{minted}
+        Prima attraverso pattern matching si controlla che il termine passato sia un applicazione tra altri due termini $t1$ e $t2$. Successivamente
+        viene effettuata la chiamata ricorsiva su $t1$ e $t2$ per ottenere i loro tipi $tyT1$ e $tyT2$ rispettivamente. Effettuando di nuovo pattern matching
+        su $tyT1$ si verifica che sia un tipo freccia $tyT11 \rightarrow tyT12$. Infine se $tyT2 <: tyT11$ allora si può stabilire che $t1 \; t2$ ha tipo $tyT12$
+
+        
         \begin{figure}[h]
         \[\begin{array}{c}
             \myruleN{\Gamma,K \vdash t_1 : C_1 \quad K \vDash C_1 \sqsubseteq \exists r . \top}
