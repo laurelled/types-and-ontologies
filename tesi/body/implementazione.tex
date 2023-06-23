@@ -105,44 +105,35 @@ Il software si pone l'obiettivo di verificare se una query e l'utilizzo del suo 
             {\Gamma,K \cup K_q \vdash \textrm{query} \; q : \{l_i : A_{l_i}^{i \in 1...m}\} list}
             {T-QUERY}
             \\\\
-            \myruleN{\Gamma,K \cup \{A_i \sqsubseteq C_i^{i \in 1...n}\} \vdash t : A_j^{1 \leq j \leq n} \quad K \cup \{A_i \sqsubseteq C_i^{i \in 1...n}\} \vDash A_j \sqsubseteq D^{1 \leq \leq n}}
+            \myruleN{\Gamma,K \cup \{A_i \sqsubseteq C_i^{i \in 1...n}\} \vdash t : A_j^{1 \leq j \leq n} \quad K \cup \{A_i \sqsubseteq C_i^{i \in 1...n}\} \vDash A_j \sqsubseteq D^{1 \leq j \leq n}}
             {\Gamma,K \vdash t : D}
             {T-ADD}
             \\\\
-            \myruleN{K \vDash C \sqsubseteq D}{k \vdash C <: D}{S-CONCEPT}
+            \myruleN{K \vDash C \sqsubseteq D}{K \vdash C <: D}{S-CONCEPT}
         \end{array}\]
         \caption{nuove regole di tipo per $\lambda_{DL}$}
         \end{figure}
         \subsection{T-PROJ}
-            La regola \textbf{T-PROJ} è usata per derivare il tipo di un nodo ottenuto attraverso la role projection.
-            \\
-            \[
-                \myruleN{\Gamma,K \vdash t_1 : C_1 \quad K \vDash C_1 \sqsubseteq \exists r . \top}
-                {\Gamma,K \vdash t_1.r : \textrm{List}(\exists r^- . C_1)}
-                {T-PROJ}
-            \]
-            \\
-            La prima ipotesi 
-            $$\Gamma,K \vdash t_1 : C_1$$
-            ci dice che con rispetto al contesto $\Gamma$ e alla knowledge base $K$ il termine $t_1$ a tipo $C_1$. Dove $C_1$ è una concept expression in logica descrittiva.
-            $$K \vDash C_1 \sqsubseteq \exists r . \top$$
-            la seconda invece afferma che la concept expression $C_1$ è un subconcept di $\exists r. \top$, ovvero che $C_1$ ha almeno un seccessore attraverso il ruolo $r$.
-            $$ \Gamma,K \vdash t_1.r : \textrm{List}(\exists r^- . C_1) $$
-            Dalle due ipotesi si può quindi concludere che il termine $t_1.r$ è una lista di nodi del grafo RDF, dai cui attraversando il ruolo $r^-$ si arriva a $C_1$, dove $r^-$ è ($\boldsymbol{\exists r^-.C_1}$).
-            \\\\
-            L'implementazione della regola T-PROJ è mostrata nella figura 4.3. la riga col commento \textbf{$\boldsymbol{\#}$1} corrisponde alla prima ipotesi della regola di derivazione,
-            grazie al pattern matching dividiamo in due casi: il caso in cui il tipo è una concept expression (TyConcept(C) $\rightarrow$ ...) e qualsiasi altro caso ( \_ $\rightarrow$ ...).
-             
+            L'implementazione della regola T-PROJ segue alla lettera la definizione teorica in particolare abbiamo che la condizione $\Gamma,K \vdash t_1 : C_1$
+            è verificata attraverso il pattern matching (.1) in cui controlliamo che il tipo $t$ sia una concept expression \textbf{TyConcept(C)}. La seconda ipotesi
+            $K \vDash C_1 \sqsubseteq \exists r . \top$ invece richiede la creazione di una nuova funzione:
+            \begin{minted}[escapeinside=||,mathescape=true, framesep=4mm, autogobble]{ocaml}
+                subconcept : ConceptExpression -> ConceptExpression -> Bool
+            \end{minted}
+            la funzione subconcept prende in input due concept expression $C_1$ e $C_2$ e ritorna $true$ se e solo se $C_1 \sqsubseteq C_2$. Quindi passando a subconcept
+            \textbf{C} e \textbf{Exist(Property(s), Top)} (.2) come argomento verifichiamo la seconda condizione.
+            \\Infine le conclusioni della regola $\Gamma,K \vdash t_1.r : \textrm{List}(\exists r^- . C_1)$ affermano facendo la proiezione del termine $T_1$ attraverso $r$
+            otteniamo una lista di concept expression $\exists r^- . C_1$, per questo motivo la funzione typeof ritorna  \textbf{TyList(TyConcept(Exist(PropertyInverse(s), c)))} (.3).
             \begin{figure}[h] 
                 \begin{minted}[escapeinside=||,mathescape=true, frame=lines, framesep=4mm, autogobble]{ocaml}
                     let rec typeof ctx t =
                         match t with
                         |$\vdots $|
                         TmRoleProj(fi, t, Property(s)) ->
-                            (match t with                                
-                            TyConcept(C) as t ->                                        #1
-                                if subconcept C Exist(Property(s), Top) then            #2
-                                    TyList(TyConcept(Exist(PropertyInverse(s), c)))     #3
+                            (match typeof ctx t with                                
+                            TyConcept(C) as t ->                                        .1
+                                if subconcept C Exist(Property(s), Top) then            .2
+                                    TyList(TyConcept(Exist(PropertyInverse(s), c)))     .3
                                 else error fi "argument of role projection 
                                                 is not a proper subconcept")
                             _ -> error fi "argument of role projection 
@@ -151,9 +142,93 @@ Il software si pone l'obiettivo di verificare se una query e l'utilizzo del suo 
                 \end{minted}
             \caption{implementazione OCaml della regola T-Proj}
             \end{figure}
-            Il commento \textbf{$\boldsymbol{\#}$2} indica la seconda ipotesi, la funzione \textbf{"subconcept C Exist(Property(s), Top)"} interroga la knowledge base controllando $C \sqsubseteq \exists r . \top$ e ritornando il risultato come
-            booleano.
-            Infine alla riga \textbf{$\boldsymbol{\#}$3} la funzione ritorna la lista di concept expression  $\exists r^- . C_1$.
+
+            \subsection{T-QUERY}
+            T-QUERY è la regola utilizzata per derivare il tipo di una query SPARQL. Per semplicità, rispetto alla teoria, prendiamo in considerazione solo le query
+            aventi una variabile, ovvero dove l'insieme $Head(q)$ contiene un solo elemento. Anche questa regola richiede di consultare un reasoner per stabilire se
+            gli assiomi generati dal typing della query q siano soddisfacibili $\forall x \in \textrm{Vars}(q) : K \cup K_q \nvDash A_x \sqsubseteq \bot$. 
+            Nella definizione la funzione $Vars(q)$ ritorna l'insieme di tutte le variabili utilizzate nella query.
+            \begin{figure}[h] 
+                \begin{minted}[escapeinside=||,mathescape=true, frame=lines, framesep=4mm, autogobble]{ocaml}
+                    let rec typeof ctx t =
+                        match t with
+                        |$\vdots $|
+                        TmQuery(fi, var, gp) ->
+                            if allSatisfiable(axioms(gp), var) then
+                            TyList(TyRecord(var, TyConcept(Atomic var))) else
+                                error fi "axioms unsatisibale"
+                        |$\vdots$|
+                \end{minted}
+            \caption{implementazione OCaml della regola T-QUERY}
+            \end{figure}
+            \\Nella implementazione, per verificare le ipotesi utilizziamo due funzioni di supporto. la prima: 
+            \begin{minted}{OCaml}
+            axioms: Gp -> Axiom List
+            \end{minted}  
+            ritorna la lista degli assiomi dal graph pattern della query. mentre la seconda
+            \begin{minted}{OCaml}
+            allSatisfiable: Axioms List -> Var -> Bool
+            \end{minted}
+            è la funzione che interroga la knowledge base per verificare che la lista degli assiomi sia soddisfacibile. Infine una volta verificate le ipotesi possiamo
+            ritornare 
+            \\\textbf{TyList(TyRecord(var, TyConcept(Atomic \; var)))} che corrisponde a $\Gamma,K \cup K_q \vdash \textrm{query} \; q : \{l_i : A_{l_i}^{i \in 1...m}\} list$
+            con l'unica differenza che nella nostra implementazione i record contengono una sola label, quella della unica variabile in $Head(q)$. Abbiamo deciso di 
+            mantenere la lista di record nonostante la nostra semplificazine sulle query per rendere un futuro aggiornamento facile da implementare.
+            \subsection{T-ADD}
+            T-ADD è la regola la cui implementazione è più interessante. Siccome non siamo di fronte ad una regola puramente sintattica
+            non è possibile fare pattern matching sul termine per capire quando applicarla.
+            Prima di parlare dell'implementazione è importante capire a cosa serve e come viene utilizzada: T-QUERY assegna alle variabili in testa alla query
+            il tipo concept expression $A_x$ quando abbiamo un assioma nella query della forma $K_q = A_x \sqsubseteq D$, ma $A_x$ non sono propriamente da usare sintatticamente nel programma. 
+            \\L'obiettivo è dare un significato al tipo $A_x$, in modo simile a una classica regola di subtyping. Quindi è possibile assegnate una concept espression $D$
+            a un termine t solo se è possibile assegnare a t $A_x$ usando una knowledge base $\Gamma,K \cup \{A_i \sqsubseteq C_i^{i \in 1...n}\} \vdash t : A_j^{1 \leq j \leq n}$
+            e se K $\cup \{A_i \sqsubseteq C_i^{i \in 1...n}\} \vDash A_j \sqsubseteq D^{1 \leq j \leq n}$.
+            \\Come suggerito da Leinberger, abbiamo implementato la regola aggiungendo gli assiomi $K_q$ alla knowledge base durante la funzione \textbf{allSatisfiable}.
+            così insieme alla regola \textbf{S-CONCEPT} è possibile risalire alla concept $D$ senza avere bisogno di T-ADD.
+            \subsection{S-CONCEPT}
+            Il linguaggio cotruito da Leinberger permette il subtyping tipi, quindi oltre a quello tra tipi classici è stato necessario aggiungere un modo per gestire
+            anche quello tra le concept expression.
+            \begin{figure}[h] 
+                \begin{minted}[escapeinside=||,mathescape=true, frame=lines, framesep=4mm, autogobble]{ocaml}
+                    let rec subtype ctx tyS tyT =
+                        tyeqv ctx tyS tyT ||
+                        match (tyS,tyT) with
+                        |$\vdots $|
+                            (TyConcept(ceS1),TyConcept(ceT1)) -> subconcept ceS1 ceT1
+                        |$\vdots$|
+                \end{minted}
+            \caption{implementazione OCaml della regola S-CONCEPT}
+            \end{figure}
+            Nella implementazione richiamiamo la funzione subconcept per il controllo della ipotesi $K \vDash C \sqsubseteq D$. La differenza maggiore rispetto alla teoria
+            risiede nel fatto che anche in questo caso S-CONCEPT non è una regola sintattica. La funzione subtype ha tipo:
+            \begin{minted}[]{ocaml}
+                subtype : Context -> Ty -> Ty -> Bool
+            \end{minted}
+            Prende in input un contesto e due tipi e ritorna $true$ se e solo se $K \vDash C \sqsubseteq D$. la funzione subtype viene poi richiamata su tutte le regole
+            in cui il subtyping è utilizzabile. Ad esempio nella regola T-APP si controlla che l'argomento passato a una astrazione sia sottotipo del tipo atteso dalla astrazione (\textbf{Controvarianza}).
+            \begin{minted}[escapeinside=||,mathescape=true, frame=lines, framesep=4mm, autogobble]{ocaml}
+                let rec typeof ctx t =
+                    match t with
+                    |$\vdots $|
+                    TmApp(fi,t1,t2) ->
+                    let tyT1 = typeof ctx t1 in
+                    let tyT2 = typeof ctx t2 in
+                    (match ctx tyT1 with
+                        TyArr(tyT11,tyT12) ->
+                          if subtype ctx tyT2 tyT11 then tyT12
+                          else error fi "parameter type mismatch"
+                        _ -> error fi "arrow type expected")
+                    |$\vdots$|
+            \end{minted}
+            
+
+
+
+
+
+
+
+
+
 
 
         
