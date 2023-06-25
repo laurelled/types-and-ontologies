@@ -177,11 +177,29 @@ Il software si pone l'obiettivo di verificare se una query e l'utilizzo del suo 
 
                 |$\vdots$|
         \end{minted}
-        Prima attraverso pattern matching si controlla che il termine passato sia un applicazione tra altri due termini $t1$ e $t2$. Successivamente
+        Prima attraverso pattern matching si controlla che il termine passato sia un'applicazione tra altri due termini $t1$ e $t2$. Successivamente
         viene effettuata la chiamata ricorsiva su $t1$ e $t2$ per ottenere i loro tipi $tyT1$ e $tyT2$ rispettivamente. Effettuando di nuovo pattern matching
-        su $tyT1$ si verifica che sia un tipo freccia $tyT11 \rightarrow tyT12$. Infine se $tyT2 <: tyT11$ allora si può stabilire che $t1 \; t2$ ha tipo $tyT12$
-
-        
+        su $tyT1$ si verifica che sia un tipo freccia $tyT11 \rightarrow tyT12$. Infine se $tyT2 <: tyT11$ allora si può stabilire che $t1 \; t2$ ha tipo $tyT12$.
+        Come si vede dalla implementazione di T-APP è stata utilizzata una funzione per verificare il subtyping, ritornando true se e solo se $Ty_1 <: Ty_2$. 
+        \begin{minted}{ocaml}
+            subtype : Context -> Ty -> Ty -> Bool
+        \end{minted}
+        Il linguaggio $\lambda_{DL}$ presenta il subtyping classico tra funzioni, record e liste le cui regole si possono trovare sia nella tesi di Leinberger che
+        in "Types and Programming Languages". L'implementazione della funzione \textbf{subtype} è molto diretta rispetto alle regole. Come per \textbf{typeof}
+        si procede con il pattern matching tra i tipi passati come argomento e confrontando la loro struttura si può stabilire se sono in relazione di sottotipo.
+        Per esempio la regola \textbf{S-LIST}
+        $$\myruleN{T <: T'}{List T <: List T'}{S-LIST}$$
+        \\ viene implementata con con:
+        \begin{minted}[escapeinside =**, mathescape=true, autogobble]{ocaml}
+            let rec subtype ctx tyS tyT =
+                tyeqv ctx tyS tyT ||
+                match (tyS,tyT) with
+                    *$\vdots$*
+                     (TyList(tyS1),TyList(tyT1)) -> subtype ctx tyS1 tyT1
+                    *$\vdots$*
+        \end{minted}
+        La funzione tyeqv controlla l'ugualianza tra due tipi siccome la relazione di subtyping è riflessiva. l'ultime due funzioni di supporto
+        utilizzate per il typing calcolano il least upper bound e il greatest lower bound tra due tipi.
         \begin{figure}[h]
         \[\begin{array}{c}
             \myruleN{\Gamma,K \vdash t_1 : C_1 \quad K \vDash C_1 \sqsubseteq \exists r . \top}
