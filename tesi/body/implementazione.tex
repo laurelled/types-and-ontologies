@@ -1,74 +1,86 @@
 \chapter[Implementazione]{Implementazione}
-Il software si pone l'obiettivo di verificare se una query e l'utilizzo del suo risultato sia corretto o meno. Per le query si tratta di verificare se sia abitata o meno. \textbf{mettere parte su utilizzo risultato ANDREA} Esso è formato da due componenti: un modulo Reasoner, scritto in Java che utlizza il reasoner HermiT\cite{HermiT} per stabilire l'abitabilità delle query, e un modulo scritto in OCaml che si occupa di parsare il programma  da un file testuale, genereare gli assiomi di Leinberger\ref{fig:LeinbergerAxiom} e richiamare il modulo Reasoner per le query. 
-    
-    \section{-Reasoner}
-        Il modulo -Reasoner utilizza due risorse: 
-            \begin{enumerate}
-                \item Il file HermiT.jar \cite{HermiT}, che implementa il reasoner sviluppato dall'università di Oxford, capace di eseguire ragionamenti sulle ontologie.
-                \item Il file DLQueryExample \cite{DLQueryExample} utilizzato per parsare una stringa in una ClassExpression, che è utilizzabile HermiT. 
-            \end{enumerate}
+Il software si pone l'obiettivo di verificare se una query e l'utilizzo del suo risultato sia corretto o meno. Per le query si tratta di verificare se sia abitata o meno. \textbf{mettere cosa significa che l'utilizzo utilizzo risultato sia corretto ANDREA} Il nostro software è formato da due componenti: un modulo Reasoner, scritto in java che si occupa di determinare l'abitabilità delle query, e un modulo scritto in OCaml che si occupa di determinare la correttezza di un programma scritto su file testuale.
 
-        Ma come funziona il modulo? Esso prende in input, in formato stringa, una lista di assiomi di Leinberger, ognuno forma \(A_{x} : C\), con semantica \( A_{x}\sqsubseteq C \). 
-        \\\(A_{x}\) è un concetto atomico. "C" è scritto nella "Manchester OWL syntax"\cite{ManchesterOWLSyntax}, e viene trasformato dal DLQueryParser in una ClassExpression. 
+\section{Reasoner}
+Il modulo Reasoner utilizza due risorse:
+\begin{enumerate}
+    \item Il file HermiT.jar\cite{HermiT}, che implementa il reasoner sviluppato dall'università di Oxford, capace di eseguire ragionamenti sulle ontologie.
+    \item Il file DLQueryExample\cite{DLQueryExample} utilizzato per parsare una stringa in una ClassExpression, che è utilizzabile HermiT.
+\end{enumerate}
 
-        Utilizzando poi la OWLDataFactory (factory delle OWLApi che permette la costruzione di OWLAxiom e di dichiarare OWLClass) e HermiT\cite{HermiT}, dichiariamo all'interno dell'ontologia tutti i concetti atomici, corrispondenti alle variabili della query, che compaiono negli assiomi di Leinberger. 
+Ma come funziona il modulo? Esso prende in input, in formato stringa, una lista di assiomi di Leinberger, ognuno forma \(A_{x} : C\), con semantica \( A_{x}\sqsubseteq C \).
+\\\(A_{x}\) è un concetto atomico. "C" è una concept expression scritta nella "Manchester OWL syntax" \cite{ManchesterOWLSyntax}, e viene trasformato dal DLQueryParser in un oggetto ClassExpression. L'idea iniziale era di creare noi un parser che trasformasse una stringa in un oggetto ClassExpression, poi ci siamo imbattuti nella Manchester OWL syntax che presentava già un parsificatore capace di realizzare esattamente quello che volevamo. Allora ho adattato il tutto affinché lavorasse su questa particolare sintassi.
 
-        \begin{figure}
-            \centering
-            \includegraphics[width=\textwidth]{pictures/leinbergSyntax.png}
-            \caption{sintassi delle query SPARQL CQ}
-            \label{fig:declarationCode}
-        \end{figure}
-                
-        Successivamente per ogni assioma creiamo un OWLSubClassOfAxiom, in cui viene specificata ogni concetto atomico come SubClass della sua ClassExpression corrispondente. 
+Utilizzando poi la OWLDataFactory (factory delle OWLApi che permette la costruzione di OWLAxiom e di dichiarare OWLClass) e HermiT\cite{HermiT}, dichiariamo all'interno dell'ontologia tutti i concetti atomici che compaiono negli assiomi di Leinberger\ref{fig:leinbergerSyntax}, corrispondenti alle variabili della query.
 
-        Infine chiediamo al reasoner HermiT di testare la soddisfacibilità di ogni concetto atomico presente negli assiomi di Leinberger. Se sono tutte soddisfacibili, allora significa che la query è abitabile, altrimenti non lo è.
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.6]{pictures/leinbergSyntax}
+    \caption{sintassi delle query \\ SPARQL CQ}
+    \label{fig:leinbergerSyntax}
+\end{figure}
 
-        \section{-OCaml Module}
-        L'idea alla base del modulo OCaml è la seguente: 
-            \begin{enumerate}
-                \item l'utente inserisce la query di cui testare l'abitabilità in un file di testo. 
-                \item la query viene parsata in un tipo Query
-                \item sul tipo Query vengono inferiti gli assiomi di Leinberger
-                \item viene invocato il -Reasoner e gli vengono passati gli assiomi appena inferiti.
-                \item il risultato viene mostrato all'utente
-            \end{enumerate}
+Successivamente per ogni assioma creiamo un OWLSubClassOfAxiom, in cui viene specificata ogni concetto atomico come SubClass della sua ClassExpression corrispondente.
 
-        Per generare il parser, ho utilizzato il programma OCamlyacc, un compilatore di compilatori, ispirandomi alla grammatica delle query descritta da Leinberger. %pagina 19
+Infine chiediamo al reasoner HermiT di testare la soddisfacibilità di ogni concetto atomico presente negli assiomi di Leinberger. Se sono tutte soddisfacibili, allora significa che la query è abitabile, altrimenti non lo è.
 
-        Per definire i token che compongono la grammatica invece mi sono avvalso di OCamllex, un generatore di lexer. 
+\section{OCaml Module - Le query}
+L'idea alla base del modulo OCaml è la seguente:
+\begin{enumerate}
+    \item l'utente inserisce la query di cui testare l'abitabilità in un file di testo.
+    \item la query viene parsata in un tipo Query
+    \item sul tipo Query vengono inferiti gli assiomi di Leinberger
+    \item viene invocato il -Reasoner e gli vengono passati gli assiomi appena inferiti.
+    \item il risultato viene mostrato all'utente
+\end{enumerate}
 
-        Dunque, come funziona il Parser? Esso riconosce la grammatica e genera un tipo Query, che racchiude tutte le informazioni presenti allinterno della query in formato testuale. 
+Per generare il parser, ho utilizzato il programma OCamlyacc, un compilatore di compilatori, ispirandomi alla grammatica delle query descritta da Leinberger\ref{fig:leinbergerSyntax}. 
 
-        Per esempio, scrivendo questa query sul file di input: 
+Per definire i token che compongono la grammatica invece mi sono avvalso di OCamllex, un generatore di lexer.
+
+
+Dunque, come funziona il Parser? Esso riconosce la grammatica e genera un tipo Query\ref{fig:querType}, che racchiude tutte le informazioni presenti all'interno della query in formato testuale. 
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.7]{pictures/queryType.png}
+    \caption{tipo Query corrispondente alla sintassi delle query SPARQL CQ}
+    \label{fig:querType}
+\end{figure}
+
+
+Per esempio, scrivendo questa query sul file di input:
+
+\[ query \ x \ <- \ (x \ type \ Pizza \ AND \ x \ hasTopping \ y \ AND \ y \ type \ GorgonzolaTopping) \]
+
+otteniamo il seguente tipo Query così costruito: 
+
+\[ Q \  (V \ x, \\
+    CP(SP(V \ x,\ TYPE, \ ,\ CP)\]
+
+Introduciamo il tipo ClassExpression, definito ispirandosi alle regole di derivazione degli assiomi di Leiberger.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{pictures/leinbergAxiom.png}
+    \caption{Regole di derivazione degli assiomi di Leiberger}
+    \label{fig:leinbergerAxiom}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{pictures/classExpressionType.png}
+    \caption{Il tipo ClassExpression e Axiom}
+    \label{fig:enter-label}
+\end{figure}
+Successivamente, il tipo Query viene convertito in una lista di Axiom dalla funzione axiomiserQuery, che implementa le regole di derivazione di Leinberger [\ref{fig:leinbergerAxiom}]\\ \\L'esempio diventa dunque:
+\[ (x, Pizza) :: (x, Exist(Property(hasTopping),Atomic(y))) :: \]\[ (y, Exists(PropertyInverse(hasTopping), Atomic(x))) ::
+      (y, GorgonzolaTopping) :: []
+ \]
         
-        $$ query \ x \ <- \ (x \ type \ Pizza \ AND \ x \ hasTopping \ y \ AND \ y \ type \ GorgonzolaTopping) $$
-        
-        otteniamo il seguente tipo Query così costruito: %mettere?
-
-        $$ Q \  (V \ x, \\
-            CP(SP(V \ x,\ TYPE, \ ,\ CP)$$
-
-        Successivamente, il tipo Query viene convertito in una lista di Axiom dalla funzione axiomiserQuery, che implementa le regole di derivazione di Leinberger\ref{fig:axiom}
-
-        %%\begin{figure}
-        %%    \centering
-        %%    \includegraphics[width=\textwidth]{pictures/leinbergSyntax.png}
-        %%    \caption{Sintassi delle query accettata}
-        %%    \label{fig:LeinbergerSyntax}
-        %%\end{figure}
-
-        %%\begin{figure}
-        %%    \centering
-        %%    \includegraphics[width=\textwidth]{pictures/leinbergAxiom.png}
-        %%    \caption{Regole di derivazione di Leinberger}
-        %%    \label{fig:LeinbergerAxiom}
-        %%\end{figure}
-
-        
-
-        
-        Infine, la lista viene convertita in stringa secondo la sintassi \(A_{x} : C\). Viene dunque invocato il -Reasoner e gli viene passato come parametro la lista in formato stringa. La risposta, true o false, viene poi mostrata a video all'utente. 
+Infine, la lista di assiomi viene convertita in stringa secondo la sintassi \(A_{x} : C\), ove C è la traduzione in sintassi di Manchestern della classExpression corrispondente. 
+\\\\ L'esempio diventa dunque
+\[ x : Pizza : x : hasTopping \ SOME \ y : y : INVERSE \ hasTopping x : y : GorgonzolaTopping\]
+Viene dunque invocato il modulo Reasoner e gli viene passato come parametro la lista in formato stringa. La risposta, true o false, viene poi mostrata a video all'utente. 
     
     \section{Type Checking}
         \textbf{migliorare l'introduzione aggiungendo i datatype utilizzati}
@@ -130,7 +142,7 @@ Il software si pone l'obiettivo di verificare se una query e l'utilizzo del suo 
                         match t with
                         |$\vdots $|
                         TmRoleProj(fi, t, Property(s)) ->
-                            (match typeof ctx t with                                
+                            (match typeof ctx t with
                             TyConcept(C) as t ->                                        .1
                                 if subconcept C Exist(Property(s), Top) then            .2
                                     TyList(TyConcept(Exist(PropertyInverse(s), c)))     .3
@@ -146,9 +158,9 @@ Il software si pone l'obiettivo di verificare se una query e l'utilizzo del suo 
             \subsection{T-QUERY}
             T-QUERY è la regola utilizzata per derivare il tipo di una query SPARQL. Per semplicità, rispetto alla teoria, prendiamo in considerazione solo le query
             aventi una variabile, ovvero dove l'insieme $Head(q)$ contiene un solo elemento. Anche questa regola richiede di consultare un reasoner per stabilire se
-            gli assiomi generati dal typing della query q siano soddisfacibili $\forall x \in \textrm{Vars}(q) : K \cup K_q \nvDash A_x \sqsubseteq \bot$. 
+            gli assiomi generati dal typing della query q siano soddisfacibili $\forall x \in \textrm{Vars}(q) : K \cup K_q \nvDash A_x \sqsubseteq \bot$.
             Nella definizione la funzione $Vars(q)$ ritorna l'insieme di tutte le variabili utilizzate nella query.
-            \begin{figure}[h] 
+            \begin{figure}[h]
                 \begin{minted}[escapeinside=||,mathescape=true, frame=lines, framesep=4mm, autogobble]{ocaml}
                     let rec typeof ctx t =
                         match t with
@@ -161,24 +173,24 @@ Il software si pone l'obiettivo di verificare se una query e l'utilizzo del suo 
                 \end{minted}
             \caption{implementazione OCaml della regola T-QUERY}
             \end{figure}
-            \\Nella implementazione, per verificare le ipotesi utilizziamo due funzioni di supporto. la prima: 
+            \\Nella implementazione, per verificare le ipotesi utilizziamo due funzioni di supporto. la prima:
             \begin{minted}{OCaml}
             axioms: Gp -> Axiom List
-            \end{minted}  
+            \end{minted}
             ritorna la lista degli assiomi dal graph pattern della query. mentre la seconda
             \begin{minted}{OCaml}
             allSatisfiable: Axioms List -> Var -> Bool
             \end{minted}
             è la funzione che interroga la knowledge base per verificare che la lista degli assiomi sia soddisfacibile. Infine una volta verificate le ipotesi possiamo
-            ritornare 
+            ritornare
             \\\textbf{TyList(TyRecord(var, TyConcept(Atomic \; var)))} che corrisponde a $\Gamma,K \cup K_q \vdash \textrm{query} \; q : \{l_i : A_{l_i}^{i \in 1...m}\} list$
-            con l'unica differenza che nella nostra implementazione i record contengono una sola label, quella della unica variabile in $Head(q)$. Abbiamo deciso di 
+            con l'unica differenza che nella nostra implementazione i record contengono una sola label, quella della unica variabile in $Head(q)$. Abbiamo deciso di
             mantenere la lista di record nonostante la nostra semplificazine sulle query per rendere un futuro aggiornamento facile da implementare.
             \subsection{T-ADD}
             T-ADD è la regola la cui implementazione è più interessante. Siccome non siamo di fronte ad una regola puramente sintattica
             non è possibile fare pattern matching sul termine per capire quando applicarla.
             Prima di parlare dell'implementazione è importante capire a cosa serve e come viene utilizzada: T-QUERY assegna alle variabili in testa alla query
-            il tipo concept expression $A_x$ quando abbiamo un assioma nella query della forma $K_q = A_x \sqsubseteq D$, ma $A_x$ non sono propriamente da usare sintatticamente nel programma. 
+            il tipo concept expression $A_x$ quando abbiamo un assioma nella query della forma $K_q = A_x \sqsubseteq D$, ma $A_x$ non sono propriamente da usare sintatticamente nel programma.
             \\L'obiettivo è dare un significato al tipo $A_x$, in modo simile a una classica regola di subtyping. Quindi è possibile assegnate una concept espression $D$
             a un termine t solo se è possibile assegnare a t $A_x$ usando una knowledge base $\Gamma,K \cup \{A_i \sqsubseteq C_i^{i \in 1...n}\} \vdash t : A_j^{1 \leq j \leq n}$
             e se K $\cup \{A_i \sqsubseteq C_i^{i \in 1...n}\} \vDash A_j \sqsubseteq D^{1 \leq j \leq n}$.
@@ -187,7 +199,7 @@ Il software si pone l'obiettivo di verificare se una query e l'utilizzo del suo 
             \subsection{S-CONCEPT}
             Il linguaggio cotruito da Leinberger permette il subtyping tipi, quindi oltre a quello tra tipi classici è stato necessario aggiungere un modo per gestire
             anche quello tra le concept expression.
-            \begin{figure}[h] 
+            \begin{figure}[h]
                 \begin{minted}[escapeinside=||,mathescape=true, frame=lines, framesep=4mm, autogobble]{ocaml}
                     let rec subtype ctx tyS tyT =
                         tyeqv ctx tyS tyT ||
@@ -219,7 +231,7 @@ Il software si pone l'obiettivo di verificare se una query e l'utilizzo del suo 
                         _ -> error fi "arrow type expected")
                     |$\vdots$|
             \end{minted}
-            
+
 
 
 
