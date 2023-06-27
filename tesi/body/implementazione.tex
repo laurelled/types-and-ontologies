@@ -1,28 +1,6 @@
 \chapter[Implementazione]{Implementazione}
 Il software si pone l'obiettivo di verificare se una query e l'utilizzo del suo risultato sia corretto o meno. Per le query si tratta di verificare se sia abitata o meno. \textbf{mettere cosa significa che l'utilizzo utilizzo risultato sia corretto ANDREA} Il nostro software è formato da due componenti: un modulo Reasoner, scritto in java che si occupa di determinare l'abitabilità delle query, e un modulo scritto in OCaml che si occupa di determinare la correttezza di un programma scritto su file testuale.
 
-\section{Reasoner}
-Il modulo Reasoner utilizza due risorse:
-\begin{enumerate}
-    \item Il file HermiT.jar\cite{HermiT}, che implementa il reasoner sviluppato dall'università di Oxford, capace di eseguire ragionamenti sulle ontologie.
-    \item Il file DLQueryExample\cite{DLQueryExample} utilizzato per parsare una stringa in una ClassExpression, che è utilizzabile HermiT.
-\end{enumerate}
-
-Ma come funziona il modulo? Esso prende in input, in formato stringa, una lista di assiomi di Leinberger, ognuno forma \(A_{x} : C\), con semantica \( A_{x}\sqsubseteq C \).
-\\\(A_{x}\) è un concetto atomico. "C" è una concept expression scritta nella "Manchester OWL syntax" \cite{ManchesterOWLSyntax}, e viene trasformato dal DLQueryParser in un oggetto ClassExpression. L'idea iniziale era di creare noi un parser che trasformasse una stringa in un oggetto ClassExpression, poi ci siamo imbattuti nella Manchester OWL syntax che presentava già un parsificatore capace di realizzare esattamente quello che volevamo. Allora ho adattato il tutto affinché lavorasse su questa particolare sintassi.
-
-Utilizzando poi la OWLDataFactory (factory delle OWLApi che permette la costruzione di OWLAxiom e di dichiarare OWLClass) e HermiT\cite{HermiT}, dichiariamo all'interno dell'ontologia tutti i concetti atomici che compaiono negli assiomi di Leinberger\ref{fig:leinbergerSyntax}, corrispondenti alle variabili della query.
-
-\begin{figure}[H]
-    \centering
-    \includegraphics[scale=0.6]{pictures/leinbergSyntax}
-    \caption{sintassi delle query \\ SPARQL CQ}
-    \label{fig:leinbergerSyntax}
-\end{figure}
-
-Successivamente per ogni assioma creiamo un OWLSubClassOfAxiom, in cui viene specificata ogni concetto atomico come SubClass della sua ClassExpression corrispondente.
-
-Infine chiediamo al reasoner HermiT di testare la soddisfacibilità di ogni concetto atomico presente negli assiomi di Leinberger. Se sono tutte soddisfacibili, allora significa che la query è abitabile, altrimenti non lo è.
 
 \section{OCaml Module - Le query}
 L'idea alla base del modulo OCaml è la seguente:
@@ -81,9 +59,34 @@ Infine, la lista di assiomi viene convertita in stringa secondo la sintassi \(A_
 \\\\ L'esempio diventa dunque
 \[ x : Pizza : x : hasTopping \ SOME \ y : y : INVERSE \ hasTopping x : y : GorgonzolaTopping\]
 Viene dunque invocato il modulo Reasoner e gli viene passato come parametro la lista in formato stringa. La risposta, true o false, viene poi mostrata a video all'utente. 
+
+\newpage   
+\section{Reasoner}
+Il modulo Reasoner utilizza due risorse:
+\begin{enumerate}
+    \item Il file HermiT.jar\cite{HermiT}, che implementa il reasoner sviluppato dall'università di Oxford, capace di eseguire ragionamenti sulle ontologie.
+    \item Il file DLQueryExample\cite{DLQueryExample} utilizzato per parsare una stringa in una ClassExpression, che è utilizzabile HermiT.
+\end{enumerate}
+
+Ma come funziona il modulo? Esso prende in input, in formato stringa, una lista di assiomi di Leinberger, ognuno forma \(A_{x} : C\), con semantica \( A_{x}\sqsubseteq C \).
+\\\(A_{x}\) è un concetto atomico. "C" è una concept expression scritta nella "Manchester OWL syntax" \cite{ManchesterOWLSyntax}, e viene trasformato dal DLQueryParser in un oggetto ClassExpression. L'idea iniziale era di creare noi un parser che trasformasse una stringa in un oggetto ClassExpression, poi ci siamo imbattuti nella Manchester OWL syntax che presentava già un parsificatore capace di realizzare esattamente quello che volevamo. Allora ho adattato il tutto affinché lavorasse su questa particolare sintassi.
+
+Utilizzando poi la OWLDataFactory (factory delle OWLApi che permette la costruzione di OWLAxiom e di dichiarare OWLClass) e HermiT\cite{HermiT}, dichiariamo all'interno dell'ontologia tutti i concetti atomici che compaiono negli assiomi di Leinberger\ref{fig:leinbergerSyntax}, corrispondenti alle variabili della query.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.6]{pictures/leinbergSyntax}
+    \caption{sintassi delle query \\ SPARQL CQ}
+    \label{fig:leinbergerSyntax}
+\end{figure}
+
+Successivamente per ogni assioma creiamo un OWLSubClassOfAxiom, in cui viene specificata la relazione di sottoclasse tra il concetto atomico(le variabili) e la sua ClassExpression corrispondente(concept expression).
+
+Infine chiediamo al reasoner HermiT di testare la soddisfacibilità di ogni concetto atomico presente negli assiomi di Leinberger. Se sono tutti soddisfacibili, allora significa che la query è abitabile, altrimenti non lo è.
+
     
-    \newpage
-    \section{Type Checking}
+\newpage
+\section{Type Checking}
         Per implementare il type checking abbiamo usato come base il lambda calcolo tipato proposto dal libro di \textbf{Benjamin C. Pierce "Types and Programming Languages"}.
         Nella tesi parleremo strettamente delle regole di tipo e della loro implementazione per quanto riguarda la valutazioni si veda il libro di Pierce e la tesi di Leinberger.
         Il linguaggio presenta le principali caratteristiche di un \textbf{ $\boldsymbol{\lambda}$-calcolo tipato} con l'aggiunta dei \textbf{Record}, le \textbf{Liste} e le \textbf{Query}.
