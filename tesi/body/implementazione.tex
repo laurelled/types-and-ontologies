@@ -1,4 +1,5 @@
 \chapter[Implementazione]{Implementazione}
+\label{chap:Implementazione}
 Il software si pone l'obiettivo di verificare se una query e l'utilizzo del suo risultato sia corretto o meno. Per le query si tratta di verificare se sia abitata o meno. \textbf{mettere cosa significa che l'utilizzo utilizzo risultato sia corretto ANDREA} Il nostro software è formato da due componenti: un modulo Reasoner, scritto in java che si occupa di determinare l'abitabilità delle query, e un modulo scritto in OCaml che si occupa di determinare la correttezza di un programma scritto su file testuale.
 
 
@@ -83,7 +84,6 @@ Utilizzando poi la OWLDataFactory (factory delle OWLApi che permette la costruzi
 Successivamente per ogni assioma creiamo un OWLSubClassOfAxiom, in cui viene specificata la relazione di sottoclasse tra il concetto atomico(le variabili) e la sua ClassExpression corrispondente(concept expression).
 
 Infine chiediamo al reasoner HermiT di testare la soddisfacibilità di ogni concetto atomico presente negli assiomi di Leinberger. Se sono tutti soddisfacibili, allora significa che la query è abitabile, altrimenti non lo è.
-
     
 \newpage
 \section{Type Checking}
