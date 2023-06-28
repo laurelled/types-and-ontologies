@@ -41,7 +41,7 @@ Un insieme di queste triple, chiamato \textbf{grafo RDF}, può essere rappresent
             (\           & \text{Vegetarian},\  &  & canEat,\  &  & \text{Mozzarella}\  &  & )\}
         \end{alignat*}
     \end{minipage}
-    \caption{Un grafo RDF $G_1$ come grafo diretto (sx.) e insieme di triple (dx.)}
+    \caption{un grafo RDF $G_1$ come grafo diretto (sx.) e insieme di triple (dx.)}
     \label{fig:grafoRDF}
 \end{figure}
 
@@ -68,11 +68,11 @@ IRI (International Resource Identifier),
 \subsection{SPARQL CQ}
 I grafi RDF vengono interrogati utilizzando le query SPARQL, infatti i grafi vengono memorizzati in database speciali chiamati triplestore, per efficentare le interrogazioni. In questa trattazione utilizziamo un tipo particolare di SPARQL, le query congiuntive, che consistono nella congiunzione di triple pattern, elementi atomici per interrogare un triplestore. \\
 \textbf{Abitabilità: } In una query SPARQL, il concetto di abitabilità identifica le query che possono essere abitate da almeno un elemento. Per esempio, se scriviamo una query che richiede tutti i nodi che sono sia di classe Pizza sia di classe Gelato, ovviamente questa query non potrà mai essere abitata, perchè non esistono pizze che allo stesso tempo sono anche dei gelati. Il concetto di abitabilità però non è da confondere con il fatto che essa sia abitata: una query potrebbe essere abitata, ma nel grafo RDF su cui stiamo lavorando non c'è nessun nodo che soddisfa i requisiti. \ 
-\clearpage
+\newpage
 \section[Ontologie]{Ontologie}
 La definizione comunemente accettata di ontologia è \textit{una specifica formale ed esplicita di una concettualizzazione condivisa} \cite{goy2015ontologies}. Un modo di rappresentarle è attraverso particolari linguaggi altamente espressivi appartenenti a una famiglia di formalismi chiamati logiche descrittive (DL). Le informazioni sul dominio di interesse vengono espresse in maniera formale tramite formule logiche di due tipologie. Una tipologia fa parte della cosiddetta T-Box e sono asserzioni sulla terminologia, componendo uno schema. L'altra fa parte della A-Box ed è usata per fare asserzioni su individui (astratti), quindi modella le istanze significative. Il T-Box contiene formule logiche (assiomi) che mettono in relazione delle \textit{concept expressions} per modellare il dominio di riferimento, ad esempio il fatto che  uno Student è una Persona. Una \textit{base di conoscenza} è quindi l'insieme di asserzioni presenti sia nel T-Box che nell'A-Box.\\
 Nel contesto del Web Semantico, la raccomandazione W3C \textit{Web Ontology Language (OWL)} è una famiglia di linguaggi ontologici altamente espressivi basati sul linguaggio descrittivo $\mathcal{SROIQ}$ \cite{baader2017introductionDL}. Quello che andremo a mostrare noi nella sezione dei costrutti sintattici DL è il più semplice sottoinsieme $\mathcal{ALCOIQ}$.
-Grazie alla forma logica delle informazioni, è possibile definire un ragionamento automatico\footnote{\ i.e. tramite un algoritmo deterministico, cioè eseguibile da un computer} che permette di svolgere operazioni di inferenza sugli individui concreti, ad esempio inferire che il nodo \singlenodegraph{x} di un grafo RDF è uno Studente, ma anche eseguire compiti più astratti, come capire se un concetto è soddisfacibile. Questi compiti sono alla base di ogni reasoner, come ad esempio HermiT \cite{HermiT}, Pellet \cite{Pellet} e Fact++ \cite{Fact++}.\\
+Grazie alla forma logica delle informazioni, è possibile definire un ragionamento automatico\footnote{\ i.e. tramite un algoritmo deterministico, cioè eseguibile da un computer} che permette di svolgere operazioni di inferenza sugli individui concreti, ad esempio inferire che il nodo \textit{x} di un grafo RDF è uno Studente, ma anche eseguire compiti più astratti, come capire se un concetto è soddisfacibile. Questi compiti sono alla base di ogni reasoner, come ad esempio HermiT \cite{HermiT}, Pellet \cite{Pellet} e Fact++ \cite{Fact++}.\\
 
 \subsection[Logica  descrittiva $\mathcal{ALCOIQ}$]{Logica  descrittiva $\mathcal{ALCOIQ}$}
 Questa introduzione e gli esempi sono presi dal libro \cite{baader2017introductionDL}, che contiene un'ottima introduzione alle logiche descrittive. Per non divagare troppo dal motivo per cui spieghiamo questi concetti, ovvero per permettere ai lettori meno esperti delle ontologie di capire la terminologia usata in questa tesi, la logica utilizzata in questa sezione sarà principalmente $\mathcal{ALCOIQ}$. Per questo motivo, useremo anche esempi e tabelle prese dall'introduzione della tesi di dottorato di Leinberger \cite{leinbergerphdthesis}. L'acronimo $\mathcal{ALCOIQ}$ descrive i costrutti sintattici disponibili nel linguaggio (\autoref{fig:SintassiCD}). I costrutti di base sono contenuti in $\mathcal{ALC}$ (\textit{Attributive Language with Complements}), e le estensioni introdotte sono spiegate nella \autoref{tab:ALCOIQExtensions}. \\\\
@@ -107,7 +107,7 @@ Di solito un linguaggio DL permette di costruire concetti utilizzando gli operat
 				\alt $\mathbf{R}^-$ \hfill (Ruolo inverso)
 			\end{grammar}
 		\end{minipage}
-		\caption{Sintassi delle \textit{concept expressions} $\mathbf{C}$ e delle \textit{role descriptions} $\mathbf{R}$}
+		\caption{sintassi delle \textit{concept expressions} $\mathbf{C}$ e delle \textit{role descriptions} $\mathbf{R}$}
 		\label{fig:SintassiCD}
 	\end{center}
 \end{figure}
@@ -124,7 +124,7 @@ Di solito un linguaggio DL permette di costruire concetti utilizzando gli operat
 		
 		\hline
 	\end{tabular}
-	\caption{Estensioni dei costrutti sintattici nel DL $\mathcal{ALCOIQ}$}
+	\caption{estensioni dei costrutti sintattici nel DL $\mathcal{ALCOIQ}$}
 	\label{tab:ALCOIQExtensions}
 \end{table}
 In questa introduzione vedremo in particolare il linguaggio concettuale su cui si basa una semplificazione di OWL per permettere ai lettori meno esperti di comprendere il codice presente nel \autoref{chap:Implementazione}.
@@ -165,7 +165,7 @@ Come è possibile intuire dalla \autoref{tab:SintaxSemanticsALCOIQ}, ai costrutt
 		\hline
 	\end{tabular}
 	\captionsetup{justification={centerlast}}
-	\caption{Sintassi e semantica delle concept expressions \textit{C}, \textit{D}  e del ruolo \textit{r} nella logica descrittiva $\mathcal{ALCOIQ}$ }
+	\caption{sintassi e semantica delle concept expressions \textit{C}, \textit{D}  e del ruolo \textit{r} nella logica descrittiva $\mathcal{ALCOIQ}$ }
 	\label{tab:SintaxSemanticsALCOIQ}
 \end{table}
 \subsubsection*{Knowledge Base $\mathcal{ALCOIQ}$}

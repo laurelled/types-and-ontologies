@@ -125,13 +125,13 @@
 \setlength{\headheight}{14.49998pt}
 \tableofcontents
 \clearemptydoublepage
-\input{introduction/rovaretto-emanuele}
 
 %%%%%% BODY OF THE DOCUMENT
 \mainmatter
-%%INTRODUCTION
-\input{body/examples/introduction}
 \clearemptydoublepage
+\chapter[Introduzione]{Introduzione e motivazione}
+%\input{introduction/rovaretto-emanuele}
+\input{introduction/lorenzo-bafunno}
 %% CHAPTERS
 % add any further chapter file here
 \input{body/preliminaries}
@@ -140,12 +140,6 @@
 \clearemptydoublepage
 \input{body/implementazione}
 \clearemptydoublepage
-
-\input{body/examples/chapter1}
-\input{body/examples/chapter2}
-\input{body/examples/chapter3}
-\input{body/examples/chapter4}
-
 
 %%%% TAIL OF THE DOCUMENT
 \backmatter
@@ -156,9 +150,9 @@
 \listoftables
 \clearemptydoublepage
 %bibliography
-\addcontentsline{toc}{chapter}{Bibliography}
 \bibliographystyle{acm}
 \bibliography{bibliography/bibThesis}
+\addcontentsline{toc}{chapter}{Bibliography}
 \clearemptydoublepage
 
 
