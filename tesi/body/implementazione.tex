@@ -81,12 +81,72 @@ Infine, la lista di assiomi viene convertita in stringa secondo la sintassi \(A_
 \\\\ L'esempio diventa dunque
 \[ x : Pizza : x : hasTopping \ SOME \ y : y : INVERSE \ hasTopping x : y : GorgonzolaTopping\]
 Viene dunque invocato il modulo Reasoner e gli viene passato come parametro la lista in formato stringa. La risposta, true o false, viene poi mostrata a video all'utente. 
-    
+    \newpage
+    \section{Introduzione}
+    la tesi è stata svolta in collaborazione con Lorenzo Bafunno e Emanuele Rovaretto. La fase iniziale del lavoro era l'esplorazione del dominio di ricerca,
+    studiando le basi delle ontologie e grafi RDF dai materiali dal corso "Modellazione Concettuale per il Web Semantico" della professoressa Rossana Damiano.
+    Successivamente ci siamo informatati sugli sforzi già fatti sull'uso dei sistemi tipi per il web semantico e in particolare ci siamo concentrati sulla tesi di
+    dottorato "Type-safe Programming for the Semantic Web" di Martin Leinberger che propone un linguaggio di programmazione ($\lambda_{DL}$) per lavorare sulle ontologie con 
+    controlli di tipo statici. Da questo punto in poi, avendo tutti le idee leggermente più chiare, ci siamo divisi i compiti. In particolare Lorenzo si
+    è occupato di continuare la ricerca e studio delle pubblicazioni nel nostro ambito. Io ed Emanule invece ci siamo concentrati sulla implementazione
+    del $\lambda_{DL}$: io mi sono occupato del type system del linguaggio mentre Emanuele del tipaggio e esecuzione delle Query SPARQL.
+    Il mio lavoro è stato inanzitutto capire il linguaggio da utilizzare per l'implementazione. I primi esperimenti sono stati in Haskell, ma siccome le librerie
+    sull'integrazione di reasoner su ontologie sono poche e non offrono le funzionalità che ci servivano, abbiamo optato di passare a OCaml, sotto suggerimento della professoressa e relatrice Viviana Bono. 
+    Prima di passare direttamente alla scrittura del codice ho letto il libro "Types and Programming Languages" di Benjamin C. Pierce dove spiega da un punto di vista
+    più ingegneristico i sitemi di tipi e mostra passo passo come implementare un linguaggio di programmazione basato sul $\lambda$-calco utilizzando OCaml.
+    Con tutto lo studio preliminare, la scrittura del codice è stata molto diretta, senza incontrare grosse difficoltà.
+    \\L'implementazione si è rilevata molto utile per aiutarmi a comprendere meglio come le ontologie vengono usate e le potenzialità che offrono chiarendochiarendo anche
+    quali sono gli attuali problemi che si presentano quando si lavora sulle ontologie e come i tipi possono essere di aiuto. Inoltre l'implementazione è stato un ottimo
+    esercizio di programmazione funzionale e di conoscienza dei linguaggi di programmazione.
+    \\Il lavoro di tesi si è concluso con un'ultima grossa parte in cui insieme a Emanuele e Lorenzo abbiamo esposto i nostri lavori e ascolatato le idee e opinioni degli esperti
+    di Web Semantico Marco Antonio Stranisci, Antonio Lieto e Rossana Damiano. Da questi incontri sono stati chiariti molti dubbi e sono nate anche molte idee che verranno
+    spiegate nella sezione di Future Works della tesi. Gli argomenti trattati sono vari e necessiterebbero molta più investigazione, le potenzialità della ricerca esistono
+    e sono attualmente poco esplorate. 
+
+    \newpage
+    \section{Il linguaggio $\boldsymbol{\lambda_{DL}}$}
+    Quando si effettua una computazione basata su ontologie, il processo di ragionamento è portato avanti a run time, e se si scoprono assiomi non soddisfacibili 
+    il programma potrebbe essere soggetto a errori. Non è quindi possibile garantire che un'esecuzione termini correttamente, ovvero si otterrà il risultato aspettato. 
+    Il nostro obiettivo è quello riuscire a catturare questi errori prima dell'esecuzione, andando ad assicurare una computazione senza errori run-time che dipendono dalla base di conoscenza. 
+    Vorremmo quindi valutare vantaggi e efficienza di un controllo statico, sfruttando i sistemi di tipi per assicurare la correttezza del programma, rispetto a 
+    un'ontologia basata sulle logiche descrittive (in particolare OWL). Sforzi verso questa direzioni sono stati già proposti nella tesi di dottorato di Martin Leinberger, 
+    in cui propone un lambda calcolo tipato esteso con interrogazioni SPARQL a basi di triple RDF e costrutti della logica descrittiva come tipi chiamato $\lambda_{DL}$.
+    \\ Il linguaggio sfrutta le concept expression della logica descrittiva come tipo, interrogando la base di conoscenza e facendo inferenza durante il type checking.
+    L'esempio successivo, preso dalla tesi di Leinberger, mostra un programma scritto in $\lambda_{DL}$ che espone chiaramente le potenzialità del linguaggio.
+    \begin{figure}[h]
+        \captionsetup{singlelinecheck = false}
+        $K_4 = $\{Students $\sqsubseteq$ Person
+        \\Professor $\sqsubseteq$ Person\}
+        \begin{minted}[escapeinside=||,mathescape=true, autogobble]{ocaml}
+            (head (query x |$\leftarrow$| x type Student)).x
+        \end{minted}
+        \caption{Programma in $\lambda_{DL}$ avente come knowledge base $K_4$}
+    \end{figure}
+    \\Il programma esegue una query SPARQL che ritorna una lista di mapping tra la variabile \textbf{x} e nodi del grafo RDF che rispettino il vincolo
+    \textbf{x type Students}. Successivamente prendiamo il primo elemento della lista (\textbf{head}) e lo proiettiamo sulla variabile \textbf{x} (\textbf{(...).x}).
+    Il sistema di tipo ci permette di:
+    \begin{itemize}
+        \item stabilire la correttezza della query, costruendo degli assiomi dalla sua struttura e richiamando un reasoner.
+        \item dare un tipo ai nodi ritornati dalla query. Nel nostro esempio tutta l'espressione è di tipo \textbf{Students} e grazie al subtyping e al fatto
+            che nella knowledge base sappiamo che Students $\sqsubseteq$ Person è anche ti tipo \textbf{Person}.
+    \end{itemize}
+    Il sistema di tipi del linguaggio è corretto, ovvero un termine chiuso e ben tipato non si blocca durante la valutazione.
+    La corretteza è dimostrata da Leinberger attraverso due teoremi:
+    \begin{theorem}
+        (Progress in $\lambda_{DL}$): sia t un termine ben tipato e chiuso. se t non è un valore, allora esiste una termine t' tale che
+        t $\xrightarrow[]{\text{K}}$ t'. Se $\Gamma$, K $\vdash$ t : T, allora t è un valore o un termine contenente head nil[T] e tail nil[T] oppure esiste
+        un t' per cui t $\xrightarrow[]{\text{K}}$ t'
+    \end{theorem}
+    \begin{theorem}
+        (Preservation in $\lambda_{DL}$): Sia t un termine e T un tipo. Se un tipo è assegnato a t, scritto $\Gamma,K \vdash t : T$ e t $\xrightarrow[]{\text{K}}$ t'
+        allora, $\Gamma,K \vdash t' : T$
+    \end{theorem}
+    Entrambe le dimostrazioni sono per induzione su $\Gamma,K \vdash t : T$ e i dettagli si possono trovare nella tesi di Leinberger.
     \newpage
     \section{Type Checking}
         Per implementare il type checking abbiamo usato come base il lambda calcolo tipato proposto dal libro di \textbf{Benjamin C. Pierce "Types and Programming Languages"}.
         Nella tesi parleremo strettamente delle regole di tipo e della loro implementazione per quanto riguarda la valutazioni si veda il libro di Pierce e la tesi di Leinberger.
-        Il linguaggio presenta le principali caratteristiche di un \textbf{ $\boldsymbol{\lambda}$-calcolo tipato} con l'aggiunta dei \textbf{Record}, le \textbf{Liste} e le \textbf{Query}.
+        Il linguaggio presenta le principali caratteristiche di un \textbf{ $\boldsymbol{\lambda}$-calcolo tipato} con l'aggiunta dei \textbf{Record}, le \textbf{Liste} e le \textbf{Query SPARQL}.
         \begin{figure}[h] 
             \begin{minted}{ocaml}
                 type Term =
@@ -170,8 +230,8 @@ Viene dunque invocato il modulo Reasoner e gli viene passato come parametro la l
             typeof : Context -> Term -> Ty
         \end{minted}
         typeof effettua pattern matching sul termine passato come argomento per decidere quale regola applicare. La maggior parte delle regole sono puramente
-        sintattiche quindi typeof è sufficiente per la loro implementazione, altre come le regole di subtyping o T-ADD è necessario utilizzare funzioni di supporto
-        oppure modificare l'implementazione delle regole precedenti. Un semplice esempio di implementazione di una regola di tipo è quello di T-APP.
+        sintattiche quindi typeof è sufficiente per la loro implementazione, altre come le regole di subtyping o [T-ADD] è necessario utilizzare funzioni di supporto
+        oppure modificare l'implementazione delle regole precedenti. Un semplice esempio di implementazione di una regola di tipo è quello di [T-APP].
         $$\myruleN{\Gamma \vdash t_1 : T_1 \rightarrow T_2 \quad \Gamma \vdash t_2 : T_1}{\Gamma \vdash t_1 \: t_2 : T_2}{T-APP}$$
         la cui implementazione diventerà:
         \begin{minted}[escapeinside=||,mathescape=true, autogobble]{ocaml}
@@ -192,15 +252,15 @@ Viene dunque invocato il modulo Reasoner e gli viene passato come parametro la l
         Prima attraverso pattern matching si controlla che il termine passato sia un'applicazione tra altri due termini $t1$ e $t2$. Successivamente
         viene effettuata la chiamata ricorsiva su $t1$ e $t2$ per ottenere i loro tipi $tyT1$ e $tyT2$ rispettivamente. Effettuando di nuovo pattern matching
         su $tyT1$ si verifica che sia un tipo freccia $tyT11 \rightarrow tyT12$. Infine se $tyT2 <: tyT11$ allora si può stabilire che $t1 \; t2$ ha tipo $tyT12$.
-        Come si vede dalla implementazione di T-APP è stata utilizzata una funzione per verificare il subtyping, ritornando true se e solo se $Ty_1 <: Ty_2$. 
+        Come si vede dalla implementazione di [T-APP] è stata utilizzata una funzione per verificare il subtyping, ritornando true se e solo se $Ty_1 <: Ty_2$. 
         \begin{minted}{ocaml}
             subtype : Context -> Ty -> Ty -> Bool
         \end{minted}
         Il linguaggio $\lambda_{DL}$ presenta il subtyping classico tra funzioni, record e liste le cui regole si possono trovare sia nella tesi di Leinberger che
         in "Types and Programming Languages". L'implementazione della funzione \textbf{subtype} è molto diretta rispetto alle regole. Come per \textbf{typeof}
         si procede con il pattern matching tra i tipi passati come argomento e confrontando la loro struttura si può stabilire se sono in relazione di sottotipo.
-        Per esempio la regola \textbf{S-LIST}
-        $$\myruleN{T <: T'}{List T <: List T'}{S-LIST}$$
+        Per esempio la regola \textbf{[S-LIST]}
+        $$\myruleN{T <: T'}{List \; T <: List \; T'}{S-LIST}$$
         \\ viene implementata con con:
         \begin{minted}[escapeinside =**, mathescape=true, autogobble]{ocaml}
             let rec subtype ctx tyS tyT =
@@ -211,7 +271,14 @@ Viene dunque invocato il modulo Reasoner e gli viene passato come parametro la l
                     *$\vdots$*
         \end{minted}
         La funzione tyeqv controlla l'ugualianza tra due tipi siccome la relazione di subtyping è riflessiva. l'ultime due funzioni di supporto
-        utilizzate per il typing calcolano il least upper bound e il greatest lower bound tra due tipi.
+        utilizzate per il typing calcolano il least upper bound (\textbf{join}) e il greatest lower bound (\textbf{meet}) tra due tipi.
+        \begin{minted}{ocaml}
+            meet : Context -> Ty -> Ty -> Ty
+            join : Context -> Ty -> Ty -> Ty
+        \end{minted}
+        La figura sottostante mostra le regole di tipo aggiunte da Leinberger nel $\lambda_{DL}$ e nelle sottosezioni successive analizzeremo regola per regola
+        il loro significato e ne mostreremo una possibile implementazione.  
+        \textbf{aggiungere correttezza, obiettivo del type system e nelle introduzioni introdurre con esempi il linguaggio, aggiungere i riferimenti alla sezione precedente}
         \begin{figure}[h]
         \[\begin{array}{c}
             \myruleN{\Gamma,K \vdash t_1 : C_1 \quad K \vDash C_1 \sqsubseteq \exists r . \top}
@@ -241,8 +308,8 @@ Viene dunque invocato il modulo Reasoner e gli viene passato come parametro la l
         \end{array}\]
         \caption{nuove regole di tipo per $\lambda_{DL}$}
         \end{figure}
-        \subsection{T-PROJ}
-            L'implementazione della regola T-PROJ segue alla lettera la definizione teorica in particolare abbiamo che la condizione $\Gamma,K \vdash t_1 : C_1$
+        \subsection{La regola [T-PROJ]}
+            L'implementazione della regola [T-PROJ] segue alla lettera la definizione teorica in particolare abbiamo che la condizione $\Gamma,K \vdash t_1 : C_1$
             è verificata attraverso il pattern matching (.1) in cui controlliamo che il tipo $t$ sia una concept expression \textbf{TyConcept(C)}. La seconda ipotesi
             $K \vDash C_1 \sqsubseteq \exists r . \top$ invece richiede la creazione di una nuova funzione:
             \begin{minted}[escapeinside=||,mathescape=true, framesep=4mm, autogobble]{ocaml}
@@ -268,11 +335,11 @@ Viene dunque invocato il modulo Reasoner e gli viene passato come parametro la l
                                             is not a Concept Expression"
                         |$\vdots$|
                 \end{minted}
-            \caption{implementazione OCaml della regola T-Proj}
+            \caption{implementazione OCaml della regola [T-PROJ]}
             \end{figure}
 
-            \subsection{T-QUERY}
-            T-QUERY è la regola utilizzata per derivare il tipo di una query SPARQL. Per semplicità, rispetto alla teoria, prendiamo in considerazione solo le query
+            \subsection{La regola [T-QUERY]}
+            [T-QUERY] è la regola utilizzata per derivare il tipo di una query SPARQL. Per semplicità, rispetto alla teoria, prendiamo in considerazione solo le query
             aventi una variabile, ovvero dove l'insieme $Head(q)$ contiene un solo elemento. Anche questa regola richiede di consultare un reasoner per stabilire se
             gli assiomi generati dal typing della query q siano soddisfacibili $\forall x \in \textrm{Vars}(q) : K \cup K_q \nvDash A_x \sqsubseteq \bot$.
             Nella definizione la funzione $Vars(q)$ ritorna l'insieme di tutte le variabili utilizzate nella query.
@@ -287,7 +354,7 @@ Viene dunque invocato il modulo Reasoner e gli viene passato come parametro la l
                                 error fi "axioms unsatisibale"
                         |$\vdots$|
                 \end{minted}
-            \caption{implementazione OCaml della regola T-QUERY}
+            \caption{implementazione OCaml della regola [T-QUERY]}
             \end{figure}
             \\Nella implementazione, per verificare le ipotesi utilizziamo due funzioni di supporto. la prima:
             \begin{minted}{OCaml}
@@ -302,17 +369,17 @@ Viene dunque invocato il modulo Reasoner e gli viene passato come parametro la l
             \\\textbf{TyList(TyRecord(var, TyConcept(Atomic \; var)))} che corrisponde a $\Gamma,K \cup K_q \vdash \textrm{query} \; q : \{l_i : A_{l_i}^{i \in 1...m}\} list$
             con l'unica differenza che nella nostra implementazione i record contengono una sola label, quella della unica variabile in $Head(q)$. Abbiamo deciso di
             mantenere la lista di record nonostante la nostra semplificazine sulle query per rendere un futuro aggiornamento facile da implementare.
-            \subsection{T-ADD}
-            T-ADD è la regola la cui implementazione è più interessante. Siccome non siamo di fronte ad una regola puramente sintattica
+            \subsection{La regola [T-ADD]}
+            [T-ADD] è la regola la cui implementazione è più interessante. Siccome non siamo di fronte ad una regola puramente sintattica
             non è possibile fare pattern matching sul termine per capire quando applicarla.
-            Prima di parlare dell'implementazione è importante capire a cosa serve e come viene utilizzada: T-QUERY assegna alle variabili in testa alla query
+            Prima di parlare dell'implementazione è importante capire a cosa serve e come viene utilizzada: [T-QUERY] assegna alle variabili in testa alla query
             il tipo concept expression $A_x$ quando abbiamo un assioma nella query della forma $K_q = A_x \sqsubseteq D$, ma $A_x$ non sono propriamente da usare sintatticamente nel programma.
             \\L'obiettivo è dare un significato al tipo $A_x$, in modo simile a una classica regola di subtyping. Quindi è possibile assegnate una concept espression $D$
             a un termine t solo se è possibile assegnare a t $A_x$ usando una knowledge base $\Gamma,K \cup \{A_i \sqsubseteq C_i^{i \in 1...n}\} \vdash t : A_j^{1 \leq j \leq n}$
             e se K $\cup \{A_i \sqsubseteq C_i^{i \in 1...n}\} \vDash A_j \sqsubseteq D^{1 \leq j \leq n}$.
             \\Come suggerito da Leinberger, abbiamo implementato la regola aggiungendo gli assiomi $K_q$ alla knowledge base durante la funzione \textbf{allSatisfiable}.
-            così insieme alla regola \textbf{S-CONCEPT} è possibile risalire alla concept $D$ senza avere bisogno di T-ADD.
-            \subsection{S-CONCEPT}
+            così insieme alla regola \textbf{S-CONCEPT} è possibile risalire alla concept $D$ senza avere bisogno di [T-ADD].
+            \subsection{La regola [S-CONCEPT]}
             Il linguaggio cotruito da Leinberger permette il subtyping tipi, quindi oltre a quello tra tipi classici è stato necessario aggiungere un modo per gestire
             anche quello tra le concept expression.
             \begin{figure}[h]
@@ -324,15 +391,15 @@ Viene dunque invocato il modulo Reasoner e gli viene passato come parametro la l
                             (TyConcept(ceS1),TyConcept(ceT1)) -> subconcept ceS1 ceT1
                         |$\vdots$|
                 \end{minted}
-            \caption{implementazione OCaml della regola S-CONCEPT}
+            \caption{implementazione OCaml della regola [S-CONCEPT]}
             \end{figure}
             Nella implementazione richiamiamo la funzione subconcept per il controllo della ipotesi $K \vDash C \sqsubseteq D$. La differenza maggiore rispetto alla teoria
-            risiede nel fatto che anche in questo caso S-CONCEPT non è una regola sintattica. La funzione subtype ha tipo:
+            risiede nel fatto che anche in questo caso [S-CONCEPT] non è una regola sintattica. La funzione subtype ha tipo:
             \begin{minted}[]{ocaml}
                 subtype : Context -> Ty -> Ty -> Bool
             \end{minted}
             Prende in input un contesto e due tipi e ritorna $true$ se e solo se $K \vDash C \sqsubseteq D$. la funzione subtype viene poi richiamata su tutte le regole
-            in cui il subtyping è utilizzabile. Ad esempio nella regola T-APP si controlla che l'argomento passato a una astrazione sia sottotipo del tipo atteso dalla astrazione (\textbf{Controvarianza}).
+            in cui il subtyping è utilizzabile. Ad esempio nella regola [T-APP] si controlla che l'argomento passato a una astrazione sia sottotipo del tipo atteso dalla astrazione (\textbf{Controvarianza}).
             \begin{minted}[escapeinside=||,mathescape=true, frame=lines, framesep=4mm, autogobble]{ocaml}
                 let rec typeof ctx t =
                     match t with
