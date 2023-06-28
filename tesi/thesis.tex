@@ -1,3 +1,4 @@
+% !TeX document-id = {ca28df42-0773-4265-bb7c-b21d86ed4d82}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %	MSc THESIS TEMPLATE
@@ -13,7 +14,6 @@
 % Print just right page or both sides (comment the other one)
 \documentclass[12pt,a4paper,openright,oneside]{book}	%%One sided
 %\documentclass[12pt,a4paper,openright,twoside]{book}	%%Double sided
-
 \input{macros}
 %% SET MARGINS OF THE PAGES
 \usepackage{geometry}
@@ -45,10 +45,13 @@
 \usepackage[english, italian]{babel} %%Set Italian as main language of the document
 %% HYPERTEXT SETUP
 \usepackage{hyperref}
+\usepackage{ragged2e}
+\usepackage{enumerate}
 
 %% redefinition of /autoref naming conventions to italian names
 \addto\extrasitalian{
 	\def\figureautorefname{Figura}
+	\def\equationautorefname{Equazione}
 }
 \hypersetup{
     colorlinks,
@@ -73,6 +76,7 @@
 \usepackage{amsthm}
 \usepackage{thmtools}
 \newtheorem{theorem}{Theorem}
+\usepackage{syntax}
 
 \newtheorem{definition}{Definizione}
 %% CHAPTERS STRUCTURE
@@ -121,6 +125,7 @@
 \setlength{\headheight}{14.49998pt}
 \tableofcontents
 \clearemptydoublepage
+\input{introduction/rovaretto-emanuele}
 
 %%%%%% BODY OF THE DOCUMENT
 \mainmatter
