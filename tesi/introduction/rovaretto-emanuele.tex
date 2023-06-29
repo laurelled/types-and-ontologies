@@ -1,4 +1,13 @@
-\paragraph{} Io, Lorenzo Bafunno e Andrea Zito siamo partiti dall'idea della professoressa Bono di cercare di applicare i tipi alla rappresentazione della conoscenza. Si è poi concretizzato nel cercare di automatizzare i passaggi meccanici in modo da lasciare al programmatore solo i compiti che richiedono l'uso dell'ingegno e dell'intuizione umana.
+\chapter{Introduzione}
+
+\paragraph{} Io, Lorenzo Bafunno e Andrea Zito siamo partiti dall'idea della professoressa Bono di cercare di applicare i tipi alla rappresentazione della conoscenza. \\
+% ontologie
+Un particolare mezzo di rappresentazione della conoscenza sono le Ontologie, ed esse si compongono di due parti: T-Box e A-Box. La prima sono formule logiche per modellare il dominio, per esempio affermare che uno Student è una Persona. La seconda è usata per fare asserzioni su individui, per esempio affermare che Emanuele è un istanza di Persona. Un ragionamento su un Ontologia permette di eseguire inferenza sull'ontologia, per esempio inferire che se Persona ha un nome, allora anche Studente ha un nome in quanto sua sottoclasse. 
+
+% motivazione e obbiettivo
+\paragraph{} Dalla nostra indagine è emerso che le ontologie non sono più utilizzate nella loro interezza(T-Box e A-Box) perché è troppo dispendioso eseguire ragionamenti, anche se così facendo si appiattisce il significato non essendoci una strutturazione dei concetti. Oggigirono infatti si utilizzano solamente gli A-Box nei meccanismi di Machine Learning. Sulla base di queste informazioni ci siamo chiesti se decorando le ontolgie con dei sistemi di tipo, migliorare l'efficienza dei reasoner spostando i controlli, che di norma vengono compiuti a run-time, a compile-time tramite i sistemi di tipaggio statico.     
+
+% Si è poi concretizzato nel cercare di automatizzare i passaggi meccanici in modo da lasciare al programmatore solo i compiti che richiedono l'uso dell'ingegno e dell'intuizione umana. 
 
 \paragraph{} Abbiamo cominciato ad analizzare alcuni paper per prendere confidenza col mondo della rappresentazione della conoscenza, in particolare con le ontologie. Abbiamo poi analizzato in dettaglio la tesi di dottorato di Martin Gerhard Leinberger, il quale ha ideato un sistema di tipi astratto per validare le query, sistema di interrogazione delle basi della conoscenza. Del sistema di tipi di Leinberger mancava però un implementazione, e abbiamo lavorato per fornirla. Bafunno e Zito hanno sottolineato la possibiità di usare un Reasoner(sistema in grado di eseguire ragionamenti e deduzioni sulle basi di conoscena) già esistente, indicando HermiT come il più adatto. Per quanto riguarda il linguaggio da utilizzare, assieme a Zito la prima idea è stata utilizzare Haskell, un linguaggio funzionale che già conoscevamo, ma alla fine la scelta è ricaduta su OCaml, un altro linguaggio funzionale che però non conoscevamo, perché più maturo, con più librerie e più interfacciabile con il modulo Reasoner rispetto ad Haskell.
 

@@ -101,9 +101,6 @@
 \usetikzlibrary{positioning,
                 quotes}
 
-%% HYPENATON
-\hyphenation{te-si pip-po paperino}	%manual hyphenation
-\definecolor{codegray}{gray}{0.9}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%% BEGIN DOCUMENT
@@ -119,7 +116,7 @@
 \input{head/dedication}
 \clearemptydoublepage
 %%ABSTRACT
-\input{head/abstract}
+\input{head/abstract/abstract-rovaretto}
 \clearemptydoublepage
 %%INDEXES
 %summary
@@ -129,12 +126,10 @@
 
 %%%%%% BODY OF THE DOCUMENT
 \mainmatter
-\clearemptydoublepage
-\chapter[Introduzione]{Introduzione e motivazione}
-%\input{introduction/rovaretto-emanuele}
-%\input{introduction/lorenzo-bafunno}
 %% CHAPTERS
 % add any further chapter file here
+\input{introduction/rovaretto-emanuele}
+\clearemptydoublepage
 \input{body/preliminaries}
 \clearemptydoublepage
 \input{body/state-of-art}
@@ -151,10 +146,9 @@
 \listoftables
 \clearemptydoublepage
 %bibliography
+\addcontentsline{toc}{chapter}{Bibliography}
 \bibliographystyle{acm}
 \bibliography{bibliography/bibThesis}
-\addcontentsline{toc}{chapter}{Bibliography}
 \clearemptydoublepage
-
 
 \end{document}
