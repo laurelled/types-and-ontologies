@@ -1,0 +1,38 @@
+\section{Semantic Web}
+Il Web Semantico fornisce un framework comune che consente la condivisione e il riutilizzo dei dati al di là dei confini delle applicazioni.
+ È uno sforzo collaborativo guidato dall'organizzazione W3C\footnote{\url{https://www.w3.org/about/}} con la partecipazione di un gran numero di ricercatori 
+ e partner industriali. Gli obiettivi principali del Web Semantico \cite{berners2001semantic, hitzler2021review} sono due:
+\begin{enumerate}[I)]
+	\item creare una rete di dati interconnessi, in contrapposizione all'attuale Web basato sui documenti;
+	\item permettere che una macchina possa comprendere le informazioni disponibili sul Web senza intervento umano.
+\end{enumerate}
+Per soddisfare entrambi, si è resa necessaria l'introduzione di annotazioni espressive che spieghino la correlazione fra i dati, ed è per questo che W3C ha 
+introdotto il \textit{Resource Description Framework} (RDF) \cite{RDFspecification}. RDF è uno standard che permette la codifica, lo scambio e il riutilizzo 
+di metadati (dati che descrivono altri dati), strutturandoli come dichiarazioni di triple soggetto, predicato e oggetto. In questo modo RDF permette di 
+rappresentare dei grafi, i cui nodi e vertici rappresentano informazioni presenti nel web (chiamate \textit{risorse}) e sono identificate dagli IRI, 
+identificatori unici di risorse che svolgono la stessa funzione degli URL per i documenti web. Essendo unici, essi consentono di associare ai nodi di due 
+grafi diversi la stessa risorsa. Per condividere la terminologia (e.g. cosa s'intende per "Studente") è stato proposto da W3C un ulteriore standard, le 
+ontologie OWL. In generale, le ontologie sono rappresentazioni formali, condivise ed esplicite di una concettualizzazione di un dominio di interesse 
+\cite{goy2015ontologies} in maniera complessa e strutturata. OWL (\textit{Ontology Web Language}) è un linguaggio altamente espressivo e formale basato su 
+logiche appartenenti al campo della knowledge representation (KR), le logiche descrittive (DL) \cite{baader2017introductionDL}. La forma logica delle 
+ontologie OWL di definire un ragionamento automatico basato su inferenze, cioè dedurre nuove informazioni basandosi su quelle che sappiamo essere vere.
+La definizione del dominio d'interesse tramite ontologie permette di aggiungere ulteriore struttura ai dati espressi nei grafi RDF, specificandone uno schema. 
+In questo senso, a volte, ci si riferisce alle ontologie come a dei “sistemi di tipi” per tali dati. Un sistema di tipo, nei linguaggi di programmazione, 
+è un sistema logico che permette di assegnare a ogni termine un tipo, che identifica le caratteristiche e i valori possibili di quel termine. Storicamente, 
+le ontologie basate su DL comprendono almeno due tipologie di asserzioni:
+\begin{enumerate}[i)]
+	\item dichiarazioni di concetti, che vanno a svolgere il ruolo di "tipo" per i nodi RDF, e la loro gerarchia. L'insieme di tutte queste definizioni 
+    è detto \textsc{\itshape T-Box}. Essa contiene quindi tutta la parte di terminologia, ovvero le \textit{condizioni necessarie e sufficienti} per un 
+    elemento di far parte di un concetto.
+	\item asserzioni sugli individui o di sussistenza di una proprietà. Ad esempio, dire che \textsl{Elena} è una Persona, oppure che la 
+    \textsl{ Pizza margherita} ha come ingrediente \textsl{Pomodoro}. L'insieme di queste asserzioni è detto \textsc{\itshape A-Box}, e rappresenta 
+    tutte le "istanze" rilevanti per la realtà descritta.
+\end{enumerate}
+Grazie alla descrizione tramite formalismi logici, le ontologie permettono inferenze automatiche sulla tassonomia definita e sui dati che ne fanno uso. 
+Per ragioni di efficienza, però, nel campo del Web Semantico è diventato d'uso comune abbandonare il ragionamento formale delle ontologie per passare ai 
+più efficienti ragionamenti sub-logici dei modelli di machine learning, usando come input le asserzioni presenti nell'\textsc{\itshape A-Box} rappresentate 
+come grafi RDF, meno espressivi e quindi efficienti. Questo è dato dal fatto che la rappresentazione logica, per quanto formalmente decidibile, ha una 
+complessità talmente elevata da rendere il ragionamento logico inutilizzabile per la mole di dati che le applicazioni hanno necessità di usare 
+\cite{baader2017introductionDL}. Tuttavia, la nostra convinzione è che possano esserci delle potenzialità da sfruttare nei sistemi di tipi statici nel 
+campo della knowldege representation, in modo da ritornare a svolgere un ragionamento formale e riproducibile, recuperando parte dell'efficienza e 
+dell'espressività persa.
