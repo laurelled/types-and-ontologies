@@ -1,0 +1,47 @@
+\section{Programmazione funzionale}
+    La programmazione funzionale è un paradigma che permette di scrivere in modo naturale programmi di semplice lettura e dubugging grazie sopratutto all'assenza di side-effect nelle funzioni.
+    I side-effect o in italiano effetti collaterali, si verificano quando si modifica lo stato di variabili al di fuori dello scope locale. Ad esempio una semplice funzione java
+    \begin{minted}{java}
+    void move(Poitn p){
+        p.x++;
+        p.y++;
+    }
+    \end{minted} 
+    che prende in input un oggetto \code{Point p} con attributi \code{float x} e \code{float y}. Quando eseguito, essendo \code{p} un oggetto, viene passato per riferimento
+    quindi provocando la modifica dello stato dell'oggetto anche al di fuori dello scope di \code{void move(Point p)}. Linguaggi funzionali come Haskell non
+    permetto la creazione di funzioni inpure come \code{move}, ma costringono il programmatore a non produrre side-effect.
+    \begin{minted}{haskell}
+    type Point = (Float, Float)
+    move :: Point -> Point
+    move (x, y) = (x + 1, y + 1)
+    \end{minted}
+    In questo caso \code{move} ritorna un nuovo \code{Point} con gli attributi \code{x} e \code{y} incrementati di \code{1}, senza modificare lo stato di alcuna
+    variabile.
+    \\I linguaggi funzionali sono molto versatili sopratutto grazie alla possibilità di avere funzioni di ordine superiore, ovvero delle funzioni che come parametro
+    hanno altre funzioni. Un caso tipico di utilizzo di funzioni di ordine superiore è l'implementazione della funzione \code{map}.
+    \begin{minted}{haskell}
+    map :: (a -> b) -> [a] -> [b]
+    map _ []     = []
+    map f (x:xs) = f x : map f xs
+    \end{minted}
+    \code{map} prende in input una funzione \code{(a -> b)} e una lista di oggetti di tipo \code{a} (\code{[a]}) e ritorna una lista di oggetti di tipo \code{b} (\code{[b]}). 
+    la funzione passata come parametro, \code{f}, viene applicata ricorsivamente ad ogni elemento della lista \code{f x : map f xs} generando così la lista risultante. 
+    Nei due esempi precedenti abbiamo usato silenziosamente un'altra feature molto utilizzata nei linguaggi funzionali: il pattern matching.
+    \code{move (x, y) = (x + 1, y + 1)} confronta l'argomento della funzione con i pattern. In questo caso l'argomento è di tipo \code{Point} ovvero
+    una coppia di \code{Float}, quindi quando si scrive \code{move (x, y) = ...}, \code{x} e \code{y} avranno i valori dei campi dell'oggetto \code{Point}
+    che potremo liberamente usare nel body della funzione (\code{(x + 1, y + 1)}).
+    La funzione \code{map} sfrutta il pattern mathing per distinguere il caso in cui la lista è vuota \code{map _ []} (caso base della ricorsione), dal caso in cui
+    bisogna applicarre la ricorsione sulla lista \code{map f (x:xs)}. 
+    \\I linguaggi funzionali sono spesso accompagnati da uno stretto ma flessibile sistema di tipi
+    che permette di catturare a tempo di compilazione molti errori che altrimenti ritroveremmo a runtime. I data type creati in linguaggi come Haskell o OCaml
+    permettono di creare tipi al programmatore dandogli così molta flessibilità mantenendo i controlli statici. per esempio con il tipo \code{Nat}
+    \begin{minted}{haskell}
+        data Nat = zero | Succ Nat
+    \end{minted}
+    si sono definiti i numeri naturali con cui, attraverso il pattern matching, è possibile creare semplicemente funzioni che operano su di essi:
+    \begin{minted}{haskell}
+        (+) :: Nat -> Nat -> Nat
+        zero     + y = x
+        (Succ x) + y = succ (x + y) 
+    \end{minted}
+    la funzione \code{(+)} che esegue semplicemente l'addizione su due numeri naturali, anche se molto in piccolo, mostra l'eleganza, la chiarezza e le potenzialita dei linguaggi funzionali.
