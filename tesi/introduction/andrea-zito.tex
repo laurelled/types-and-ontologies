@@ -1,3 +1,4 @@
+La tesi è stata svolta in collaborazione con Lorenzo Bafunno e Emanuele Rovaretto.
 \section{Programmazione funzionale}
     La programmazione funzionale è un paradigma che permette di scrivere in modo naturale programmi di semplice lettura e dubugging grazie sopratutto all'assenza di side-effect nelle funzioni.
     I side-effect o in italiano effetti collaterali, si verificano quando si modifica lo stato di variabili al di fuori dello scope locale. Ad esempio una semplice funzione java
@@ -85,8 +86,15 @@ complessità talmente elevata da rendere il ragionamento logico inutilizzabile p
 \cite{baader2017introductionDL}. Tuttavia, la nostra convinzione è che possano esserci delle potenzialità da sfruttare nei sistemi di tipi statici nel 
 campo della knowldege representation, in modo da ritornare a svolgere un ragionamento formale e riproducibile, recuperando parte dell'efficienza e 
 dell'espressività persa.
+\section{Scopo della tesi}
+Il nostro lavoro esmplora possibili proposte nella direzione di fornire strumenti formali basati su linguaggi funzionali tipati per supportare un reasoning
+espressivo e efficiente sui dati semanticamente annotati. Si pone sempre più, infatti, il problema di avere efficienza e, nel contempo, offrire semantiche 
+espressive, per i dati in formato Resource Description Framework (RDF). La struttura semantica aggiunta dalle ontologie ai grafi RDF \'e sempre meno utilizzata
+in favore di tecniche sub-logiche, legate soprattutto al machine learning che sfruttano soprattutto le asserzioni sugli individui (A-Box). 
+I tipi e i linguaggi funzionali sembrano avere ottime potenzialità per recuperare la complessità sia dei T-Box che A-Box, aggiungendo controlli statici
+ma mantenendo l'efficienza necessaria.
 \section{Il nostro lavoro}
-    La tesi è stata svolta in collaborazione con Lorenzo Bafunno e Emanuele Rovaretto. La fase iniziale del lavoro era l'esplorazione del dominio di ricerca,
+    La fase iniziale del lavoro era l'esplorazione del dominio di ricerca,
     studiando le basi delle ontologie e grafi RDF dai materiali dal corso "Modellazione Concettuale per il Web Semantico" della professoressa Rossana Damiano.
     Successivamente ci siamo informatati sugli sforzi già fatti sull'uso dei sistemi tipi per il web semantico e in particolare ci siamo concentrati sulla tesi di
     dottorato "Type-safe Programming for the Semantic Web" di Martin Leinberger che propone un linguaggio di programmazione ($\lambda_{DL}$) per lavorare sulle ontologie con 
