@@ -34,7 +34,7 @@
     bisogna applicarre la ricorsione sulla lista \code{map f (x:xs)}. 
     \\I linguaggi funzionali sono spesso accompagnati da uno stretto ma flessibile sistema di tipi
     che permette di catturare a tempo di compilazione molti errori che altrimenti ritroveremmo a runtime. I data type creati in linguaggi come Haskell o OCaml
-    permettono di creare tipi al programmatore dandogli così molta flessibilità mentenendo i controlli statici. per esempio con il tipo \code{Nat}
+    permettono di creare tipi al programmatore dandogli così molta flessibilità mantenendo i controlli statici. per esempio con il tipo \code{Nat}
     \begin{minted}{haskell}
         data Nat = zero | Succ Nat
     \end{minted}
@@ -45,5 +45,3 @@
         (Succ x) + y = succ (x + y) 
     \end{minted}
     la funzione \code{(+)} che esegue semplicemente l'addizione su due numeri naturali, anche se molto in piccolo, mostra l'eleganza, la chiarezza e le potenzialita dei linguaggi funzionali.
-    Per i motivi descritti sopra i linguaggi funzionali sembrano adatti per la costruzione di formalismi e strumenti per supportare un reasoning efficiente
-    nell'ambito della knowledge representation.

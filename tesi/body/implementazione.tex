@@ -92,7 +92,8 @@ Infine chiediamo al reasoner HermiT di testare la soddisfacibilità di ogni conc
     Vorremmo quindi valutare vantaggi e efficienza di un controllo statico, sfruttando i sistemi di tipi per assicurare la correttezza statica del programma, rispetto a 
     un'ontologia basata sulle logiche descrittive (in particolare OWL). Sforzi verso questa direzioni sono stati già proposti nella tesi di dottorato di Martin Leinberger, 
     in cui propone un lambda calcolo tipato esteso con interrogazioni SPARQL a basi di triple RDF e costrutti della logica descrittiva come tipi chiamato $\lambda_{DL}$.
-    \\ Il linguaggio sfrutta le concept expression della logica descrittiva come tipo, interrogando la base di conoscenza e facendo inferenza durante il type checking.
+    \\ Il linguaggio garantisce di eseguire delle QUERY SPARQL che rispettano A-Box e T-Box dell'ontologia, spostando il controllo dell'abitabilità durante il type checking e
+    permettendo di tipare i nodi ritornati dalle Query tramite le concept expressions della logica descrittiva.
     L'esempio successivo, preso dalla tesi di Leinberger, mostra un programma scritto in $\lambda_{DL}$ che espone chiaramente le potenzialità del linguaggio.
     \begin{figure}[h]
         \captionsetup{singlelinecheck = false}
@@ -111,7 +112,9 @@ Infine chiediamo al reasoner HermiT di testare la soddisfacibilità di ogni conc
         \item dare un tipo ai nodi ritornati dalla query. Nel nostro esempio tutta l'espressione è di tipo \textbf{Students} e grazie al subtyping e al fatto
             che nella knowledge base sappiamo che Students $\sqsubseteq$ Person è anche ti tipo \textbf{Person}.
     \end{itemize}
-    Il sistema di tipi del linguaggio è corretto, ovvero un termine chiuso e ben tipato non si blocca durante la valutazione.
+    L'implementazione si concentra solo sul type system, i riferimenti agli aspetti più teorici del linguaggio insieme alla sintassi e le regole di valutazione
+    si possono trovare nella tesi di Leiberger.
+    Vale la pena per\`o accennare che il linguaggio è corretto, ovvero un termine chiuso e ben tipato non si blocca durante la valutazione.
     La corretteza è dimostrata da Leinberger attraverso due teoremi:
     \begin{theorem}
         (Progress in $\lambda_{DL}$): sia t un termine ben tipato e chiuso. se t non è un valore, allora esiste una termine t' tale che
