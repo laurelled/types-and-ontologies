@@ -83,34 +83,13 @@ Utilizzando poi la OWLDataFactory (factory delle OWLApi che permette la costruzi
 Successivamente per ogni assioma creiamo un OWLSubClassOfAxiom, in cui viene specificata la relazione di sottoclasse tra il concetto atomico(le variabili) e la sua ClassExpression corrispondente(concept expression).
 
 Infine chiediamo al reasoner HermiT di testare la soddisfacibilità di ogni concetto atomico presente negli assiomi di Leinberger. Se sono tutti soddisfacibili, allora significa che la query è abitabile, altrimenti non lo è.
-    \newpage
-    \section{Introduzione}
-    la tesi è stata svolta in collaborazione con Lorenzo Bafunno e Emanuele Rovaretto. La fase iniziale del lavoro era l'esplorazione del dominio di ricerca,
-    studiando le basi delle ontologie e grafi RDF dai materiali dal corso "Modellazione Concettuale per il Web Semantico" della professoressa Rossana Damiano.
-    Successivamente ci siamo informatati sugli sforzi già fatti sull'uso dei sistemi tipi per il web semantico e in particolare ci siamo concentrati sulla tesi di
-    dottorato "Type-safe Programming for the Semantic Web" di Martin Leinberger che propone un linguaggio di programmazione ($\lambda_{DL}$) per lavorare sulle ontologie con 
-    controlli di tipo statici. Da questo punto in poi, avendo tutti le idee leggermente più chiare, ci siamo divisi i compiti. In particolare Lorenzo si
-    è occupato di continuare la ricerca e studio delle pubblicazioni nel nostro ambito. Io ed Emanule invece ci siamo concentrati sulla implementazione
-    del $\lambda_{DL}$: io mi sono occupato del type system del linguaggio mentre Emanuele del tipaggio e esecuzione delle Query SPARQL.
-    Il mio lavoro è stato inanzitutto capire il linguaggio da utilizzare per l'implementazione. I primi esperimenti sono stati in Haskell, ma siccome le librerie
-    sull'integrazione di reasoner su ontologie sono poche e non offrono le funzionalità che ci servivano, abbiamo optato di passare a OCaml, sotto suggerimento della professoressa e relatrice Viviana Bono. 
-    Prima di passare direttamente alla scrittura del codice ho letto il libro "Types and Programming Languages" di Benjamin C. Pierce dove spiega da un punto di vista
-    più ingegneristico i sitemi di tipi e mostra passo passo come implementare un linguaggio di programmazione basato sul $\lambda$-calco utilizzando OCaml.
-    Con tutto lo studio preliminare, la scrittura del codice è stata molto diretta, senza incontrare grosse difficoltà.
-    \\L'implementazione si è rilevata molto utile per aiutarmi a comprendere meglio come le ontologie vengono usate e le potenzialità che offrono chiarendochiarendo anche
-    quali sono gli attuali problemi che si presentano quando si lavora sulle ontologie e come i tipi possono essere di aiuto. Inoltre l'implementazione è stato un ottimo
-    esercizio di programmazione funzionale e di conoscienza dei linguaggi di programmazione.
-    \\Il lavoro di tesi si è concluso con un'ultima grossa parte in cui insieme a Emanuele e Lorenzo abbiamo esposto i nostri lavori e ascolatato le idee e opinioni degli esperti
-    di Web Semantico Marco Antonio Stranisci, Antonio Lieto e Rossana Damiano. Da questi incontri sono stati chiariti molti dubbi e sono nate anche molte idee che verranno
-    spiegate nella sezione di Future Works della tesi. Gli argomenti trattati sono vari e necessiterebbero molta più investigazione, le potenzialità della ricerca esistono
-    e sono attualmente poco esplorate. 
-
+    
     \newpage
     \section{Il linguaggio $\boldsymbol{\lambda_{DL}}$}
     Quando si effettua una computazione basata su ontologie, il processo di ragionamento è portato avanti a run time, e se si scoprono assiomi non soddisfacibili 
     il programma potrebbe essere soggetto a errori. Non è quindi possibile garantire che un'esecuzione termini correttamente, ovvero si otterrà il risultato aspettato. 
     Il nostro obiettivo è quello riuscire a catturare questi errori prima dell'esecuzione, andando ad assicurare una computazione senza errori run-time che dipendono dalla base di conoscenza. 
-    Vorremmo quindi valutare vantaggi e efficienza di un controllo statico, sfruttando i sistemi di tipi per assicurare la correttezza del programma, rispetto a 
+    Vorremmo quindi valutare vantaggi e efficienza di un controllo statico, sfruttando i sistemi di tipi per assicurare la correttezza statica del programma, rispetto a 
     un'ontologia basata sulle logiche descrittive (in particolare OWL). Sforzi verso questa direzioni sono stati già proposti nella tesi di dottorato di Martin Leinberger, 
     in cui propone un lambda calcolo tipato esteso con interrogazioni SPARQL a basi di triple RDF e costrutti della logica descrittiva come tipi chiamato $\lambda_{DL}$.
     \\ Il linguaggio sfrutta le concept expression della logica descrittiva come tipo, interrogando la base di conoscenza e facendo inferenza durante il type checking.
