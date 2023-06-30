@@ -55,7 +55,7 @@ L'idea alla base del modulo OCaml è la seguente:
 \end{enumerate}
 Vediamo questi passaggi nel dettaglio
 
-\section{Parsificazione}
+\subsection{Parsificazione}
 Per generare il parser, ho utilizzato il programma OCamlyacc, un compilatore di compilatori per OCaml, ispirandomi alla grammatica delle query SPARQL\ref{fig:leinbergerSyntax}.
 Per definire i token che compongono la grammatica invece mi sono avvalso di OCamllex, un generatore di lexer.
 
@@ -81,7 +81,7 @@ otteniamo il seguente tipo Query così costruito:
 Q (V x, CP (SP (V x, TYPE, Pizza), CP (DP (x, P hasTopping, y), SP (y, TYPE, P GorgonzolaTopping))))
 \end{minted}
 
-\section{Inferenza degli assiomi di Leinberger}
+\subsection{Inferenza degli assiomi di Leinberger}
 Introduciamo il tipo ClassExpression, definito ispirandosi alle regole di derivazione degli assiomi di Leiberger, che servirà per generare gli assiomi di Leinberger.
 \begin{figure}[H]
     \centering
@@ -103,7 +103,7 @@ L'esempio diventa dunque:
 (x, Pizza) :: (x, Exist(Property(hasTopping),Atomic(y))) :: (y, Exists(PropertyInverse(hasTopping), Atomic(x))) :: (y, GorgonzolaTopping) :: []
 \end{minted}
 
-\section{Traduzione in Manchestern OWL Syntax per il Reasoner}
+\subsection{Traduzione in Manchestern OWL Syntax per il Reasoner}
 Infine, la lista di assiomi viene convertita in stringa secondo la sintassi \(A_{x} : C\), ove C è la traduzione del tipo classExpression in Manchester OWL Syntax.
 
 L'esempio diventa dunque:
@@ -112,21 +112,21 @@ x : Pizza : x : hasTopping SOME y : y : INVERSE hasTopping x : y : GorgonzolaTop
 \end{minted}
 Viene dunque invocato il modulo Reasoner e gli viene passato come parametro la lista in formato stringa.
 
-\section{Uso del risultato}
+\subsection{Uso del risultato}
 La risposta, true o false, che risponde alla domanda "la query è abitabile?" viene restituita al modulo OCaml e esso informa l'utente.
 
 \newpage
 \section{Reasoner}
-Il modulo Reasoner utilizza due risorse:
+Il modulo Reasoner ha la responsabilità di decidere se un insieme di concept expression è soddisfacibile nell'ontologia che la query interroga. In questo modulo vengono utilizzate due risorse:
 \begin{enumerate}
-    \item Il file HermiT.jar\cite{HermiT}, che implementa il reasoner sviluppato dall'università di Oxford, capace di eseguire ragionamenti sulle ontologie.
-    \item Il file DLQueryExample\cite{DLQueryExample} utilizzato per parsare una stringa in una ClassExpression, che è utilizzabile HermiT.
+    \item Il file HermiT.jar\cite{HermiT}, è un reasoner sviluppato dall'università di Oxford, capace di eseguire ragionamenti sulle ontologie.
+    \item Il file DLQueryExample\cite{DLQueryExample} utilizzato per parsificare una stringa che rappresenta una concept expression, scritta in Manchester OWL Syntax, in una ClassExpression, la formalizzazione in Java di una concept expression, utilizzabile da HermiT.
 \end{enumerate}
 
-Ma come funziona il modulo? Esso prende in input, in formato stringa, una lista di assiomi di Leinberger, ognuno forma \(A_{x} : C\), con semantica \( A_{x}\sqsubseteq C \).
-\\\(A_{x}\) è un concetto atomico. "C" è una concept expression scritta nella "Manchester OWL syntax" \cite{ManchesterOWLSyntax}, e viene trasformato dal DLQueryParser in un oggetto ClassExpression. L'idea iniziale era di creare noi un parser che trasformasse una stringa in un oggetto ClassExpression, poi ci siamo imbattuti nella Manchester OWL syntax che presentava già un parsificatore capace di realizzare esattamente quello che volevamo. Allora ho adattato il tutto affinché lavorasse su questa particolare sintassi.
+Il Reasoner prende in input dal modulo OCaml, in formato stringa, una lista di assiomi di Leinberger, ognuno forma \(A_{x} : C\), con semantica \( A_{x}\sqsubseteq C \) in Description Logic.
+\\\(A_{x}\) è un concetto atomico. "C" è una concept expression scritta nella "Manchester OWL syntax" \cite{ManchesterOWLSyntax}, e viene trasformato dal DLQueryParser in un oggetto ClassExpression. L'idea iniziale era di creare da zero un parsificatore che trasformasse una stringa in un oggetto ClassExpression, poi facendo ricerche ho scoperto l'esistenza della Manchester OWL syntax che presentava già un parsificatore capace di realizzare esattamente quello che volevamo. Allora ho adattato il modulo OCaml affinché producesse una stringa nella Manchester OWL syntax.
 
-Utilizzando poi la OWLDataFactory (factory delle OWLApi che permette la costruzione di OWLAxiom e di dichiarare OWLClass) e HermiT\cite{HermiT}, dichiariamo all'interno dell'ontologia tutti i concetti atomici che compaiono negli assiomi di Leinberger\ref{fig:leinbergerSyntax}, corrispondenti alle variabili della query.
+Utilizzando poi la OWLDataFactory (factory delle OWLApi che permette la costruzione di OWLAxiom e di dichiarare OWLClass, entrambi assiomi della T-Box) e il resoner HermiT\cite{HermiT}, dichiariamo all'interno dell'ontologia tutti i concetti atomici che compaiono negli assiomi di Leinberger\ref{fig:leinbergerSyntax}, corrispondenti alle variabili della query.
 
 Successivamente per ogni assioma creiamo un OWLSubClassOfAxiom, in cui viene specificata la relazione di sottoclasse tra il concetto atomico(le variabili) e la sua ClassExpression corrispondente(concept expression).
 
