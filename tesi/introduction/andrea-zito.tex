@@ -1,24 +1,24 @@
 La tesi è stata svolta in collaborazione con Lorenzo Bafunno e Emanuele Rovaretto.
 \input{introduction/Programmazione-Funzionale.tex}
 \input{introduction/Semantic-Web.tex}
-\section{Scopo della tesi}
-Il nostro lavoro esplora possibili proposte nella direzione di fornire strumenti formali basati su linguaggi funzionali tipati per supportare un reasoning
-espressivo e efficiente sui dati semanticamente annotati. Si pone sempre più, infatti, il problema di avere efficienza e, nel contempo, offrire semantiche 
-espressive, per i dati in formato Resource Description Framework (RDF). La struttura semantica aggiunta dalle ontologie ai grafi RDF \'e sempre meno utilizzata
-in favore di tecniche sub-logiche, legate soprattutto al machine learning che sfruttano soprattutto le asserzioni sugli individui (A-Box). 
-I tipi e i linguaggi funzionali sembrano avere ottime potenzialità per recuperare la complessità sia dei T-Box che A-Box, aggiungendo controlli statici
-ma mantenendo l'efficienza necessaria.
 \section{Il nostro lavoro}
+    Il nostro lavoro esplora possibili proposte nella direzione di fornire strumenti formali basati su linguaggi funzionali tipati per supportare un reasoning
+    espressivo e efficiente sui dati semanticamente annotati. Si pone sempre più, infatti, il problema di avere efficienza e, nel contempo, offrire semantiche 
+    espressive, per i dati in formato Resource Description Framework (RDF). La struttura semantica aggiunta dalle ontologie ai grafi RDF \'e sempre meno utilizzata
+    in favore di tecniche sub-logiche, legate soprattutto al machine learning che sfruttano soprattutto le asserzioni sugli individui (A-Box). 
+    I tipi e i linguaggi funzionali sembrano avere ottime potenzialità per recuperare la complessità sia dei T-Box che A-Box, aggiungendo controlli statici
+    ma mantenendo l'efficienza necessaria.
     La fase iniziale del lavoro era l'esplorazione del dominio di ricerca,
-    studiando le basi delle ontologie e grafi RDF dai materiali dal corso "Modellazione Concettuale per il Web Semantico" della professoressa Rossana Damiano.
+    studiando le basi delle ontologie e grafi RDF dai materiali dal corso "Modellazione Concettuale per il Web Semantico"\footnote{\url{https://informatica.i-learn.unito.it/course/view.php?id=2506}} 
+    della professoressa Rossana Damiano.
     Successivamente ci siamo informatati sugli sforzi già fatti sull'uso dei sistemi tipi per il web semantico e in particolare ci siamo concentrati sulla tesi di
-    dottorato "Type-safe Programming for the Semantic Web" di Martin Leinberger che propone un linguaggio di programmazione ($\lambda_{DL}$) per lavorare sulle ontologie con 
+    dottorato "Type-safe Programming for the Semantic Web"\cite{leinbergerphdthesis} di Martin Leinberger che propone un linguaggio di programmazione ($\lambda_{DL}$) per lavorare sulle ontologie con 
     controlli di tipo statici. Da questo punto in poi, avendo tutti le idee leggermente più chiare, ci siamo divisi i compiti. In particolare Lorenzo si
-    è occupato di continuare la ricerca e studio delle pubblicazioni nel nostro ambito. Io ed Emanule invece ci siamo concentrati sulla implementazione
-    del $\lambda_{DL}$: io mi sono occupato del type system del linguaggio mentre Emanuele del tipaggio e esecuzione delle Query SPARQL.
+    è occupato di continuare la ricerca e studio delle pubblicazioni nel nostro ambito \ref{chap:State-of-art}. Io ed Emanule invece ci siamo concentrati sulla implementazione\ref{chap:Implementazione}
+    del $\lambda_{DL}$: io mi sono occupato del type system \ref{sec:Type Checking} del linguaggio mentre Emanuele del tipaggio e esecuzione delle Query SPARQL \ref{sec:OCaml Module - Le query}.
     Il mio lavoro è stato inanzitutto capire il linguaggio da utilizzare per l'implementazione. I primi esperimenti sono stati in Haskell, ma siccome le librerie
     sull'integrazione di reasoner su ontologie sono poche e non offrono le funzionalità che ci servivano, abbiamo optato di passare a OCaml, sotto suggerimento della professoressa e relatrice Viviana Bono. 
-    Prima di passare direttamente alla scrittura del codice ho letto il libro "Types and Programming Languages" di Benjamin C. Pierce dove spiega da un punto di vista
+    Prima di passare direttamente alla scrittura del codice ho letto il libro "Types and Programming Languages" \cite{} di Benjamin C. Pierce dove spiega da un punto di vista
     più ingegneristico i sitemi di tipi e mostra passo passo come implementare un linguaggio di programmazione basato sul $\lambda$-calco utilizzando OCaml.
     Con tutto lo studio preliminare, la scrittura del codice è stata molto diretta, senza incontrare grosse difficoltà.
     \\L'implementazione si è rilevata molto utile per aiutarmi a comprendere meglio come le ontologie vengono usate e le potenzialità che offrono chiarendochiarendo anche
@@ -26,5 +26,6 @@ ma mantenendo l'efficienza necessaria.
     esercizio di programmazione funzionale e di conoscienza dei linguaggi di programmazione.
     \\Il lavoro di tesi si è concluso con un'ultima grossa parte in cui insieme a Emanuele, Lorenzo e la professoressa Viviana Bono abbiamo esposto i nostri lavori e ascolatato le idee e opinioni degli esperti
     di Web Semantico Marco Antonio Stranisci, Antonio Lieto e Rossana Damiano. Da questi incontri sono stati chiariti molti dubbi e sono nate anche molte idee che verranno
-    spiegate nella sezione di Future Works della tesi. Gli argomenti trattati sono vari e necessiterebbero molta più investigazione, le potenzialità della ricerca esistono
+    spiegate nella sezione di Future Works %\ref{Future Work}
+    della tesi. Gli argomenti trattati sono vari e necessiterebbero molta più investigazione, le potenzialità della ricerca esistono
     e sono attualmente poco esplorate. 

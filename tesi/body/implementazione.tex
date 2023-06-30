@@ -3,6 +3,7 @@
 Il software si pone l'obiettivo di verificare se una query e l'utilizzo del suo risultato sia corretto o meno. Per le query si tratta di verificare se sia abitata o meno. Il nostro software è formato da due componenti: un modulo Reasoner, scritto in java che si occupa di determinare l'abitabilità delle query, e un modulo scritto in OCaml che si occupa di determinare la correttezza di un programma scritto su file testuale.
 
 \section{OCaml Module - Le query}
+\label{sec:OCaml Module - Le query}
 L'idea alla base del modulo OCaml è la seguente:
 \begin{enumerate}
     \item l'utente inserisce la query di cui testare l'abitabilità in un file di testo.
@@ -127,7 +128,7 @@ Infine chiediamo al reasoner HermiT di testare la soddisfacibilità di ogni conc
     \end{theorem}
     Entrambe le dimostrazioni sono per induzione su $\Gamma,K \vdash t : T$ e i dettagli si possono trovare nella tesi di Leinberger.
 \newpage
-\section{Type Checking}
+\section{Type Checking} \label{sec:Type Checking}
         Per implementare il type checking abbiamo usato come base il lambda calcolo tipato proposto dal libro di \textbf{Benjamin C. Pierce "Types and Programming Languages"}.
         Nella tesi parleremo strettamente delle regole di tipo e della loro implementazione per quanto riguarda la valutazioni si veda il libro di Pierce e la tesi di Leinberger.
         Il linguaggio presenta le principali caratteristiche di un \textbf{ $\boldsymbol{\lambda}$-calcolo tipato} con l'aggiunta dei \textbf{Record}, le \textbf{Liste} e le \textbf{Query SPARQL}.
@@ -174,10 +175,10 @@ Infine chiediamo al reasoner HermiT di testare la soddisfacibilità di ogni conc
         \textbf{TmHead} e \textbf{TmTail}
         \begin{figure}[h]
             \begin{minted}[escapeinside =|, autogobble]{python}
-                [1, 0]   #TmCons (TmSucc (TmZero)) (TmCons (TmZero) (TmNil))
-                head  [1, 0] #TmHead (TmCons (TmSucc (TmZero)) (TmCons (TmZero) (TmNil)))
-                tail  [1, 0] #TmTail (TmCons (TmSucc (TmZero)) (TmCons (TmZero) (TmNil)))
-                isNil [1, 0] #TmIsNil (TmCons (TmSucc (TmZero)) (TmCons (TmZero) (TmNil)))
+                [1, 0]        TmCons (TmSucc (TmZero)) (TmCons (TmZero) (TmNil))
+                head  [1, 0]  TmHead (TmCons (TmSucc (TmZero)) (TmCons (TmZero) (TmNil)))
+                tail  [1, 0]  TmTail (TmCons (TmSucc (TmZero)) (TmCons (TmZero) (TmNil)))
+                isNil [1, 0]  TmIsNil (TmCons (TmSucc (TmZero)) (TmCons (TmZero) (TmNil)))
             \end{minted}
         \caption{esempi di termini con liste}
         \end{figure}
