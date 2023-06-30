@@ -14,7 +14,7 @@
 % Print just right page or both sides (comment the other one)
 \documentclass[12pt,a4paper,openright,oneside]{book}	%%One sided
 %\documentclass[12pt,a4paper,openright,twoside]{book}	%%Double sided
-\input{macros}
+
 %% SET MARGINS OF THE PAGES
 \usepackage{geometry}
 \geometry{a4paper,portrait, left=35mm, right=20mm, top=35mm, bottom=30mm}
@@ -52,6 +52,7 @@
 \addto\extrasitalian{
 	\def\figureautorefname{Figura}
 	\def\equationautorefname{Equazione}
+	\def\subsectionautorefname{Sezione}
 }
 \hypersetup{
     colorlinks,
@@ -62,7 +63,7 @@
 }
 %% PDF SETTINGS
 \hypersetup{
-    pdfauthor={Andrea Zito, Emanuele Rovaretto, Lorenzo Bafunno},
+    pdfauthor={Andrea Zito and Emanuele Rovaretto and Lorenzo Bafunno},
     pdftitle={shortTitle},
     pdfsubject={subject},
     pdfkeywords={Semantic Web, Type Systems, Haskell, OCaml}
@@ -104,7 +105,7 @@
 %% HYPENATON
 \hyphenation{te-si pip-po paperino}	%manual hyphenation
 \definecolor{codegray}{gray}{0.9}
-
+\input{macros}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%% BEGIN DOCUMENT
 \begin{document}
@@ -132,8 +133,8 @@
 \clearemptydoublepage
 \chapter{Introduzione}
 %\input{introduction/rovaretto-emanuele}
-%\input{introduction/lorenzo-bafunno}
-\input{introduction/andrea-zito}
+\input{introduction/lorenzo-bafunno}
+%\input{introduction/andrea-zito}
 %% CHAPTERS
 \clearemptydoublepage
 % add any further chapter file here
