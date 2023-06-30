@@ -8,7 +8,7 @@ I \emph{side-effect} o in italiano \emph{effetti collaterali}, si verificano qua
 	}
 \end{minted} 
 che prende in input un oggetto \code{Point p} con attributi \code{float x} e \code{float y}. Quando eseguito, essendo \code{p} un oggetto, viene passato per riferimento
-quindi provocando la modifica dello stato dell'oggetto anche al di fuori dello scope di \code{void move(Point p)}. Linguaggi funzionali come Haskell\footnote{https://www.haskell.org/} non
+quindi provocando la modifica dello stato dell'oggetto anche al di fuori dello scope di \code{void move(Point p)}. Linguaggi funzionali come Haskell\footnote{\url{https://www.haskell.org/}} non
 permettono la creazione di funzioni impure come \code{move}, ma costringono il programmatore a non produrre side-effect.
 \begin{minted}{haskell}
 	type Point = (Float, Float)
@@ -32,7 +32,7 @@ una coppia di \code{Float}, quindi quando si scrive \code{move (x, y) = ...}, \c
 che potremo liberamente usare nel body della funzione (\code{(x + 1, y + 1)}).
 La funzione \code{map} sfrutta il pattern matching per distinguere il caso in cui la lista è vuota \code{map _ []} (caso base della ricorsione), dal caso in cui
 bisogna applicare la ricorsione sulla lista \code{map f (x:xs)}. 
-\\I linguaggi funzionali sono spesso accompagnati da uno stretto ma flessibile sistema di tipi statico, che permette di catturare a tempo di compilazione molti errori che altrimenti ritroveremmo a runtime. I data type creati in linguaggi come Haskell o OCaml\footnote{https://ocaml.org/}
+\\I linguaggi funzionali sono spesso accompagnati da uno stretto ma flessibile sistema di tipi statico, che permette di catturare a tempo di compilazione molti errori che altrimenti ritroveremmo a runtime. I data type creati in linguaggi come Haskell o OCaml\footnote{\url{https://ocaml.org/}}
 permettono di creare tipi al programmatore dandogli così molta flessibilità, mantenendo i controlli statici. per esempio con il tipo \code{Nat}
 \begin{minted}{haskell}
 	data Nat = zero | Succ Nat
