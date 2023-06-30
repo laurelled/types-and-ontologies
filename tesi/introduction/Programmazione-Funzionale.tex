@@ -1,47 +1,63 @@
 \section{Programmazione funzionale}
-    La programmazione funzionale è un paradigma che permette di scrivere in modo naturale programmi di semplice lettura e dubugging grazie sopratutto all'assenza di side-effect nelle funzioni.
-    I side-effect o in italiano effetti collaterali, si verificano quando si modifica lo stato di variabili al di fuori dello scope locale. Ad esempio una semplice funzione in Java\footnote{\url{https://www.java.com/}}
-    \begin{minted}{java}
-    void move(Poitn p){
-        p.x++;
-        p.y++;
-    }
-    \end{minted} 
-    che prende in input un oggetto \code{Point p} con attributi \code{float x} e \code{float y}. Quando eseguito, essendo \code{p} un oggetto, viene passato per riferimento
-    quindi provocando la modifica dello stato dell'oggetto anche al di fuori dello scope di \code{void move(Point p)}. Linguaggi funzionali come Haskell\footnote{https://www.haskell.org/} non
-    permetto la creazione di funzioni inpure come \code{move}, ma costringono il programmatore a non produrre side-effect.
-    \begin{minted}{haskell}
-    type Point = (Float, Float)
-    move :: Point -> Point
-    move (x, y) = (x + 1, y + 1)
-    \end{minted}
-    In questo caso \code{move} ritorna un nuovo \code{Point} con gli attributi \code{x} e \code{y} incrementati di \code{1}, senza modificare lo stato di alcuna
-    variabile.
-    \\I linguaggi funzionali sono molto versatili sopratutto grazie alla possibilità di avere funzioni di ordine superiore, ovvero delle funzioni che come parametro
-    hanno altre funzioni. Un caso tipico di utilizzo di funzioni di ordine superiore è l'implementazione della funzione \code{map}.
-    \begin{minted}{haskell}
-    map :: (a -> b) -> [a] -> [b]
-    map _ []     = []
-    map f (x:xs) = f x : map f xs
-    \end{minted}
-    \code{map} prende in input una funzione \code{(a -> b)} e una lista di oggetti di tipo \code{a} (\code{[a]}) e ritorna una lista di oggetti di tipo \code{b} (\code{[b]}). 
-    la funzione passata come parametro, \code{f}, viene applicata ricorsivamente ad ogni elemento della lista \code{f x : map f xs} generando così la lista risultante. 
-    Nei due esempi precedenti abbiamo usato silenziosamente un'altra feature molto utilizzata nei linguaggi funzionali: il pattern matching.
-    \code{move (x, y) = (x + 1, y + 1)} confronta l'argomento della funzione con i pattern. In questo caso l'argomento è di tipo \code{Point} ovvero
-    una coppia di \code{Float}, quindi quando si scrive \code{move (x, y) = ...}, \code{x} e \code{y} avranno i valori dei campi dell'oggetto \code{Point}
-    che potremo liberamente usare nel body della funzione (\code{(x + 1, y + 1)}).
-    La funzione \code{map} sfrutta il pattern mathing per distinguere il caso in cui la lista è vuota \code{map _ []} (caso base della ricorsione), dal caso in cui
-    bisogna applicarre la ricorsione sulla lista \code{map f (x:xs)}. 
-    \\I linguaggi funzionali sono spesso accompagnati da uno stretto ma flessibile sistema di tipi
-    che permette di catturare a tempo di compilazione molti errori che altrimenti ritroveremmo a runtime. I data type creati in linguaggi come Haskell o OCaml\footnote{https://ocaml.org/}
-    permettono di creare tipi al programmatore dandogli così molta flessibilità mantenendo i controlli statici. per esempio con il tipo \code{Nat}
-    \begin{minted}{haskell}
-        data Nat = zero | Succ Nat
-    \end{minted}
-    si sono definiti i numeri naturali con cui, attraverso il pattern matching, è possibile creare semplicemente funzioni che operano su di essi:
-    \begin{minted}{haskell}
-        (+) :: Nat -> Nat -> Nat
-        zero     + y = x
-        (Succ x) + y = succ (x + y) 
-    \end{minted}
-    la funzione \code{(+)} che esegue semplicemente l'addizione su due numeri naturali, anche se molto in piccolo, mostra l'eleganza, la chiarezza e le potenzialita dei linguaggi funzionali.
+Il paradigma funzionale è un paradigma linguistico permette di scrivere in modo naturale programmi di facile comprensione e debugging grazie sopratutto all'assenza di \emph{side-effect} nelle funzioni.
+I \emph{side-effect} o in italiano \emph{effetti collaterali}, si verificano quando si modifica lo stato di variabili al di fuori dello scope locale. Ad esempio consideriamo una semplice funzione Java:
+\begin{minted}{java}
+	void move(Point p){
+		p.x++;
+		p.y++;
+	}
+\end{minted} 
+che prende in input un oggetto \code{Point p} con attributi \code{float x} e \code{float y}. Quando eseguito, essendo \code{p} un oggetto, viene passato per riferimento
+quindi provocando la modifica dello stato dell'oggetto anche al di fuori dello scope di \code{void move(Point p)}. Linguaggi funzionali come Haskell\footnote{https://www.haskell.org/} non
+permettono la creazione di funzioni impure come \code{move}, ma costringono il programmatore a non produrre side-effect.
+\begin{minted}{haskell}
+	type Point = (Float, Float)
+	move :: Point -> Point
+	move (x, y) = (x + 1, y + 1)
+\end{minted}
+In questo caso \code{move} ritorna un nuovo \code{Point} con gli attributi \code{x} e \code{y} incrementati di \code{1}, senza modificare lo stato di alcuna
+variabile.
+\\I linguaggi funzionali sono molto versatili sopratutto grazie alla possibilità di avere funzioni di ordine superiore, ovvero delle funzioni che come parametro
+hanno altre funzioni. Un caso tipico di utilizzo di funzioni di ordine superiore è l'implementazione della funzione \code{map}.
+\begin{minted}{haskell}
+	map :: (a -> b) -> [a] -> [b]
+	map _ []     = []
+	map f (x:xs) = f x : map f xs
+\end{minted}
+\code{map} prende in input una funzione \code{(a -> b)} e una lista di oggetti di tipo \code{a} (\code{[a]}) e ritorna una lista di oggetti di tipo \code{b} (\code{[b]}). 
+la funzione passata come parametro, \code{f}, viene applicata ricorsivamente ad ogni elemento della lista \code{f x : map f xs} generando così la lista risultante. 
+Nei due esempi precedenti abbiamo usato silenziosamente un'altra feature molto utilizzata nei linguaggi funzionali: il pattern matching.
+\code{move (x, y) = (x + 1, y + 1)} confronta l'argomento della funzione con i pattern. In questo caso l'argomento è di tipo \code{Point} ovvero
+una coppia di \code{Float}, quindi quando si scrive \code{move (x, y) = ...}, \code{x} e \code{y} avranno i valori dei campi dell'oggetto \code{Point}
+che potremo liberamente usare nel body della funzione (\code{(x + 1, y + 1)}).
+La funzione \code{map} sfrutta il pattern matching per distinguere il caso in cui la lista è vuota \code{map _ []} (caso base della ricorsione), dal caso in cui
+bisogna applicare la ricorsione sulla lista \code{map f (x:xs)}. 
+\\I linguaggi funzionali sono spesso accompagnati da uno stretto ma flessibile sistema di tipi statico, che permette di catturare a tempo di compilazione molti errori che altrimenti ritroveremmo a runtime. I data type creati in linguaggi come Haskell o OCaml\footnote{https://ocaml.org/}
+permettono di creare tipi al programmatore dandogli così molta flessibilità, mantenendo i controlli statici. per esempio con il tipo \code{Nat}
+\begin{minted}{haskell}
+	data Nat = zero | Succ Nat
+\end{minted}
+si sono definiti i numeri naturali con cui, attraverso il pattern matching, è possibile creare semplicemente funzioni che operano su di essi:
+\begin{minted}{haskell}
+	(+) :: Nat -> Nat -> Nat
+	zero     + y = x
+	(Succ x) + y = succ (x + y) 
+\end{minted}
+la funzione \code{(+)} che esegue semplicemente l'addizione su due numeri naturali, anche se molto in piccolo, mostra l'eleganza, la chiarezza e le pontenzialita dei linguaggi funzionali.
+
+Per i motivi descritti sopra, i linguaggi funzionali sono più vicini alla rappresentazione e manipolazione simbolica dei dati e quindi sembrano adatti per la costruzione di strumenti per supportare il reasoning nell'ambito della knowledge representation \ref{chap:Implementazione}.
+Tuttavia, l'innovazione più interessante potrebbe nascere dalla progettazione di nuovi linguaggi con sistemi di tipi statici, rappresentanti nuovi modelli 
+di reasoning. Grazie alla descrizione tramite le DL, le ontologie permettono inferenze automatiche di proprietà sulla tassonomia definita e sui dati che ne 
+fanno uso. Per ragioni di efficienza, però, nel campo del Web Semantico la tendenza attuale è quella di utilizzare meno le inferenze formali sulle ontologie, 
+che permettono ragionamenti sofisticati ma poco efficienti dal punto di vista della complessità temporale, in favore dell'utilizzo delle sole asserzioni 
+della \textsc{\itshape A-Box} (di solito rappresentate come grafi RDF) che diventano dati di input per sistemi sub-logici, come quelli basati sul machine 
+learning, guadagnando in efficienza, ma perdendo in espressività (si noti infatti che l'uso della sola A-Box non è ragionamento ontologico in senso stretto). 
+Questo è dato dal fatto che il reasoning sulle ontologie, per quanto formalmente decidibile, ha una complessità elevata e questo rende il ragionamento logico 
+inutilizzabile per via della mole di dati che le applicazioni hanno sempre più necessità di usare \cite{baader2017introductionDL}. Tuttavia, la nostra 
+intuizione è che una direzione per ritornare a svolgere un ragionamento formale e riproducibile, recuperando parte dell'espressività persa senza perdere 
+troppo in efficienza, sia quella di studiare calcoli e linguaggi funzionali di rappresentazione delle ontologie con sistemi di tipi statici per fare 
+inferenza di proprietà. Uno dei vantaggi dei sistemi di tipi statici è che le inferenze si possono appunto fare staticamente, quindi prima del running di un 
+sistema, evitando di appesantire il runtime con le inferenze. Si tratta di stabilire quali proprietà possono essere delegate a sistemi di tipi di questo 
+genere e se, come in effetti pensiamo, questi possano avere effetti benefici con grandi moli di dati. In questo lavoro, abbiamo analizzato in questo senso il 
+sistema ... presentato nella tesi di dottorato di Martin Leinberger \cite{leinbergerphdthesis}, che trattiamo nel Capitolo \ref{chap:Implementazione}. Inoltre, il Capitolo %\ref{chap:Future Work} 
+presenta alcune direzioni di ricerca che abbiamo intravisto.

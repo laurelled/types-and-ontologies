@@ -45,7 +45,7 @@ Il software si pone l'obiettivo di verificare se un programma, composto da una o
     Entrambe le dimostrazioni sono per induzione su $\Gamma,K \vdash t : T$ e i dettagli si possono trovare nella tesi di Leinberger.
 
 \newpage
-\section{OCaml Module - Le query}
+\section{OCaml Module - Le query} \label{sec:OCaml Module - Le query}
 L'idea alla base del modulo OCaml è la seguente:
 \begin{enumerate}
     \item la query in formato testuale viene parsificata in un tipo Query
@@ -298,6 +298,7 @@ Infine chiediamo al reasoner HermiT di testare la soddisfacibilità di ogni conc
         \end{array}\]
         \caption{nuove regole di tipo per $\lambda_{DL}$}
         \end{figure}
+        \newpage
         \subsection{La regola [T-PROJ]}
             L'implementazione della regola [T-PROJ] segue alla lettera la definizione teorica in particolare abbiamo che la condizione $\Gamma,K \vdash t_1 : C_1$
             è verificata attraverso il pattern matching (.1) in cui controlliamo che il tipo \code{t} sia una concept expression \code{TyConcept(C)}. La seconda ipotesi
@@ -370,8 +371,7 @@ Infine chiediamo al reasoner HermiT di testare la soddisfacibilità di ogni conc
             \\Come suggerito da Leinberger, abbiamo implementato la regola aggiungendo gli assiomi $K_q$ alla knowledge base durante la funzione \code{allSatisfiable}.
             così insieme alla regola {[S-CONCEPT]} è possibile risalire alla concept $D$ senza avere bisogno di [T-ADD].
             \subsection{La regola [S-CONCEPT]}
-            Il linguaggio cotruito da Leinberger permette il subtyping tipi, quindi oltre a quello tra tipi classici è stato necessario aggiungere un modo per gestire
-            anche quello tra le concept expression.
+            Il linguaggio cotruito da Leinberger permette il subtyping tra tipi, sia quelli classici che quello tra concept expression con la regola [S-CONCEPT].
             \begin{figure}[h]
                 \begin{minted}[escapeinside=||,mathescape=true, frame=lines, framesep=4mm, autogobble]{ocaml}
                     let rec subtype ctx tyS tyT =
@@ -383,27 +383,8 @@ Infine chiediamo al reasoner HermiT di testare la soddisfacibilità di ogni conc
                 \end{minted}
             \caption{implementazione OCaml della regola [S-CONCEPT]}
             \end{figure}
-            Nella implementazione richiamiamo la funzione subconcept per il controllo della ipotesi $K \vDash C \sqsubseteq D$. La differenza maggiore rispetto alla teoria
-            risiede nel fatto che anche in questo caso [S-CONCEPT] non è una regola sintattica. La funzione subtype ha tipo:
-            \begin{minted}[]{ocaml}
-                subtype : Context -> Ty -> Ty -> Bool
-            \end{minted}
-            Prende in input un contesto e due tipi e ritorna \code{true} se e solo se $K \vDash C \sqsubseteq D$. la funzione subtype viene poi richiamata su tutte le regole
-            in cui il subtyping è utilizzabile. Ad esempio nella regola [T-APP] si controlla che l'argomento passato a una astrazione sia sottotipo del tipo atteso dalla astrazione (\textbf{Controvarianza}).
-            \begin{minted}[escapeinside=||,mathescape=true, frame=lines, framesep=4mm, autogobble]{ocaml}
-                let rec typeof ctx t =
-                    match t with
-                    |$\vdots $|
-                    TmApp(fi,t1,t2) ->
-                    let tyT1 = typeof ctx t1 in
-                    let tyT2 = typeof ctx t2 in
-                    (match ctx tyT1 with
-                        TyArr(tyT11,tyT12) ->
-                          if subtype ctx tyT2 tyT11 then tyT12
-                          else error fi "parameter type mismatch"
-                        _ -> error fi "arrow type expected")
-                    |$\vdots$|
-            \end{minted}
+            Essendo [S-CONCEPT] una regola di subtyping, essa viene implementata all'interno della funzione \code{subtype}. Nella implementazione richiamiamo la funzione 
+            \code{subconcept} per il controllo della ipotesi $K \vDash C \sqsubseteq D$ che coincide con il booleano che la funzione ritorna. 
 
 
 
