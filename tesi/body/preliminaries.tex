@@ -2,15 +2,12 @@
 Per poter considerare l'utilizzo dei tipi per il Web Semantico, è necessario analizzare lo stato dell'arte in cui si ritrova questo ambito di ricerca.
 Questo capitolo si presta utile per apprendere il vocabolario utilizzato durante tutta la tesi, nonché fornire approfondimenti su nozioni che potrebbero essere date per scontate.
 Verranno riassunte le basi dei linguaggi funzionali, così come le componenti del Web Semantico.
-\section[Linguaggi funzionali]{Linguaggi funzionali}
 
 \section[Web Semantico]{Web Semantico}
-Il World Wide Web è diventato una consolidata rete di conoscenza, che però presenta il difetto che queste informazioni sono pensate per la fruizione umana, piuttosto che da parte di una macchina. Infatti il linguaggio di rappresentazione delle centinaia di pagine che visitiamo ogni giorno, l’HTML, descrive l’impaginazione delle informazioni visualizzate all’utente. Senza un indicazione che spiega il significato dei dati presenti, un agente intelligente non può interpretarne il significato. Uno degli obiettivi del Web Semantico, termine che risale all'articolo del 2001 di Tim-Berners Lee \cite{berners2001semantic}, è cambiare questo paradigma human-centered, permettendo agli agenti artificiali di interpretare e processare la conoscenza presente senza alcun tipo di aiuto umano. È necessario descrivere le informazioni attraverso metadati espressivi, strutturandoli arbitrariamente, che ne spieghino la semantica in un modo che una macchina possa comprenderla.\\
-Nel corso degli anni, nella letteratura sono state presentate diverse soluzioni: dagli albori di questo ambito, in cui i dati erano rappresentati in maniera strutturata e formale dalle ontologie, si è giunti alla rappresentazione superficiale ma efficiente del paradigma dei Linked (Open) Data. Questa sezione vuole introdurre agli standard di rappresentazione e recupero dei dati citati in questo lavoro.
+Permettere che una macchina possa comprendere le informazioni disponibili sul Web senza intervento umano \cite{berners2001semantic} necessita l'aggiunta di annotazioni espressive che spieghino la semantica delle informazioni. È per questo motivo che W3C ha introdotto il Resource Description Framework (RDF). RDF è uno standard che permette la codifica, lo scambio e il riutilizzo di metadati, strutturandoli come grafi di dati. I nodi e vertici di questi grafi sono rappresentato dagli IRI, identificatori unici di risorse simili agli URL per i documenti web. Essendo unici, essi consentono di associare ai nodi di due grafi diversi la stessa risorsa (dato). Per condividere la terminologia, cioè la \textit{semantica} (e.g. cosa s'intende per "Studente"), un altro standard proposto da W3C sono le ontologie OWL: rappresentazioni formali, condivise ed esplicite di una concettualizzazione di un dominio di interesse \cite{goy2015ontologies} che permettono una descrizione della realtà d'interessa in modo complesso e strutturato. La definizione del dominio d'interesse tramite ontologie permette di aggiungere ulteriore struttura ai dati espressi nei grafi RDF, specificandone uno schema. OWL (Ontology Web Language) è un linguaggio espressivo e formale basato su logiche appartenenti al campo della knowledge representation, le logiche descrittive (DL). Grazie alla descrizione tramite formalismi logici, le ontologie permettono inferenze automatiche sulla tassonomia definita e sui dati che ne fanno uso. Per ragioni di efficienza, però, nel campo del Web Semantico è diventato d'uso comune abbandonare il ragionamento formale delle ontologie per passare ai più efficienti ragionamenti sub-logici dei modelli di machine learning, usando come input i grafi RDF, meno espressivi e quindi efficienti. Questo è dato dal fatto che la rappresentazione logica, per quanto formalmente decidibile, ha una complessità talmente elevata da rendere il ragionamento logico inutilizzabile per la mole di dati che le applicazioni hanno attualmente necessità di usare (si veda \autoref{sec:problemiReasoning}). Questa sezione vuole introdurre agli standard di rappresentazione e recupero dei dati citati in questo lavoro.
 
-
-
-\subsection[Resource Description Framework]{Resource Description Framework}
+\subsection{Resource Description Framework}
+\label{sec:RDF}
 Il Resource Description Framework \cite{RDFspecification} (RDF d'ora in poi) è una serie di specifiche create da W3C (World Wide Web Consortium) che includono un modello per descrivere risorse web attraverso delle annotazioni, sotto forma di \textbf{triple}. Esse consistono in:
 \[ < \text{soggetto},\ \text{predicato},\ \text{oggetto} > \]
 Un insieme di queste triple, chiamato \textbf{grafo RDF}, può essere rappresentato come un grafo diretto etichettato in cui ogni tripla descrive un arco dal nodo soggetto al nodo oggetto.
@@ -54,43 +51,67 @@ Per essere più precisi, \textit{in RDF sia i nodi che i predicati sono risorse}
 \end{description}
 Esiste anche un altro termine che permette di affermare la presenza di un nodo per cui sussiste la relazione, senza nominarlo in maniera esplicita: il \textbf{blank node}. Per fare un paragone, possono essere considerati come variabili esistenziale, in cui il valore non è conosciuto ma si assume che sia presente.
 
-\begin{definition}[Tripla RDF]
-	Siano \textbf{I}, \textbf{L} e \textbf{B} rispettivamente gli insiemi infiniti e disgiunti uno a uno delle stringhe IRI, dei letterali e dei blank nodes. Una tripla RDF è una tupla $(s, p, o) \in \textbf{U}\ \cup \textbf{B} \times \textbf{U} \times \textbf{U}\ \cup \textbf{B}\ \cup \textbf{L}.$ in cui s è chiamato soggetto, p il predicato e o l'oggetto.
-\end{definition}
-\begin{definition}[Grafo RDF]
-	Un grafo RDF è un insieme finito di triple RDF.
-\end{definition}
-\begin{definition}[Grafo RDF]
-	Un grafo RDF è un insieme finito di triple RDF.
-\end{definition}
-IRI (International Resource Identifier),
+%\begin{definition}[Tripla RDF]
+%	Siano \textbf{I}, \textbf{L} e \textbf{B} rispettivamente gli insiemi infiniti e disgiunti uno a uno delle stringhe IRI, dei letterali e dei blank nodes. Una tripla RDF è una tupla $(s, p, o) \in \textbf{U}\ \cup \textbf{B} \times \textbf{U} \times \textbf{U}\ \cup \textbf{B}\ \cup \textbf{L}.$ in cui s è chiamato soggetto, p il predicato e o l'oggetto.
+%\end{definition}
+%\begin{definition}[Grafo RDF]
+%	Un grafo RDF è un insieme finito di triple RDF.
+%\end{definition}
+%\begin{definition}[Grafo RDF]
+%	Un grafo RDF è un insieme finito di triple RDF.
+%\end{definition}
 
 \subsection{SPARQL CQ}
-I grafi RDF vengono interrogati utilizzando le query SPARQL, infatti i grafi vengono memorizzati in database speciali chiamati triplestore, per efficentare le interrogazioni. In questa trattazione utilizziamo un tipo particolare di SPARQL, le query congiuntive, che consistono nella congiunzione di triple pattern, elementi atomici per interrogare un triplestore. \\
-\textbf{Abitabilità: } In una query SPARQL, il concetto di abitabilità identifica le query che possono essere abitate da almeno un elemento. Per esempio, se scriviamo una query che richiede tutti i nodi che sono sia di classe Pizza sia di classe Gelato, ovviamente questa query non potrà mai essere abitata, perchè non esistono pizze che allo stesso tempo sono anche dei gelati. Il concetto di abitabilità però non è da confondere con il fatto che essa sia abitata: una query potrebbe essere abitata, ma nel grafo RDF su cui stiamo lavorando non c'è nessun nodo che soddisfa i requisiti. \ 
-\begin{figure}[H]
-    \centering
-    \includegraphics[scale=0.6]{pictures/leinbergSyntax}
-    \caption{sintassi delle query \\ SPARQL CQ}
+I grafi RDF vengono interrogati utilizzando le query SPARQL, infatti i grafi vengono memorizzati in database speciali chiamati triplestore, per efficentare le interrogazioni. In questa trattazione utilizziamo un tipo particolare di SPARQL, le query congiuntive, che consistono nella congiunzione di triple pattern, elementi atomici per interrogare un triplestore.
+\begin{definition}[Abitabilità]
+	In una query SPARQL, il concetto di abitabilità identifica le query che ritornino almeno un elemento.
+\end{definition}
+
+\noindent Per esempio, assumendo una descrizione abbastanza simile alla realtà moderna, se scriviamo una query che richiede tutti i nodi che appartengono ad un concetto sia di Pizza che di Gelato, ovviamente questa query non potrà mai essere abitata, perchè non esistono pizze che allo stesso tempo sono anche dei gelati. Il concetto di abitabilità però non è da confondere con il fatto che essa sia abitata: una query potrebbe essere abitata, ma nel grafo RDF su cui stiamo lavorando non c'è nessun nodo che soddisfa i requisiti. Per approfondire sulle query congiuntive, sulla loro semantica e abitabilità, i lettori interessati possono usare \cite{baader2017introductionDL} come ottimo punto d'inizio.
+\begin{figure}[h]
+	\centering
+	\begin{minipage}{0.5\textwidth}
+		
+		\setlength{\grammarindent}{6em} % increase separation between LHS/RHS
+		\begin{grammar}
+		\let\syntleft\relax
+		\let\syntright\relax
+		<$q$> ::= $\bar{x} \leftarrow \textit{gp}$ \hfill \textit{query}
+		
+		<\textit{gp}> ::= \hfill \textit{graph pattern:}\\
+		$\textit{gp} \wedge \textit{gp}$ \hfill conjunction
+		\alt $(x\ r\ o)$ \hfill subject var patten
+		\alt $(o\ r\ x)$ \hfill object var pattern
+		\alt $(x\ r\ x)$ \hfill subject object var pattern
+		
+		<\textit{r}> ::= \hfill \textit{path expression:}\\
+		\textit{p} \hfill (property)
+		\alt $r^-$ \hfill (inverse path)
+		
+	\end{grammar}
+	\end{minipage}
+    \caption{sintassi delle query SPARQL CQ}
     \label{fig:leinbergerSyntax}
 \end{figure}
 \newpage
-\section[Ontologie]{Ontologie}
-La definizione comunemente accettata di ontologia è \textit{una specifica formale ed esplicita di una concettualizzazione condivisa} \cite{goy2015ontologies}. Un modo di rappresentarle è attraverso particolari linguaggi altamente espressivi appartenenti a una famiglia di formalismi chiamati logiche descrittive (DL). Le informazioni sul dominio di interesse vengono espresse in maniera formale tramite formule logiche di due tipologie. Una tipologia fa parte della cosiddetta T-Box e sono asserzioni sulla terminologia, componendo uno schema. L'altra fa parte della A-Box ed è usata per fare asserzioni su individui (astratti), quindi modella le istanze significative. Il T-Box contiene formule logiche (assiomi) che mettono in relazione delle \textit{concept expressions} per modellare il dominio di riferimento, ad esempio il fatto che  uno Student è una Persona. Una \textit{base di conoscenza} è quindi l'insieme di asserzioni presenti sia nel T-Box che nell'A-Box.\\
+\section{Ontologie OWL}
+\label{sec:ontologieOWL}
+La definizione comunemente accettata di ontologia è \textit{una specifica formale ed esplicita di una concettualizzazione condivisa} \cite{goy2015ontologies}. Un modo di rappresentarle è attraverso particolari linguaggi altamente espressivi appartenenti a una famiglia di formalismi chiamati logiche descrittive (DL). Le informazioni sul dominio di interesse vengono espresse in maniera formale tramite formule logiche di due tipologie. Una tipologia fa parte della cosiddetta T-Box e sono asserzioni sulla terminologia, componendo uno schema. L'altra fa parte della A-Box ed è usata per fare asserzioni su individui (astratti), quindi modella le istanze significative. Il T-Box contiene formule logiche (assiomi) che mettono in relazione delle \textit{concept expressions} per modellare il dominio di riferimento, ad esempio il fatto che  uno \texttt{Studente} è una \texttt{Persona}. Una \textit{base di conoscenza} è quindi l'insieme di asserzioni presenti sia nel T-Box che nell'A-Box.\\
 Nel contesto del Web Semantico, la raccomandazione W3C \textit{Web Ontology Language (OWL)} è una famiglia di linguaggi ontologici altamente espressivi basati sul linguaggio descrittivo $\mathcal{SROIQ}$ \cite{baader2017introductionDL}. Quello che andremo a mostrare noi nella sezione dei costrutti sintattici DL è il più semplice sottoinsieme $\mathcal{ALCOIQ}$.
-Grazie alla forma logica delle informazioni, è possibile definire un ragionamento automatico\footnote{\ i.e. tramite un algoritmo deterministico, cioè eseguibile da un computer} che permette di svolgere operazioni di inferenza sugli individui concreti, ad esempio inferire che il nodo \textit{x} di un grafo RDF è uno Studente, ma anche eseguire compiti più astratti, come capire se un concetto è soddisfacibile. Questi compiti sono alla base di ogni reasoner, come ad esempio HermiT \cite{HermiT}, Pellet \cite{Pellet} e Fact++ \cite{Fact++}.\\
+Grazie alla forma logica delle informazioni, è possibile definire un ragionamento automatico\footnote{\ i.e. tramite un algoritmo deterministico, cioè eseguibile da un computer} che permette di svolgere operazioni di inferenza sugli individui concreti, ad esempio inferire che il nodo \textit{x} di un grafo RDF è uno \texttt{Studente}, ma anche eseguire compiti più astratti, come capire se un concetto è soddisfacibile. Questi compiti sono alla base di ogni reasoner, come ad esempio HermiT \cite{HermiTWhitepaper}, Pellet \cite{Pellet} e Fact++ \cite{Fact++}.\\
 
 \subsection[Logica  descrittiva $\mathcal{ALCOIQ}$]{Logica  descrittiva $\mathcal{ALCOIQ}$}
+\label{sec:logicaALCOIQ}
 Questa introduzione e gli esempi sono presi dal libro \cite{baader2017introductionDL}, che contiene un'ottima introduzione alle logiche descrittive. Per non divagare troppo dal motivo per cui spieghiamo questi concetti, ovvero per permettere ai lettori meno esperti delle ontologie di capire la terminologia usata in questa tesi, la logica utilizzata in questa sezione sarà principalmente $\mathcal{ALCOIQ}$. Per questo motivo, useremo anche esempi e tabelle prese dall'introduzione della tesi di dottorato di Leinberger \cite{leinbergerphdthesis}. L'acronimo $\mathcal{ALCOIQ}$ descrive i costrutti sintattici disponibili nel linguaggio (\autoref{fig:SintassiCD}). I costrutti di base sono contenuti in $\mathcal{ALC}$ (\textit{Attributive Language with Complements}), e le estensioni introdotte sono spiegate nella \autoref{tab:ALCOIQExtensions}. \\\\
-I linguaggi appartenenti alle logiche descrittive separano le informazioni di un argomento in una parte terminologica (\textit{T-Box}) e una di asserzioni (\textit{A-Box})\footnote{ Nelle estensioni $\mathcal{R}$ del linguaggio $\mathcal{ALC}$, come ad esempio in OWL ($\mathcal{SROIQ}$), esiste una terzo insieme di asserzioni chiamati R-Box. Dentro vengono contenute asserzioni per creare legami fra i ruoli (come equivalenza o sotto-ruolo). Per saperne di più consultare \cite{baader2017introductionDL}}. In altre parole, il T-Box definisce informazioni sulla correlazioni dei concetti (e.g. Studente è una Persona che frequenta un corso), simile a uno schema di un database. L’A-Box descrive invece la rappresentazione concreta dei concetti (e.g. Alice è una Persona), molto più simile alle istanze di una tabella relazionale. La combinazione di entrambe viene definita una \textit{Knowledge Base} (KB).
+I linguaggi appartenenti alle logiche descrittive separano le informazioni di un argomento in una parte terminologica (\textit{T-Box}) e una di asserzioni (\textit{A-Box})\footnote{ Nelle estensioni $\mathcal{R}$ del linguaggio $\mathcal{ALC}$, come ad esempio in OWL ($\mathcal{SROIQ}$), esiste una terzo insieme di asserzioni chiamati R-Box. Dentro vengono contenute asserzioni per creare legami fra i ruoli (come equivalenza o sotto-ruolo). Per saperne di più consultare \cite{baader2017introductionDL}}. In altre parole, il T-Box definisce informazioni sulla correlazioni dei concetti (e.g. \texttt{Studente} è una \texttt{Persona} che frequenta un corso), simile a uno schema di un database. L’A-Box descrive invece la rappresentazione concreta dei concetti (e.g. \textsc{Alice} è una \texttt{Persona}), molto più simile alle istanze di una tabella relazionale. La combinazione di entrambe viene definita una \textit{Knowledge Base} (KB).
 Nelle logiche descrittive si assume di voler descrivere un’astrazione della realtà d’interesse, e che questa sia popolata da elementi. Per descrivere quest'ultimi utilizziamo tre componenti:
 \begin{description}
-	\item[Concept expression] Anche chiamato concept description, è un insieme di elementi e può essere visto come un predicato unario. Le concept expressions sono definite a partire dai \textit{nomi di concetti} e dai \textit{nomi di ruolo}. Sono definiti induttivamente dall’insieme di tutte le regole sintattiche del linguaggio considerato (vedi \autoref{fig:SintassiCD}). L’insieme che una concept description rappresenta è chiamato la sua \textit{estensione}. Per esempio, Persona è un concetto, e Alice è un elemento (nell’estensione) di Persona.
-	\item[Role expression] relazione binaria sugli elementi. È definito atomicamente da un \textit{nome}. L'unico altro costrutto in $\mathcal{ALCOIQ}$ è il ruolo inverso, che non è nient'altro che la coppia di entità in ordine inverso. Se un ruolo \textit{r} mette in relazione un elemento con un altro, si definisce quest’ultimo un \textit{r}-filler del primo (es. Alice \textit{insegna} C, C è un \textit{insegna}-filler di Alice).
+	\item[Concept expression] Anche chiamato concept description, è un insieme di elementi e può essere visto come un predicato unario. Le concept expressions sono definite a partire dai \textit{nomi di concetti} e dai \textit{nomi di ruolo}. Sono definiti induttivamente dall’insieme di tutte le regole sintattiche del linguaggio considerato (vedi \autoref{fig:SintassiCD}). L’insieme che una concept description rappresenta è chiamato la sua \textit{estensione}. Per esempio, \texttt{Persona} è un concetto, e \texttt{Alice} è un elemento (nell’estensione) di \texttt{Persona}.
+	\item[Role expression] relazione binaria sugli elementi. È definito atomicamente da un \textit{nome}. L'unico altro costrutto in $\mathcal{ALCOIQ}$ è il ruolo inverso, che non è nient'altro che la coppia di entità in ordine inverso. Se un ruolo \textit{r} mette in relazione un elemento con un altro, si definisce quest’ultimo un \textit{r}-filler del primo (es. \texttt{Alice} \textit{insegna} \texttt{C}, \texttt{C} è un \textit{insegna}-filler di \texttt{Alice}).
 	\item[Linguaggio concettuale] il linguaggio formale al centro di uno specifica logica descrittiva. Permette di costruire concept expressions e role descriptions partendo da nomi di concetti, nomi di ruoli e altre primitive.
 \end{description}
 
-Di solito un linguaggio DL permette di costruire concetti utilizzando gli operatori comuni alla logica del prim’ordine (e.g. $\sqcap, \sqcup, \exists, \forall \text{ e } \neg)$, ma ci possono essere varie estensioni che possono essere considerate per un linguaggio. L'estensione che può risultare più strana nella \autoref{fig:SintassiCD} è la regola (Restrizione num. richiesto), che richiede che permette di esprimere il vincolo di avere almeno \textit{n} \textit{r}-filler della concept expression C. Per fare un esempio servirebbe definire l'ambito in cui vengono utilizzate le concept e le role expression, che è proprio quello che introdurremo nella sezione successiva.\\
+Di solito un linguaggio DL permette di costruire concetti utilizzando gli operatori comuni alla logica del prim’ordine (e.g. $\sqcap, \sqcup, \exists, \forall \text{ e } \neg)$, ma ci possono essere varie estensioni che possono essere considerate per un linguaggio. L'estensione che può risultare più strana nella \autoref{fig:SintassiCD} è la regola (Restrizione num. richiesto), che richiede che permette di esprimere il vincolo di avere almeno \textit{n} \textit{r}-filler della concept expression \texttt{C}. Per fare un esempio servirebbe definire l'ambito in cui vengono utilizzate le concept e le role expression, che è proprio quello che introdurremo nella sezione successiva.\\
 \begin{figure}[b!]
 	\begin{center}	
 		\begin{minipage}{0.6\textwidth}
@@ -135,7 +156,7 @@ Di solito un linguaggio DL permette di costruire concetti utilizzando gli operat
 \end{table}
 In questa introduzione vedremo in particolare il linguaggio concettuale su cui si basa una semplificazione di OWL per permettere ai lettori meno esperti di comprendere il codice presente nel \autoref{chap:Implementazione}.
 \noindent
-Vedremo a breve il significato della semantica di questi costrutti, ma vale la pena di spendere qualche parola su come andranno a essere utilizzati alcuni di essi. In particolare, esistono diversi costrutti per andare a specificare degli insiemi per tutti quegli elementi che sono in relazione con un certo ruolo a un concetto particolare (parliamo di $\exists r. \mathbf{C}$,  $\forall r. \mathbf{C}$ e $\ge n\ \mathbf{R} . \mathbf{C}$). Questo ci permetterà principalmente nel T-Box di dichiarare qualche genere di concetto che deve essere in relazione con qualcosa. Ad esempio, un Celibe è un uomo che non ha consorte, ed è proprio la mancanza a caratterizzare gli elementi nell'estensione di Celibe. Questo si potrebbe andare a caratterizzare con la concept expression $\text{Uomo}\sqcap \neg\ \exists\ \textit{spostatoCon}. \text{Consorte}$.\\
+Vedremo a breve il significato della semantica di questi costrutti, ma vale la pena di spendere qualche parola su come andranno a essere utilizzati alcuni di essi. In particolare, esistono diversi costrutti per andare a specificare degli insiemi per tutti quegli elementi che sono in relazione con un certo ruolo a un concetto particolare (parliamo di $\exists r. \mathbf{C}$,  $\forall r. \mathbf{C}$ e $\ge n\ \mathbf{R} . \mathbf{C}$). Questo ci permetterà principalmente nel T-Box di dichiarare qualche genere di concetto che deve essere in relazione con qualcosa. Ad esempio, un celibe è un uomo che non ha consorte, ed è proprio la mancanza di esso a caratterizzarlo. Questo si potrebbe andare a rappresentare con la concept expression $\texttt{Uomo}\sqcap \neg\ \exists\ \textit{spostatoCon}. \texttt{Consorte}$.\\
 Una cosa da notare è che la regola (Esistenziale) potrebbe essere espressa attraverso la (Restrizione num. richiesto). Infatti, $\exists r. \mathbf{C}$ è intuitivamente equivalente al caso particolare $\ge 1\ \mathbf{R}. \mathbf{C}$. Per un elenco di regole derivate consultare la sezione 2.2.3 di \cite{leinbergerphdthesis}.
 
 
@@ -171,10 +192,11 @@ Come è possibile intuire dalla \autoref{tab:SintaxSemanticsALCOIQ}, ai costrutt
 		\hline
 	\end{tabular}
 	\captionsetup{justification={centerlast}}
-	\caption{sintassi e semantica delle concept expressions \textit{C}, \textit{D}  e del ruolo \textit{r} nella logica descrittiva $\mathcal{ALCOIQ}$ }
+	\caption{sintassi e semantica delle concept expressions \texttt{C}, \texttt{D}  e del ruolo \textit{r} nella logica descrittiva $\mathcal{ALCOIQ}$ }
 	\label{tab:SintaxSemanticsALCOIQ}
 \end{table}
 \subsubsection*{Knowledge Base $\mathcal{ALCOIQ}$}
+\label{sec:KB}
 Informalmente, possiamo dire che una Knowledge Base $\mathcal{ALC}$ è composta da 2 componenti: T-Box e A-Box. Iniziamo a definire sintassi e semantica delle T-Box.
 \begin{definition}
 	Dati $C$ e $D$ concept expressions, una General Concept Inclusion (GCI) è un espressione della forma $C \sqsubseteq D$. Un'insieme finito di GCI è detto T-Box. È possibile definire anche $C \equiv D$ come abbreviazione di $C \sqsubseteq D$ e $D \sqsubseteq C$.\\
@@ -188,28 +210,28 @@ Una \textit{T-Box} è quindi una rappresentazione della struttura terminologica 
 	\tag{$\mathcal{T}_1$.2} \label{eq:T1.2}
 	&Student \sqsubseteq \textit{Person}\ \sqcap \ge 1\ attends.Course\ \}
 \end{align}
-$\mathcal{T}_1$ è una T-Box semplice, ma basterà per mostrare i casi in cui un'interpretazione non è un suo modello. Ad esempio, con riferimento a \eqref{eq:T1.1}, possiamo affermare che se qualche elemento nell'\textit{estensione} di Person non è in relazione \textit{hasName} con un qualsiasi elemento nel dominio dell'interpretazione, allora quell'interpretazione sicuramente non sarà modello per $\mathcal{T}_1$. Andiamo a vedere ora l'interpretazione $\mathcal{I}_1$, che è una degli infiniti possibili \textit{modelli} di $\mathcal{T}_1$.
+$\mathcal{T}_1$ è una T-Box semplice, ma basterà per mostrare i casi in cui un'interpretazione non è un suo modello. Ad esempio, con riferimento a \eqref{eq:T1.1}, possiamo affermare che se qualche elemento nell'\textit{estensione} di \texttt{Person} non è in relazione \textit{hasName} con un qualsiasi elemento nel dominio dell'interpretazione, allora quell'interpretazione sicuramente non sarà modello per $\mathcal{T}_1$. Andiamo a vedere ora l'interpretazione $\mathcal{I}_1$, che è una degli infiniti possibili \textit{modelli} di $\mathcal{T}_1$.
 \begin{align}
 	\tag{$\mathcal{I}_1$} \label{eq:I1}
 	\triangle^{\mathcal{I}_1} &= \{\ alice,\ bob,\ c1\ ,\ Roberto,\ bar,\ \textit{foo}\}\\
 	\tag{$\mathcal{I}_1$.1} \label{eq:I1.1}
-	Person^{\mathcal{I}_1} &= \{\ alice,\ bob\ \}\\
+	\texttt{Person}^{\mathcal{I}_1} &= \{\ alice,\ bob\ \}\\
 	\tag{$\mathcal{I}_1$.2} \label{eq:I1.2}
-	Student^{\mathcal{I}_1} &= \{\ bob\ \} \\
+	\texttt{Student}^{\mathcal{I}_1} &= \{\ bob\ \} \\
 	\tag{$\mathcal{I}_1$.3} \label{eq:I1.3}
-	Course^{\mathcal{I}_1} &= \{\ c1,\ alice\ \}\\
+	\texttt{Course}^{\mathcal{I}_1} &= \{\ c1,\ alice\ \}\\
 	\tag{$\mathcal{I}_1$.4} \label{eq:I1.4}
 	attends^{\mathcal{I}_1} &= \{\ (bob, c1)\ \}\\
 	\tag{$\mathcal{I}_1$.5} \label{eq:I1.5}
 	\textit{hasName}^{\mathcal{I}_1} &= \{\ (alice,\ alice),\ (alice,\ Roberto),\ (bob,\ \textit{foo})\ \}
 \end{align}
-Ci sono vari particolari da notare in questa interpretazione. Partendo dal dominio d'intepretazione definito in \eqref{eq:I1}, si può notare che l'elemento \textit{bar} non compare in nessuna estensione di un concetto definito da $\mathcal{T}_1$. Questo è assolutamente consentito, e dovrebbe far realizzare che non è possibile conoscere la cardinalità di $\triangle^{\mathcal{I}_1}$. Gli unici elementi che possiamo prevedere far parte del dominio sono quelli che si definiscono nell'A-Box. A differenza di \textit{bar}, \textit{foo} e \textit{Roberto} non compaiono in nessuna estensione, però sono rispettivamente \textit{hasName}-filler di \textit{bob} e \textit{alice} \eqref{eq:I1.5}. La definizione di Person in \eqref{eq:T1.1} richiede che un elemento nella sua estensione abbia almeno un \textit{hasName}-filler del concetto $\top$. Essendo \textit{foo} e \textit{Roberto} nell'estensione di $\top$ (cioè $\triangle^\mathcal{I}$), allora questo è perfettamente legale. Inoltre, sempre riguardo alla definizione \eqref{eq:T1.1}, possiamo notare come:
+Ci sono vari particolari da notare in questa interpretazione. Partendo dal dominio d'intepretazione definito in \eqref{eq:I1}, si può notare che l'elemento \textit{bar} non compare in nessuna estensione di un concetto definito da $\mathcal{T}_1$. Questo è assolutamente consentito, e dovrebbe far realizzare che non è possibile conoscere la cardinalità di $\triangle^{\mathcal{I}_1}$. Gli unici elementi che possiamo prevedere far parte del dominio sono quelli che si definiscono nell'A-Box. A differenza di \textit{bar}, \textit{foo} e \textit{Roberto} non compaiono in nessuna estensione, però sono rispettivamente \textit{hasName}-filler di \textit{bob} e \textit{alice} \eqref{eq:I1.5}. La definizione di \texttt{Person} in \eqref{eq:T1.1} richiede che un elemento nella sua estensione abbia almeno un \textit{hasName}-filler del concetto $\top$. Essendo \textit{foo} e \textit{Roberto} nell'estensione di $\top$ (cioè $\triangle^\mathcal{I}$), allora questo è perfettamente legale. Inoltre, sempre riguardo alla definizione \eqref{eq:T1.1}, possiamo notare come:
 \begin{enumerate}[(i)]
 	\item l'elemento \textit{alice} ha due \textit{hasName}-filler,
 	\item uno di questi è se stesso.
 \end{enumerate}
 La regola (Esistenziale) ha come semantica che deve esistere un elemento \textit{r}-filler che appartiene alla (estensione della) concept expressions specificata (\autoref{tab:SintaxSemanticsALCOIQ}), (i) non crea alcun problema. Inoltre, dato che \textit{alice} è nell'estensione della concept expression $\top$, allora anche (ii) è consentito.\\
-L'ultimo particolare su cui si può ragionare è il fatto che \textit{alice} sia contemporaneamente nell'estensione di Course e Person. Effettivamente è contraddittorio che una persona possa essere anche un corso. Questo caso può essere considerato un errore di modellazione del dominio, ma non è un errore dell'interpretazione bensì del T-Box $\mathcal{T}_1$. In effetti non c'è alcuna GCI che vieti ad un elemento di essere contemporaneamente in entrambe le estensioni. Quindi logicamente l'interpretazione sta solo assegnando gli elementi seguendo le regole definite dalla T-Box. Se volessimo evitare questo problema potremmo ridefinire l'asserzione \eqref{eq:T1.1} come:
+L'ultimo particolare su cui si può ragionare è il fatto che \textit{alice} sia contemporaneamente nell'estensione di \texttt{Course} e \texttt{Person}. Effettivamente è contraddittorio che una persona possa essere anche un corso. Questo caso può essere considerato un errore di modellazione del dominio, ma non è un errore dell'interpretazione bensì del T-Box $\mathcal{T}_1$. In effetti non c'è alcuna GCI che vieti ad un elemento di essere contemporaneamente in entrambe le estensioni. Quindi logicamente l'interpretazione sta solo assegnando gli elementi seguendo le regole definite dalla T-Box. Se volessimo evitare questo problema potremmo ridefinire l'asserzione \eqref{eq:T1.1} come:
 \[ Person \sqsubseteq \exists\ \textit{hasName}.\top \sqcap \neg Course \]
 \\
 In generale, una T-Box $\mathcal{T}$ permettono di distinguere le interpretazioni che sono o non sono modelli per $\mathcal{T}$, limitando la nostra attenzione a quelle interpretazioni che modellano la porzione di realtà che si vuole modellare. Più GCI sono presenti in $\mathcal{T}$, meno modelli ha. Per la definizione formale di questa proprietà, consultare \cite{baader2017introductionDL}.
@@ -233,42 +255,42 @@ Andiamo ora a definire sintassi e semantica dell'A-Box.
 Si noti che negli assiomi A-Box, \textit{a} e \textit{b} non sono individui concreti, ed è necessario che sia un’interpretazione a stabilire l'elemento corrispondente da assegnare all'individuo "concettuale". Negli assiomi stiamo solo asserendo che valga una relazione del genere, ma non è detto che sia così o che due individui siano diversi. Facciamo un'esempio concreto:
 \begin{align}
 	\tag{$\mathcal{A}_1$.1} \label{eq:A1.1}
-	\mathcal{A}_1 = \{&\textit{Alice} : \text{Person} \sqcap \text{Student},\\
+	\mathcal{A}_1 = \{&\textsc{Alice} : \texttt{Person} \sqcap \texttt{Student},\\
 	\tag{$\mathcal{A}_1$.2} \label{eq:A1.2}
-	&\textit{CS600} : \text{Course},\\
+	&\textsc{CS600} : \texttt{Course},\\
 	\tag{$\mathcal{A}_1$.3} \label{eq:A1.3}
-	&\textit{Ph561} : \text{Course}, \\
+	&\textsc{Ph561} : \texttt{Course}, \\
 	\tag{$\mathcal{A}_1$.4} \label{eq:A1.4}	
-	&\textit{Bob} : \text{Student}\\
+	&\textsc{Bob} : \texttt{Student}\\
 	\tag{$\mathcal{A}_1$.5} \label{eq:A1.5}
-	&(\textit{Bob}, \textit{CS600}) : attends\\
+	&(\textsc{Bob}, \textsc{CS600}) : attends\\
 \end{align}
 \noindent
-Questo A-Box ha due particolarità, riguardanti la definizione dell'individuo \textit{Alice}:
+Questo A-Box ha due particolarità, riguardanti la definizione dell'individuo \textsc{Alice}:
 \begin{enumerate}[(i)]
-	\item È definito come un'individuo del concetto $\text{Person} \sqcap \text{Student}$
-	\item anche se è definito come Student, non è stato esplicitato alcun corso che frequenta, al contrario di \textit{Bob}.
+	\item È definito come un'individuo del concetto $\texttt{Person} \sqcap \texttt{Student}$
+	\item anche se è definito come \texttt{Student}, non è stato esplicitato alcun corso che frequenta, al contrario di \textsc{Bob}.
 \end{enumerate}
-In effetti la concept expression presente nella asserzione concettuale \eqref{eq:A1.1} è ridondante, perchè Student è un sottoinsieme (semanticamente parlando) di Person. Non ha senso definirlo così, ma è comunque un'asserzione concettuale lecita. Concentriamoci invece su (ii): dato che abbiamo specificato \textit{Alice} come Student, vuol dire che deve frequentare almeno un corso, ma non abbiamo detto quale, ovvero non c'è nessuna asserzione di ruolo per della forma $(\textit{Alice}, \_) : attends$. Per la semantica definita nella \autoref{def:ABox}, però, la definizione di \textit{informazioni incomplete} non è assolutamente un problema: sarà compito dell'interpretazione, per essere un modello di $\mathcal{A}_1$, di specificare un qualsiasi elemento che faccia parte dell'estensione di Course. Ad esempio, è proposta una possibile interpretazione $\mathcal{I}_2$ (estesa dalla precedente $\mathcal{I}_1$) per cui $\models_{\mathcal{I}_2} \mathcal{A}_2$:
+In effetti la concept expression presente nella asserzione concettuale \eqref{eq:A1.1} è ridondante, perchè \texttt{Student} è un sottoinsieme (semanticamente parlando) di \texttt{Person}. Non ha senso definirlo così, ma è comunque un'asserzione concettuale lecita. Concentriamoci invece su (ii): dato che abbiamo specificato \textsc{Alice} come \texttt{Student}, vuol dire che deve frequentare almeno un corso, ma non abbiamo detto quale, ovvero non c'è nessuna asserzione di ruolo per della forma $(\textsc{Alice}, \_) : attends$. Per la semantica definita nella \autoref{def:ABox}, però, la definizione di \textit{informazioni incomplete} non è assolutamente un problema: sarà compito dell'interpretazione, per essere un modello di $\mathcal{A}_1$, di specificare un qualsiasi elemento che faccia parte dell'estensione di \texttt{Course}. Ad esempio, è proposta una possibile interpretazione $\mathcal{I}_2$ (estesa dalla precedente $\mathcal{I}_1$) per cui $\models_{\mathcal{I}_2} \mathcal{A}_2$:
 \begin{align}
 	\tag{$\mathcal{I}_2$} \label{eq:I2}
 	\triangle^{\mathcal{I}_2} &= \{\ alice,\ bob,\ c1\ ,\ Roberto,\ bar,\ \textit{foo}\}\\
 	\tag{$\mathcal{I}_2$.1} \label{eq:I2.1}
-	Alice^{\mathcal{I}_2} &= Bob^{\mathcal{I}_2} = bob\\
+	\textsc{Alice}^{\mathcal{I}_2} &= \textsc{Bob}^{\mathcal{I}_2} = bob\\
 	\tag{$\mathcal{I}_2$.2} \label{eq:I2.2}
-	\textit{CS600}^{\mathcal{I}_2} &= \textit{Ph561}^{\mathcal{I}_2} = c1\\
+	\textsc{CS600}^{\mathcal{I}_2} &= \textit{Ph561}^{\mathcal{I}_2} = c1\\
 	\tag{$\mathcal{I}_2$.3} \label{eq:I2.3}
-	Person^{\mathcal{I}_2} &= \{\ alice,\ bob\ \}\\
+	\texttt{Person}^{\mathcal{I}_2} &= \{\ alice,\ bob\ \}\\
 	\tag{$\mathcal{I}_2$.4} \label{eq:I2.4}
-	Student^{\mathcal{I}_2} &= \{\ bob, alice\ \} \\
+	\texttt{Student}^{\mathcal{I}_2} &= \{\ bob, alice\ \} \\
 	\tag{$\mathcal{I}_2$.5} \label{eq:I2.5}
-	Course^{\mathcal{I}_2} &= \{\ c1, \textit{alice}\ \}\\
+	\texttt{Course}^{\mathcal{I}_2} &= \{\ c1, \textit{alice}\ \}\\
 	\tag{$\mathcal{I}_2$.6} \label{eq:I2.6}
 	attends^{\mathcal{I}_2} &= \{\ (bob, c1), (alice, c1)\ \}\\
 	\tag{$\mathcal{I}_2$.7} \label{eq:I2.7}
 	\textit{hasName}^{\mathcal{I}_2} &= \{\ (alice,\ alice),\ (alice,\ Roberto),\ (bob,\ \textit{foo})\ \}
 \end{align}
-Il problema (ii) in questa interpretazione è stato risolto assegnando gli individui \textit{Alice} e \textit{Bob} allo stesso elemento, ovvero \textit{bob}. In effetti, così \textit{Alice} è a tutti gli effetti nell'estensione di Student, soddisfacendo l'asserzione concettuale. In questa interpretazione, anche l'elemento \textit{alice} è nell'estensione Student, ma i due eventi non sono correlati. Volevamo aggiungere un piccolo gioco mentale. Semplicemente, \textit{alice} adesso è nell'estensione di Student perchè la funzione d'interpretazione di $\mathcal{I}_2$ ha mappato ad \textit{attends} un'insieme in cui è presente anche una coppia in cui compare \textit{alice} come primo elemento.
+Il problema (ii) in questa interpretazione è stato risolto assegnando gli individui \textsc{Alice} e \textsc{Bob} allo stesso elemento, ovvero \textit{bob}. In effetti, così \textsc{Alice} è a tutti gli effetti nell'estensione di \texttt{Student}, soddisfacendo l'asserzione concettuale. In questa interpretazione, anche l'elemento \textit{alice} è nell'estensione \texttt{Student}, ma i due eventi non sono correlati. Volevamo aggiungere un piccolo gioco mentale. Semplicemente, \textit{alice} adesso è nell'estensione di \texttt{Student} perchè la funzione d'interpretazione di $\mathcal{I}_2$ ha mappato ad \textit{attends} un'insieme in cui è presente anche una coppia in cui compare \textit{alice} come primo elemento.
 \\
 Ora che abbiamo definito entrambi le componenti di una Knowledge Base, possiamo procedere a darne la definizione
 \begin{definition}
@@ -277,17 +299,18 @@ Ora che abbiamo definito entrambi le componenti di una Knowledge Base, possiamo 
 \noindent
 In altre parole, un modello di una knowledge base è un'interpretazione che soddisfa contemporaneamente tutte le sue asserzioni, terminologiche e sugli individui.  $\mathcal{I}_2$ ad esempio è un modello della knowledge base $(\mathcal{T}_1, \mathcal{A}_1)$, mentre  $\mathcal{I}_1$ non lo è.
 \subsection[Problemi di reasoning]{Problemi di reasoning}
-Finora, abbiamo definito le componenti di una knowledge base DL e che cosa significhi per un'interpretazione essere un modello di essa. Di seguito illustreremo le definizioni di alcuni problemi di ragionamento che saranno necessari per capire di cosa si sta parlando principalmente nel \autoref{chap:Implementazione}. In particolare questi problemi sono alla base di ogni reasoner, strumenti in grado di eseguire attività di ragionamento. Tipicamente, nel Web Semantico, questi tool vengono basati su RDFS o OWL.
+\label{sec:problemiReasoning}
+Finora, abbiamo definito le componenti di una knowledge base DL e che cosa significhi per un'interpretazione essere un modello di essa. Di seguito illustriamo le definizioni di alcuni problemi di ragionamento, ossia l'inferenza di una proprietà d'interesse, che saranno necessari per capire di cosa si sta parlando principalmente nel \autoref{chap:Implementazione}. In particolare questi problemi sono compiti che ogni reasoner, strumenti in grado di eseguire attività di ragionamento ontologie basate su RDFS o OWL, dovrebbe risolvere.
 \begin{definition}
-	Sia $\mathcal{A} = (\mathcal{T}, \mathcal{A})$ una knowledge base $\mathcal{ALC}$, C e D concept expressions e b un nome d'individuo. Diciamo che:
+	Sia $\mathcal{K} = (\mathcal{T}, \mathcal{A})$ una knowledge base $\mathcal{ALC}$, C e D concept expressions e b un nome d'individuo. Diciamo che:
 	\begin{enumerate}[(i)]
 		\item C è soddisfacibile rispetto a $\mathcal{T}$, scritto $\mathcal{T} \models C$, se esiste un modello $\mathcal{I}$ di $\mathcal{T}$ e qualche $d \in \triangle^\mathcal{I}$ tale che $d \in C^\mathcal{I}$.
 		\item C è sussunto da D rispetto a $\mathcal{T}$, scritto $\mathcal{T} \models C \sqsubseteq D$, se $C^\mathcal{I} = D^\mathcal{I}$ per ogni modello $\mathcal{I}$ di $\mathcal{T}$.
 		\item C e D sono equivalenti rispetto a $\mathcal{T}$, scritto $\mathcal{T} \models C \equiv D$, se $C^\mathcal{I} \subseteq D^\mathcal{I}$ per ogni modello $\mathcal{I}$ di $\mathcal{T}$.
-		\item $\mathcal{K}$ è consistente se esiste un modello per $\mathcal{K}$
+		\item $\mathcal{K}$ è consistente se esiste un modello per $\mathcal{K}$.
 		\item b è un'istanza di C con rispetto a $\mathcal{K}$, scritto $\mathcal{K} \models b : C$ se $b^\mathcal{I} \in C^\mathcal{I}$ per ogni modello $\mathcal{I}$ di $\mathcal{K}$
 	\end{enumerate}
 \end{definition}
 \noindent
-Tutte questi problemi possono essere ridotti alla verifica della \textit{consistenza} di una base di dati (Teorema 2.17 \cite{baader2017introductionDL}). Questo significa che è possibile usare un algoritmo per la consistenza per decidere tutti i problemi precedenti. Si noti, tuttavia, che ci sono altri problemi di ragionamento non menzionati la cui riduzione non è possibile, ed anche se lo fosse la complessità del problema sarebbe intrattabile. Uno di questi è decidere le risposte esatte di una conjunctive query, per cui nel linguaggio $\mathcal{SROIQ}$ (proprio quello di OWL) la sua decidibilità è una questione ancora non risolta, mentre per lo stesso linguaggio la verifica della consistenza è decidibile e \textsc{N2ExpTime} completo \cite{baader2017introductionDL}. Non andremo ad approfondire nel dettaglio la complessità, per i lettori interessati su questa questione consigliamo di approfondire il Capitolo 5 e 7 di \cite{baader2017introductionDL}.
+Tutte questi problemi possono essere ridotti alla verifica della \textit{consistenza} di una base di conoscenza (Teorema 2.17 del libro \cite{baader2017introductionDL}). Questo significa che è possibile usare un algoritmo per la verifica della consistenza di una base di conoscenza $\mathcal{K}$ per decidere tutti i problemi precedenti relativi a $\mathcal{K}$. Si noti, tuttavia, che ci sono altri problemi di ragionamento non menzionati la cui riduzione non è possibile, ed anche se lo fosse la complessità del problema lo renderebbe intrattabile temporalmente. Infatti, anche se decibile, la verifica della consistenza è \textsc{N2ExpTime} completo \cite{baader2017introductionDL}. Non andremo ad approfondire nel dettaglio la complessità, per i lettori interessati su questa questione consigliamo di approfondire il Capitolo 5 e 7 di \cite{baader2017introductionDL}.
 
