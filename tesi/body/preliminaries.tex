@@ -68,6 +68,12 @@ IRI (International Resource Identifier),
 \subsection{SPARQL CQ}
 I grafi RDF vengono interrogati utilizzando le query SPARQL, infatti i grafi vengono memorizzati in database speciali chiamati triplestore, per efficentare le interrogazioni. In questa trattazione utilizziamo un tipo particolare di SPARQL, le query congiuntive, che consistono nella congiunzione di triple pattern, elementi atomici per interrogare un triplestore. \\
 \textbf{Abitabilità: } In una query SPARQL, il concetto di abitabilità identifica le query che possono essere abitate da almeno un elemento. Per esempio, se scriviamo una query che richiede tutti i nodi che sono sia di classe Pizza sia di classe Gelato, ovviamente questa query non potrà mai essere abitata, perchè non esistono pizze che allo stesso tempo sono anche dei gelati. Il concetto di abitabilità però non è da confondere con il fatto che essa sia abitata: una query potrebbe essere abitata, ma nel grafo RDF su cui stiamo lavorando non c'è nessun nodo che soddisfa i requisiti. \ 
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.6]{pictures/leinbergSyntax}
+    \caption{sintassi delle query \\ SPARQL CQ}
+    \label{fig:leinbergerSyntax}
+\end{figure}
 \newpage
 \section[Ontologie]{Ontologie}
 La definizione comunemente accettata di ontologia è \textit{una specifica formale ed esplicita di una concettualizzazione condivisa} \cite{goy2015ontologies}. Un modo di rappresentarle è attraverso particolari linguaggi altamente espressivi appartenenti a una famiglia di formalismi chiamati logiche descrittive (DL). Le informazioni sul dominio di interesse vengono espresse in maniera formale tramite formule logiche di due tipologie. Una tipologia fa parte della cosiddetta T-Box e sono asserzioni sulla terminologia, componendo uno schema. L'altra fa parte della A-Box ed è usata per fare asserzioni su individui (astratti), quindi modella le istanze significative. Il T-Box contiene formule logiche (assiomi) che mettono in relazione delle \textit{concept expressions} per modellare il dominio di riferimento, ad esempio il fatto che  uno Student è una Persona. Una \textit{base di conoscenza} è quindi l'insieme di asserzioni presenti sia nel T-Box che nell'A-Box.\\
