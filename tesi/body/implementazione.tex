@@ -3,8 +3,7 @@
 Il software si pone l'obiettivo di verificare se un programma, composto da una o più query e da codice che ne usa i risultati, sia corretto o meno. Per le query si tratta di verificare se essa sia abitata o meno. Per quanto riguarda invece l'uso dei risultati si tratta di verificare se sia ben tipato o meno. Da queste due responsabilità abbiamo derivato due moduli: un modulo Reasoner, scritto in java che si occupa di determinare l'abitabilità delle query, e un modulo scritto in OCaml che si occupa di tipare il programma.
 
 \section{Il linguaggio $\boldsymbol{\lambda_{DL}}$}
-    Quando si effettua una computazione basata su ontologie, il processo di ragionamento è portato avanti a run time, e se si scoprono assiomi non soddisfacibili 
-    il programma potrebbe essere soggetto a errori. Non è quindi possibile garantire che un'esecuzione termini correttamente, ovvero che si otterrà il risultato aspettato. 
+    Quando si effettua una computazione basata su ontologie, il processo di ragionamento e la gestione degli errori sono portati avanti a run time. Non è quindi possibile garantire che un'esecuzione termini correttamente, ovvero che si otterrà il risultato aspettato. 
     Il nostro obiettivo è quello riuscire a catturare questi errori prima dell'esecuzione, andando ad assicurare una computazione senza errori run-time che dipendono dalla base di conoscenza. 
     Vorremmo quindi valutare vantaggi e efficienza di un controllo statico, sfruttando i sistemi di tipi per assicurare la correttezza statica del programma, rispetto a 
     un'ontologia basata sulle logiche descrittive (in particolare OWL) \ref{sec:ontologieOWL}. Sforzi verso questa direzioni sono stati già proposti nella tesi di dottorato di Martin Leinberger \cite{leinbergerphdthesis}, 
