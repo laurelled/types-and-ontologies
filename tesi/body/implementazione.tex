@@ -4,11 +4,11 @@ Il software si pone l'obiettivo di verificare se un programma, composto da una o
 
 \section{Il linguaggio $\boldsymbol{\lambda_{DL}}$}
     Quando si effettua una computazione basata su ontologie, il processo di ragionamento è portato avanti a run time, e se si scoprono assiomi non soddisfacibili 
-    il programma potrebbe essere soggetto a errori. Non è quindi possibile garantire che un'esecuzione termini correttamente, ovvero si otterrà il risultato aspettato. 
+    il programma potrebbe essere soggetto a errori. Non è quindi possibile garantire che un'esecuzione termini correttamente, ovvero che si otterrà il risultato aspettato. 
     Il nostro obiettivo è quello riuscire a catturare questi errori prima dell'esecuzione, andando ad assicurare una computazione senza errori run-time che dipendono dalla base di conoscenza. 
     Vorremmo quindi valutare vantaggi e efficienza di un controllo statico, sfruttando i sistemi di tipi per assicurare la correttezza statica del programma, rispetto a 
-    un'ontologia basata sulle logiche descrittive (in particolare OWL). Sforzi verso questa direzioni sono stati già proposti nella tesi di dottorato di Martin Leinberger, 
-    in cui propone un lambda calcolo tipato esteso con interrogazioni SPARQL a basi di triple RDF e costrutti della logica descrittiva come tipi chiamato $\lambda_{DL}$.
+    un'ontologia basata sulle logiche descrittive (in particolare OWL) \ref{sec:ontologieOWL}. Sforzi verso questa direzioni sono stati già proposti nella tesi di dottorato di Martin Leinberger \cite{leinbergerphdthesis}, 
+    in cui propone un lambda calcolo tipato esteso con interrogazioni SPARQL \ref{sec:SPARQL} a basi di triple RDF e costrutti della logica descrittiva come tipi chiamato $\lambda_{DL}$.
     \\ Il linguaggio garantisce di eseguire delle QUERY SPARQL che rispettano A-Box e T-Box dell'ontologia, spostando il controllo dell'abitabilità durante il type checking e
     permettendo di tipare i nodi ritornati dalle Query tramite le concept expressions della logica descrittiva.
     L'esempio successivo, preso dalla tesi di Leinberger, mostra un programma scritto in $\lambda_{DL}$ che espone chiaramente le potenzialità del linguaggio.
@@ -30,8 +30,8 @@ Il software si pone l'obiettivo di verificare se un programma, composto da una o
             che nella knowledge base sappiamo che Students $\sqsubseteq$ Person è anche ti tipo \textbf{Person}.
     \end{itemize}
     L'implementazione si concentra solo sul type system, i riferimenti agli aspetti più teorici del linguaggio insieme alla sintassi e le regole di valutazione
-    si possono trovare nella tesi di Leiberger.
-    Vale la pena per\`o accennare che il linguaggio è corretto, ovvero un termine chiuso e ben tipato non si blocca durante la valutazione.
+    si possono trovare nella tesi di Leiberger \cite{leinbergerphdthesis}.
+    Vale la pena per\`o accennare che il linguaggio è corretto, ovvero la valutazione di un termine chiuso e ben tipato non si blocca.
     La corretteza è dimostrata da Leinberger attraverso due teoremi:
     \begin{theorem}
         (Progress in $\lambda_{DL}$): sia t un termine ben tipato e chiuso. se t non è un valore, allora esiste una termine t' tale che
@@ -178,9 +178,9 @@ Infine chiediamo al reasoner HermiT di testare la soddisfacibilità di ogni conc
         \end{minted}
         il record proiettato su \code{x}, come ci si aspetta, sarà valutato nel valore associato alla etichetta: \code{4}.
         Le liste sono costruite ricorsivamente con \code{TmNil} e \code{TmCons} e sono presenti delle operazioni sulle liste espresse dai termini \code{TmIsNil},
-        \code{TmHead} e \code{TmTail}
+        \code{TmHead} e \code{TmTail}.
         \begin{figure}[h]
-            \begin{minted}[escapeinside =|, autogobble]{python}
+            \begin{minted}[escapeinside =|, autogobble]{ocaml}
                 [1, 0]        TmCons (TmSucc (TmZero)) (TmCons (TmZero) (TmNil))
                 head  [1, 0]  TmHead (TmCons (TmSucc (TmZero)) (TmCons (TmZero) (TmNil)))
                 tail  [1, 0]  TmTail (TmCons (TmSucc (TmZero)) (TmCons (TmZero) (TmNil)))
@@ -215,13 +215,13 @@ Infine chiediamo al reasoner HermiT di testare la soddisfacibilità di ogni conc
             TyConcept Atomic("x")
         \end{minted}
         Ora che abbiamo introdotto i costruttori di tipi utilizzati possiamo paralre dell'algoritmo di typing.
-        Come suggerito dal libro "Types and Programming Languages" \cite{TypesAndProgrammingLanguages} viene utilizzata una funzione ricorsiva per determinare il tipo di un termine da un contesto
+        Come suggerito dal libro "Types and Programming Languages" \cite{TypesAndProgrammingLanguages} abbiamo utilizzato una funzione ricorsiva per determinare il tipo di un termine da un contesto
         inizialmente vuoto.
         \begin{minted}{ocaml}
             typeof : Context -> Term -> Ty
         \end{minted}
         \code{typeof} effettua pattern matching sul termine passato come argomento per decidere quale regola applicare. La maggior parte delle regole sono puramente
-        sintattiche quindi \code{typeof} è sufficiente per la loro implementazione, altre come le regole di subtyping o [T-ADD] è necessario utilizzare funzioni di supporto
+        sintattiche quindi \code{typeof} è sufficiente per la loro implementazione, per altre regole come quelle di subtyping o [T-ADD] è necessario utilizzare funzioni di supporto
         oppure modificare l'implementazione delle regole precedenti. Un semplice esempio di implementazione di una regola di tipo è quello di [T-APP].
         $$\myruleN{\Gamma \vdash t_1 : T_1 \rightarrow T_2 \quad \Gamma \vdash t_2 : T_1}{\Gamma \vdash t_1 \: t_2 : T_2}{T-APP}$$
         la cui implementazione diventerà:
