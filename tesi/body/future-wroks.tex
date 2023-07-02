@@ -1,0 +1,234 @@
+
+\chapter[Direzioni di ricerca future]{Direzioni di ricerca future}
+\label{chap:FutureWork}
+
+Nei capitoli precedenti abbiamo esplorato una parte dell'esistente lavoro relativo alla ricerca sull'uso dei sistemi di tipi statici nel contesto della 
+rappresentazione della conoscenza, in particolare applicati al formalismo delle ontologie OWL \cite{OWL}. In breve, si può pensare di utilizzare i 
+linguaggi con sistemi di tipi statici per realizzare modelli e strumenti per  il Web Semantico, come alternative o come supporto statico al reasoning 
+dinamico basato sulle logiche descrittive (si vedano l'introduzione nel Capitolo \ref{chap:preliminaries} e una prima survey sullo stato dell'arte nel Capitolo \ref{chap:State-of-art}).
+
+Ricordiamo che un'ontologia OWL ha due componenti: T-Box e A-Box. I costrutti nella T-Box sono la "componente terminologica" che descrive un dominio di 
+interesse, definendone classi e proprietà, similmente a un vocabolario di quel dato dominio. I costrutti di A-Box sono la "componente assertiva", 
+intesi come fatti associati al modello concettuale descritto dalla T-Box. I costrutti A-Box devono essere T-Box-compliant: sono asserzioni che utilizzano il 
+vocabolario definito dalla T-Box. I costrutti T-Box sono talvolta associati a classi orientate agli oggetti e i costrutti A-Box associati a istanze di tali 
+classi \footnote{Da \url{https://en.wikipedia.org/wiki/Abox}}.
+
+Utilizzare strumenti logici come i sistemi di tipi per fare reasoning potrebbe sembrare una direzione di ricerca che va nel senso contrario 
+rispetto alla preferenza corrente dell'applicazione di tecniche sub-logiche, legate soprattutto al machine learning, anche al reasoning nel web 
+semantico. Tali tecniche sfruttano talvolta solo dati estratti dalle asserzioni sugli individui (ovvero dai costrutti della A-Box, spesso rappresentati 
+come triple RDF e relativo knowledge graph), soprattutto per questioni di efficienza. In effetti, sembra che al presente  la ricerca sulle ontologie abbia 
+perso momento, perché nella loro interezza (T-Box e A-Box) sono troppo formalmente complesse per fare ragionamenti totalmente automatizzati (si vedano i 
+concetti preliminari nel Capitolo \ref{chap:preliminaries}). Tuttavia, ci sembra che ci siano delle potenzialità da esplorare per poter tornare a fare reasoning più 
+sofisticato, senza perdere troppo in efficienza.
+\\
+Ci sono almeno due strade che possiamo percorrere:
+\begin{enumerate}
+    \item L'utilizzo di linguaggi funzionali tipati, quali Haskell \footnote{\url{www.haskell.org}} e Ocaml \footnote{\url{www.ocaml.org}} per programmare applicazioni che manipolano le ontologie, con il 
+        vantaggio di usare linguaggi basati su un alto livello di astrazione, che quindi permettono uno sviluppo del software modulare, più facile da correggere e da 
+        mantenere, e anche più vicino al livello simbolico che caratterizza il reasoning semantico. 
+    \item Lo studio di sistemi di tipi statici che garantiscano proprietà 
+        interessanti ai programmi, certificati dal sistema di tipi stesso. Il fatto di usare tipi statici, cioè controllati a tempo di compilazione (scelta ancora 
+        poco adottata nel reasoning semantico, basata sull'uso di interpreti), potrebbe essere una risposta ai problemi di efficienza per certe proprietà che avrebbe 
+        senso controllare a priori, e/o nel caso di grandi quantità di dati.
+\end{enumerate}
+
+L'esempio principale che abbiamo scelto di mostrare in questo lavoro, il calcolo $\lambda_{DL}$ di Martin Leinberger presentato nella sua tesi di dottorato 
+"Type-safe Programming for the Semantic Web" \cite{leinbergerphdthesis} (si veda il Capitolo \ref{chap:Implementazione}) è certamente un esempio del Punto 2. Questo calcolo offre un sistema 
+di tipi per decidere a tempo di compilazione se una query SPARQL è abitata, ovvero se è possibile che produca un risultato quando interpretata, oppure al 
+contrario, se non abitata, sappiamo già a priori che la query non produrrà alcun risultato.  Il nostro lavoro di implementazione, però, ci ha dato qualche 
+indicazione anche relativamente al Punto 1: per esempio, abbiamo scoperto che il linguaggio Ocaml ha delle librerie utili per il parsing e per interfacciarsi 
+con la shell del sistema operativo, oltre ad avere un miglior sistema di error management e il vantaggio di non dover usare monadi, come invece avrebbe 
+richiesto Haskell.
+
+Concludiamo questo lavoro con una serie di proposte che potrebbero essere esplorate nel futuro, nelle direzioni menzionate sopra. Queste proposte 
+nascono da alcuni proficui scambi di idee con Marco Antonio Stranisci, Rossana Damiano e Antonio Lieto del Dipartimento di Informatica dell'Università 
+di Torino.
+
+\section{Tipi per il query rewriting}
+Il query rewriting è una tecnica per mappare una query in un'altra, utile nelle situazioni in cui l'utente non ha una conoscenza precisa del vocabolario e 
+del lessico utilizzato nell'ontologia di interesse e in cui lo studio approfondito di questa ontologia non sarebbe vantaggioso, normalmente per motivi di tempo. Un 
+esempio semplice potrebbe essere quello di un'ontologia che descrive razze di cani-poliziotto senza avere il concetto “cane” esplicito nel suo vocabolario. 
+Se l'utente utilizzasse “cane” nelle sue query, per esempio per cercare tutti i cani con il manto di un certo colore, non otterrebbe nessun risultato. Una 
+combinazione di strumenti per l'analisi del linguaggio naturale e un sistema di tipi che controlli la correttezza (per esempio nel senso di Leinberger) 
+della query trasformata dopo l'analisi potrebbe essere un buon strumento per il query rewriting. Un'altra applicazione di simili tecniche potrebbe agevolare 
+l'uso di ontologie il cui vocabolario è in una lingua straniera.
+
+Una direzione pratica per fare esperimenti potrebbe essere utilizzare reti di parole implementate sotto forma di dizionari enciclopedici 
+basati sulle ontologie come Babelnet \footnote{Si veda https://babelnet.org/} per misurare una “distanza semantica”  che intercorre fra due lemmi, per poter 
+decidere quale si avvicina di più a quello usato dall'utente. Possiamo immaginare che si misuri la distanza semantica che intercorre fra la parola della 
+query e le parole nel vocabolario dell'ontologia. Quella con la distanza minore sarà la parola riscritta all'interno della query. Ci potrebbero essere 
+ambiguità, intesa come due o più parole semanticamente alla stessa distanza dalla terza presente nella query. Per ognuna di queste parole semanticamente 
+simili, si genererebbe dunque una query.
+Per controllare l'abitabilità delle query riscritte, sapendo che ogni query ha uno e un solo insieme di assiomi, si potrebbe generare un tipo che è un 
+insieme di assiomi alla Leinberger se la riscrittura è senza ambiguità, oppure un insieme di insiemi di assiomi di Leinberger se è presente ambiguità.
+
+\section{Tipi per costruire e ristrutturare ontologie}
+Nei processi di creazione di un'ontologia, la tendenza attuale è di sfruttare il più possibile risorse esistenti, sfruttando conoscenze organizzate in 
+Terminology Services \cite{ledl2016describing,vandenbussche2017linked} o utilizzando \emph{search engine appositi} come 
+Swoogle\cite{swoogle} o Watson \cite{watson} per trovare ontologie. I risultati della ricerca vengono poi sottoposti a processi di valutazione 
+(\emph{assesment}) e comparazione (\emph{comparison}) e integrazione (\emph{integration}) per ottenere i migliori risultati rispetto al dominio d'interesse 
+[FRASE DA RIVEDERE]. Tali attività possono però essere soggette a errori, poiché le ambiguità, le incoerenze e l'eterogeneità delle ontologie esistenti 
+possono influire sui risultati rispetto a diversi punti di vista. Si possono avere, infatti, eterogeneità sintattica, terminologica, concettuale e semiotica 
+\cite{carriero2020OntoReuse}. Questo processo di costruzione di un'ontologia è quindi dispendioso a livello di tempo perché richiede un'accurata verifica da 
+parte degli esperti di ontologie, di cui non è possibile rimuovere il contributo dal processo creativo. L'obiettivo sarebbe fornire allo sviluppatore 
+degli strumenti formali da utilizzare durante il processo di creazione/evoluzione di un'ontologia, per aiutarlo nel capire se il suo processo stia effettivamente 
+producendo il risultato desiderato (per esempio offrendo una nozione precisa di equivalenza tra ontologie) e/o suggerire cambiamenti o entità da riutilizzare 
+o aggiungere, sfruttando proprietà come la composizionalità (ovvero la proprietà che garantisce la correttezza della composizione delle parti di un artefatto 
+sviluppate separatamente, posto che le parti obbediscano a certe condizioni), tipica dei linguaggi tipati staticamente. Vista la tendenza attuale di 
+sviluppare un'ontologia partendo da risorse ontologiche esistenti, la proprietà di composizionalità applicata alle ontologie potrebbe automatizzare parte dei 
+compiti di ristrutturazione delle risorse ontologiche da riutilizzare, come la modularizzazione, per considerare solo la parte rilevante per il processo in 
+atto. Un punto di partenza promettente è la metodologia \cite{NeOn}, che offre una serie di scenari che sono di supporto ai processi di creazione e evoluzione 
+delle ontologie. Uno di questi scenari propone una lista di criteri comparativi per valutare la bontà delle soluzioni possibili (si veda il Capitolo \ref{chap:State-of-art}).
+Per questa direzione di ricerca servirebbe un caso di studio che potrebbe beneficiare di tali strumenti formali, utili nel caso in cui si voglia progettare 
+da zero una nuova ontologia o nel caso di “major changes” di ontologie già esistenti. Al presente sono disponibili ontologie molto generali, ben stabilizzate 
+e facilmente adattabili ai casi particolari, per cui può sembrare che questa direzione sia poco promettente, ma riteniamo che sia comunque meritevole di 
+esplorazioni future.
+
+\section{\large Usi innovativi di strumenti esistenti: tipi per l'XML}
+Esiste un linguaggio funzionale tipato chiamato CDuce \footnote{www.cduce.org} che è orientato alla manipolazione dell'XML \cite{XML} Permette di produrre XML corretto a 
+partire da specifiche formali (tipi) e di scrivere query corrette per le basi di dati espresse in XML. Siccome RDF/XML è uno degli standard W3C per la 
+rappresentazione di ontologie OWL, si potrebbe pensare di adattare CDuce per la generazione di ontologie a partire da specifiche astratte e query corrette su 
+di esse, come strumento possibilmente alternativo o di supporto a Protègè \cite{protege}. 
+Per quanto riguarda la formalizzazione della T-Box, CDuce permette di distinguere le varie parti della struttura di un tag, in questo modo siamo in grado di 
+estrarre tutte le parti necessarie per distinguere un tag di descrizione da uno, per esempio, che descrive la meta-relazione di sottoclasse. In questo modo, 
+siccome le classi e sottoclassi sono simili a quelle dei linguaggi di programmazione, possiamo generare dal documento la struttura gerarchica e le classi 
+coinvolte. Segue un frammento di codice CDuce che mostra quanto detto sopra:
+\begin{minted}{xml}
+    <rdfs:Class rdf:about=”Man”>
+	    <rdfs:subClassOf rdf:resource=”Person”/>
+    </rdfs:Class>
+\end{minted}
+Altro esempio riguardo alle relazioni tra dati è il seguente:
+\begin{minted}{xml}
+    <rdf:Property rdf:about="hasWife">
+        <rdfs:domain rdf:resource="Man"/>
+        <rdfs:range rdf:resource="Woman"/>
+    </rdf:Property>
+\end{minted}
+
+Questo esempio è più interessante perché specifica il dominio e codominio della proprietà. In CDuce è possibile estrarre i valori dei campi di un tag e 
+quindi andare a prendere i valori \code{Man} e \code{Woman}, e di conseguenza ritrovare i tipi associati a queste stringhe. Perciò è possibile definire un costruttore 
+di tipo \code{hasWife}, definito come \code{Man  Woman  hasWife}, su cui successivamente si può fare pattern matching per ricavare dominio e codominio, oltre a 
+eventualmente definire la relazione inversa. 
+
+Come esempio di asserzione di una A-Box, prendiamo il seguente frammento di codice:
+\begin{minted}{xml}
+    <rdf:Description rdf:about="James">
+        <rdf:type rdf:resource="Man"/>
+    </rdf:Description>
+\end{minted}
+L'unico caso sensato con cui si può definire questo tag è tramite l'instanziazione di un valore \code{James} che sia di tipo \code{Man}. 
+Ampliando gli esempi precedenti con i tag delle ontologie e RDF si potrebbe ricostruire il “Tipo” di un'ontologia, semplificando così le operazioni di 
+modifica sia in profondità che in  ampiezza. CDuce permette anche di fare il procedimento opposto, cioè di passare da un suo tipo ad uno schema XML, 
+permettendo di riportare l'ontologia, modificata precedentemente tramite il suo tipo, nel formato RDF/XML.
+Un'altra applicazione possibile di CDuce riguarda il merging di ontologie (espresse in XML). L'idea è ridurre il problema del merging di ontologie al 
+merging di tipi. Prese due ontologie da fondere, le si trasforma tramite CDuce in tipi, si esegue il merging tra di essi e poi il tipo risultante lo si 
+utilizza per generare l'ontologia finale.
+
+\section{\large Tipi per lo schema concettuale Functional Requirements for Bibliographic Records (FRBR)}
+Per Functional Requirements for Bibliographic Records (FRBR) si intende uno schema concettuale sviluppato dalla International Federation of Library 
+Associations and Institutions (IFLA), realizzato tramite modello entità-relazione allo scopo di dare una rappresentazione semi-formale alle informazioni 
+bibliografiche\footnote{Da https://it.wikipedia.org/wiki/Functional_Requirements_for_Bibliographic_Records}. FRBR è nato per descrivere tre gruppi di 
+informazioni:
+
+\begin{itemize}
+    \item le opere
+    \item le organizzazioni o persone che sono responsabili delle opere
+    \item i soggetti delle opere (es. i luoghi o concetti espressi da un libro)
+\end{itemize}
+
+Al presente l'uso maggiore che se ne sta facendo è rispetto al Punto 1. Le opere sono classificate secondo livelli:
+\begin{itemize}
+    \item Livelli astratti
+        \begin{itemize}
+            \item work (opera)
+            \item expression (espressione)
+        \end{itemize}
+    \item Livelli fisici
+        \begin{itemize}
+            \item manifestation (manifestazione)
+            \item item (oggetto concreto)
+        \end{itemize}
+\end{itemize}
+FRBR specifica anche delle particolare relazione fra livelli di entità:
+\begin{itemize}
+    \item un work è realizzato attraverso una o più expression;
+    \item una expression si materializza in una o più manifestation;
+    \item una manifestation è rappresentata da uno o più item.
+\end{itemize}
+
+È da tenere presente che questa non è una gerarchia di livelli, ovvero nessun livello di entità è inteso concettualmente come un sotto-concetto di un'altro. 
+Questa descrizione è più simile al concetto di composizione dei linguaggi object-oriented (o dei modelli entity-relationship), in cui ogni livello inferiore 
+della specifica FRBR è in relazione con quello superiore tramite una relazione di composizione (part-of).
+
+FRBR descrive relazioni fra le opere, chiamate content relationships. Possono essere suddivise in 3 gruppi:
+\begin{itemize}
+    \item Equivalent - Facsimile, Copy
+    \item Derivative - Translation, Revision
+    \item Descriptive - Review, Annotated Edition
+\end{itemize}
+Queste relazioni fra opere sono poi ereditate anche dalle sottostanti espressioni, manifestazioni e item in maniera transitiva.
+\\
+Un esempio di rappresentazione FRBR è la seguente, relativa all'opera “The last of us”\footnote{\url{https://www.playstation.com/en-us/the-last-of-us/} <3}:
+\begin{description}
+    \item[Work]: The Last of Us Part I (VideoGame), The Last of Us (Serie TV).
+    \item[Expression]: The Last of Us Part I traduzione Italiana e inglese.
+    \item[Manifestation]:  The Last Of Us versione Disco e versione digitale.
+    \item[Item]: Copia fisica (o digitale) di The Last of Us.
+\end{description}
+
+Un primo passo verso una formalizzazione di questa rappresentazione semi-formale alle informazioni bibliografiche è proprio il tentativo di mapparla su 
+concetti tipici dei linguaggi di programmazione e di modellazione dei dati, sui quali è poi più facile definire dei sistemi di tipi. Ma a che servirebbero i 
+tipi in questo contesto? Abbiamo individuato alcuni possibili ambiti e casi di studio:
+
+\begin{itemize}
+    \item \textbf{Retrieving di duplicati di un’opera} (un semplice esempio: lo stesso libro con il titolo scritto con iniziale maiuscola o iniziale minuscola): Il livello \emph{work} è il più astratto e 
+    quindi potrebbe essere visto come un tipo: per usare un termine object-oriented è una sorta di classe astratta senza attributi. Potrebbe essere 
+    interessante arricchire un \emph{work} con degli attributi, legati fra loro con assiomi legati al dominio, e regole per inferire relazioni come la similarità 
+    tra \emph{work} da applicare alle istanze dei livelli inferiori, in particolare agli \emph{item}. Tipi di questo genere potrebbero essere usati per la gestione dei 
+    duplicati: controllare che ci siano dei duplicati si ridurrebbe nel cercare un cluster di \emph{item} astratti/descritti dallo stesso \emph{work} preso in 
+    considerazione. La prima fase consisterebbe nell'uso di uno strumento di estrazione del tipo degli \emph{item} (il \emph{work}). Successivamente verrebbe applicata 
+    un'operazione di match tra i tipi, che astraggono le proprietà basilari degli \emph{item}, semplificando e quindi rendendo meno oneroso l'operazione di match. 
+    Una variante potrebbe essere quella di non avere un sistema di tipi \emph{work} di partenza, ma di crearli quando si incontra un \emph{item} che non ha ancora un \emph{work} 
+    con cui etichettarlo. Se poi inferendo un tipo di un \emph{item} si risale ad un tipo \emph{work} già precedentemente costruito questo si aggiungerebbe a tale tipo \emph{work}. Il sistema potrebbe avere anche tipi più complessi, 
+    ad esempio esprimenti connettivi logici quali OR e AND, qualora ci fossero delle ambiguità di assegnamento di certi item a più tipi \emph{work}.
+    \item \textbf{Ristrutturazione di biblioteche virtuali}: si potrebbe pensare di utilizzare i tipi \emph{work} (definiti seguendo l'idea di cui sopra) per convertire 
+    dati non strutturati (o strutturati secondo formati diversi) nel formato FRBR: un'idea potrebbe essere il costruire un tipo prototipo, che sia a 
+    livello \emph{work} (o più in alto eventualmente, tramite il metalivello \emph{family of works}, che si dovrebbe esplorare più a fondo) che permetta di andare a 
+    costruire un cluster di quelle tassonomie che descrivono lo stesso \emph{work} (o magari \emph{work} equivalenti, secondo le content relationships menzionate sopra). 
+    Per i libri catalogati normalmente, la maggior parte dei casi sarebbe probabilmente un controllo sintattico sulle proprietà espresse dagli attributi di 
+    catalogozione, ma questo ambito diventa più interessante se si parla di manoscritti o \emph{item} parzialmente distrutti di cui non si hanno informazioni 
+    complete (addirittura potrebbe mancare il titolo, oltre a altri attributi di catalogazione).
+\end{itemize}
+Per entrambi gli ambiti ci sono molte domande aperte, tra cui:
+\begin{enumerate}
+    \item Quali tipi sono necessari? È sufficiente considerare \emph{work} (o \emph{family of work}) o bisogna costruire i tipi anche per gli strati sottostanti? Occorre 
+    approfondire lo studio di FRBR e interrogare gli esperti, bibliotecari e scienziati della conoscenza, rispetto alle loro esigenze.
+    \item Qualsiasi siano le proprietà che si vogliono garantire tramite uno o più sistemi di tipi è comunque richiesta parte di analisi sintattica o anche 
+    forme di analisi del linguaggio naturale? Quasi sicuramente sì, così come sarebbero necessari esperti del dominio per generare dei tipi/assiomi 
+    sufficientemente informativi che andranno a popolare la knowledge base FRBR.
+    \item Al momento stiamo considerando gli \emph{item} come termini e i \emph{work} come tipi, non considerando i livelli intermedi. Potrebbe anche essere una 
+    semplificazione utile per cominciare, ma ci poniamo come ulteriore punto di riflessione il considerare come tipo che dà proprietà agli \emph{item} una 
+    combinazione dei primi tre livelli.
+\end{enumerate}
+
+Una strada parallela potrebbe essere quella di estendere FRBR, andando ad aggiungere ulteriori livelli per l'astrazione del livello \emph{work} e, di conseguenza, 
+avere a disposizione tipi piū espressivi. Un'ulteriore strato potrebbe essere quello dei concetti originali, o archetipi, da cui prende ispirazione o 
+introduce l'opera. Un archetipo rappresenta l'idea platonica di un concetto, che poi viene integrata o ereditata dai \emph{work}. Questo potrebbe essere utile 
+per i ricercatori che indagano sull'eredità dei concetti espressi in opere antiche, per verificare quali opere derivano da altre e così via.
+
+\section{Tipi per la riproducibilità nell'Open Science}
+Le idee alla base della riproducibilità sono: 
+\begin{enumerate}[I)]
+    \item un esperimento scientifico deve poter essere riprodotto; 
+    \item la ricerca deve avvenire in modo aperto e corale. 
+\end{enumerate}
+Un forma di tipaggio simile al tagging potrebbe essere per esempio usata come meta-dati sui dati degli esperimenti, da utilizzare, per esempio, per 
+fare inferenze utili a tracciarne la provenienza. Questa tipologia di controllo sembra essere adatto da essere eseguito staticamente.
+
+
+
+
+
+
+
