@@ -1,16 +1,20 @@
 \chapter[Implementazione]{Implementazione}
 \label{chap:Implementazione}
-Il software si pone l'obiettivo di verificare se un programma, composto da una o più query e da codice che ne usa i risultati, sia corretto o meno. Per le query si tratta di verificare se essa sia abitata o meno. Per quanto riguarda invece l'uso dei risultati si tratta di verificare se sia ben tipato o meno. Da queste due responsabilità abbiamo derivato due moduli: un modulo Reasoner, scritto in java che si occupa di determinare l'abitabilità delle query, e un modulo scritto in OCaml che si occupa di tipare il programma.
+In questo capitolo, presentiamo un'implementazione in OCaml \cite{} del calcolo $\lambda_{DL}}$ \cite{...}, in particolare del suo sistema di tipi. Due dei risultati di questa implementazione sono state l'apprendimento del linguaggio OCaml e un confronto tecnico tra OCaml e Haskell, dal punto di vista dell'utilizzo del paradigma funzionale nel contesto della rappresentazione della conoscenza.
+
+La parte centrale dell'implementazione corrisponde al cuore del calcolo $\lambda_{DL}}$ e  ha l'obiettivo di verificare se un programma, composto da una o più query e da codice che ne usa i risultati, sia corretto o meno. Per le query si tratta di verificare se essa sia abitata (ovvero se restituisce dei risultati) o no. Per quanto riguarda invece l'uso dei risultati si tratta di verificare se siano ben tipati o meno. Per questi due \emph{task} abbiamo derivato due moduli: un modulo Reasoner, scritto in Java, che decide l'abitabilità delle query, e un modulo scritto in OCaml che si occupa di tipare il programma nella sua interezza.
 
 \section{Il linguaggio $\boldsymbol{\lambda_{DL}}$}
-    Quando si effettua una computazione basata su ontologie, il processo di ragionamento e la gestione degli errori sono portati avanti a run time. Non è quindi possibile garantire che un'esecuzione termini correttamente, ovvero che si otterrà il risultato aspettato. 
-    Il nostro obiettivo è quello riuscire a catturare questi errori prima dell'esecuzione, andando ad assicurare una computazione senza errori run-time che dipendono dalla base di conoscenza. 
+    Solitamente, nei software che lavorano sulle ontologie il processo di ragionamento e la \emph{detection} degli errori sono portati avanti entrambi a run-time. Non è quindi possibile garantire che un'esecuzione termini correttamente, ovvero che si otterrà il risultato aspettato. 
+    L'obiettivo generale di questo lavoro di tesi è quello di riuscire a fornire strumenti che possano catturare questi errori prima dell'esecuzione, andando ad assicurare una computazione senza errori run-time che dipendono dalla base di conoscenza. 
     Vorremmo quindi valutare vantaggi e efficienza di un controllo statico, sfruttando i sistemi di tipi per assicurare la correttezza statica del programma, rispetto a 
-    un'ontologia basata sulle logiche descrittive (in particolare OWL) \ref{sec:ontologieOWL}. Sforzi verso questa direzioni sono stati già proposti nella tesi di dottorato di Martin Leinberger \cite{leinbergerphdthesis}, 
-    in cui propone un lambda calcolo tipato esteso con interrogazioni SPARQL \ref{sec:SPARQL} a basi di triple RDF e costrutti della logica descrittiva come tipi chiamato $\lambda_{DL}$.
-    \\ Il linguaggio garantisce di eseguire delle QUERY SPARQL che rispettano A-Box e T-Box dell'ontologia, spostando il controllo dell'abitabilità durante il type checking e
-    permettendo di tipare i nodi ritornati dalle Query tramite le concept expressions della logica descrittiva.
-    L'esempio successivo, preso dalla tesi di Leinberger, mostra un programma scritto in $\lambda_{DL}$ che espone chiaramente le potenzialità del linguaggio.
+    un'ontologia basata sulle logiche descrittive (in particolare OWL) \ref{sec:ontologieOWL}.
+    
+Uno studio significativo in questa direzione è già stato proposto nella tesi di dottorato di Martin Leinberger \cite{leinbergerphdthesis}, 
+    in cui viene presentato un lambda calcolo tipato esteso con interrogazioni SPARQL \ref{sec:SPARQL} a basi di triple RDF e costrutti della logica descrittiva come tipi, chiamato $\lambda_{DL}$. Questo linguaggio garantisce di eseguire delle QUERY SPARQL che rispettano A-Box e T-Box dell'ontologia, spostando il controllo dell'abitabilità durante il type checking e
+permettendo di tipare i nodi ritornati dalle Query tramite le concept expressions della logica descrittiva.
+    
+    L'esempio in Figura \ref{lambda_DL_ex}, preso dalla tesi di Leinberger, mostra un programma scritto in $\lambda_{DL}$ che espone chiaramente le potenzialità del linguaggio.
     \begin{figure}[h]
         \captionsetup{singlelinecheck = false}
         $K_4 = $\{Students $\sqsubseteq$ Person
@@ -19,16 +23,18 @@ Il software si pone l'obiettivo di verificare se un programma, composto da una o
             (head (query x |$\leftarrow$| x type Student)).x
         \end{minted}
         \caption{Programma in $\lambda_{DL}$ avente come knowledge base $K_4$}
+        \label{lambda_DL_ex}
     \end{figure}
-    \\Il programma esegue una query SPARQL che ritorna una lista di mapping tra la variabile \textbf{x} e nodi del grafo RDF che rispettino il vincolo
-    \textbf{x type Students}. Successivamente prendiamo il primo elemento della lista (\textbf{head}) e lo proiettiamo sulla variabile \textbf{x} (\textbf{(...).x}).
+   
+   Il programma esegue una query SPARQL che ritorna una lista di mapping tra la variabile \textbf{x} e nodi del grafo RDF che rispettino il vincolo
+    \textbf{x type Students}. Successivamente viene estratto il primo elemento della lista (\textbf{head}) e proiettato sulla variabile \textbf{x} (\textbf{(...).x}).
     Il sistema di tipo ci permette di:
     \begin{itemize}
         \item stabilire la correttezza della query, costruendo degli assiomi dalla sua struttura e richiamando un reasoner.
         \item dare un tipo ai nodi ritornati dalla query. Nel nostro esempio tutta l'espressione è di tipo \textbf{Students} e grazie al subtyping e al fatto
             che nella knowledge base sappiamo che Students $\sqsubseteq$ Person è anche ti tipo \textbf{Person}.
     \end{itemize}
-    L'implementazione si concentra solo sul type system, i riferimenti agli aspetti più teorici del linguaggio insieme alla sintassi e le regole di valutazione
+    L'implementazione si concentra solo sul sistema di tipi, i riferimenti agli aspetti più teorici del linguaggio insieme alla sintassi e le regole di valutazione
     si possono trovare nella tesi di Leiberger \cite{leinbergerphdthesis}.
     Vale la pena per\`o accennare che il linguaggio è corretto, ovvero la valutazione di un termine chiuso e ben tipato non si blocca.
     La corretteza è dimostrata da Leinberger attraverso due teoremi:
@@ -47,18 +53,18 @@ Il software si pone l'obiettivo di verificare se un programma, composto da una o
 \section{OCaml Module - Le query} \label{sec:OCaml Module - Le query}
 L'idea alla base del modulo OCaml è la seguente:
 \begin{enumerate}
-    \item la query in formato testuale viene parsificata in un tipo Query
-    \item sul tipo Query vengono inferiti gli assiomi di Leinberger
-    \item viene invocato il Reasoner e gli vengono passati gli assiomi appena inferiti.
-    \item il risultato del Reasoner viene raccolto dal modulo OCaml
+    \item la query in formato testuale viene parsificata in un tipo Query;
+    \item sul tipo Query vengono inferiti gli assiomi di Leinberger;
+    \item viene invocato il Reasoner e gli vengono passati gli assiomi appena inferiti;
+    \item il risultato del Reasoner viene passato al modulo OCaml.
 \end{enumerate}
-Vediamo questi passaggi nel dettaglio
+Vediamo ora questi passaggi nel dettaglio.
 
 \subsection{Parsificazione}
-Per generare il parser, ho utilizzato il programma OCamlyacc, un compilatore di compilatori per OCaml, ispirandomi alla grammatica delle query SPARQL\ref{fig:leinbergerSyntax}.
-Per definire i token che compongono la grammatica invece mi sono avvalso di OCamllex, un generatore di lexer.
+Per generare il parser, abbiamo utilizzato il programma OCamlyacc, un compilatore di compilatori per OCaml, ispirandoci alla grammatica delle query SPARQL\ref{fig:leinbergerSyntax}.
+Per definire i token che compongono la grammatica invece ci siamo avvalsi di OCamllex, un generatore di lexer.
 
-Il parsificatore così generato ha la responsabilità di riconoscere se la query rispetta la grammatica\ref{fig:leinbergerSyntax}. Se cosi è, allora viene generato un tipo Query\ref{fig:querType}, che racchiude tutte le informazioni presenti all'interno della query in formato testuale.
+Il parsificatore così generato riconosce se la query rispetta la grammatica\ref{fig:leinbergerSyntax}. Se cosi è, allora viene generato un tipo Query\ref{fig:querType}, che racchiude tutte le informazioni presenti all'interno della query in formato testuale.
 
 \begin{figure}[H]
     \centering
@@ -68,7 +74,7 @@ Il parsificatore così generato ha la responsabilità di riconoscere se la query
 \end{figure}
 
 
-Per esempio, data questa query di input:
+Per esempio, data la query di input:
 
 \begin{minted}[escapeinside=||,mathescape=true, autogobble]{ocaml}
  query x <- (x type Pizza AND x hasTopping y AND y type GorgonzolaTopping)
@@ -95,7 +101,7 @@ Introduciamo il tipo ClassExpression, definito ispirandosi alle regole di deriva
     \caption{Il tipo ClassExpression e Axiom}
     \label{fig:enter-label}
 \end{figure}
-Gli assiomi di Leinberger vengono inferiti a partire dal tipo Query. Viene prodotta una lista di assiomi seguendo le regole progettate da Leinberger\ref{fig:leinbergerAxiom} \\
+Gli assiomi di Leinberger vengono inferiti a partire dal tipo Query. Viene prodotta una lista di assiomi seguendo le regole progettate da Leinberger\ref{fig:leinbergerAxiom}.
 
 L'esempio diventa dunque:
 \begin{minted}[escapeinside=||,mathescape=true, autogobble, breaklines, linenos]{ocaml}
@@ -118,24 +124,25 @@ La risposta, true o false, che risponde alla domanda "la query è abitabile?" vi
 \section{Reasoner}
 Il modulo Reasoner ha la responsabilità di decidere se un insieme di concept expression è soddisfacibile nell'ontologia che la query interroga. In questo modulo vengono utilizzate due risorse:
 \begin{enumerate}
-    \item Il file HermiT.jar\cite{HermiT}, è un reasoner sviluppato dall'università di Oxford, capace di eseguire ragionamenti sulle ontologie.
-    \item Il file DLQueryExample\cite{DLQueryExample} utilizzato per parsificare una stringa che rappresenta una concept expression, scritta in Manchester OWL Syntax, in una ClassExpression, la formalizzazione in Java di una concept expression, utilizzabile da HermiT.
+    \item Il file HermiT.jar\cite{HermiT}, è un reasoner sviluppato dall'università di Oxford, che eseguire ragionamenti sulle ontologie OWL.
+    \item Il file DLQueryExample\cite{DLQueryExample} utilizzato per parsificare una stringa che rappresenta una concept expression, scritta in Manchester OWL Syntax, in una ClassExpression, che è la formalizzazione in Java di una concept expression, utilizzabile da HermiT.
 \end{enumerate}
 
-Il Reasoner prende in input dal modulo OCaml, in formato stringa, una lista di assiomi di Leinberger, ognuno forma \(A_{x} : C\), con semantica \( A_{x}\sqsubseteq C \) in Description Logic.
-\\\(A_{x}\) è un concetto atomico. "C" è una concept expression scritta nella "Manchester OWL syntax" \cite{ManchesterOWLSyntax}, e viene trasformato dal DLQueryParser in un oggetto ClassExpression. L'idea iniziale era di creare da zero un parsificatore che trasformasse una stringa in un oggetto ClassExpression, poi facendo ricerche ho scoperto l'esistenza della Manchester OWL syntax che presentava già un parsificatore capace di realizzare esattamente quello che volevamo. Allora ho adattato il modulo OCaml affinché producesse una stringa nella Manchester OWL syntax.
+Il Reasoner prende in input dal modulo OCaml, una lista di assiomi di Leinberger in formato stringa, ognuno con la forma \(A_{x} : C\) e con la semantica \( A_{x}\sqsubseteq C \) in Description Logic.
 
-Utilizzando poi la OWLDataFactory (factory delle OWLApi che permette la costruzione di OWLAxiom e di dichiarare OWLClass, entrambi assiomi della T-Box) e il resoner HermiT\cite{HermiT}, dichiariamo all'interno dell'ontologia tutti i concetti atomici che compaiono negli assiomi di Leinberger\ref{fig:leinbergerSyntax}, corrispondenti alle variabili della query.
+Nell'assioma, \(A_{x}\) è un concetto atomico e \(C\) è una concept expression scritta nella Manchester OWL syntax \cite{ManchesterOWLSyntax}. La concept expression viene trasformata dal DLQueryParser in un oggetto ClassExpression. L'idea iniziale era di creare da zero un parsificatore che trasformasse una stringa in un oggetto ClassExpression, poi facendo ricerche ho scoperto l'esistenza della Manchester OWL syntax che presentava già un parsificatore capace di realizzare esattamente quello che volevamo. Abbiamo quindi adattato il modulo OCaml affinché producesse una stringa nella Manchester OWL syntax.
 
-Successivamente per ogni assioma creiamo un OWLSubClassOfAxiom, in cui viene specificata la relazione di sottoclasse tra il concetto atomico(le variabili) e la sua ClassExpression corrispondente(concept expression).
+Utilizzando poi la OWLDataFactory (factory delle OWLApi che permette la costruzione di OWLAxiom e di dichiarare OWLClass, entrambi assiomi della T-Box) e il reasoner HermiT\cite{HermiT}, dichiariamo all'interno dell'ontologia tutti i concetti atomici che compaiono negli assiomi di Leinberger\ref{fig:leinbergerSyntax}, corrispondenti alle variabili della query.
+
+Successivamente per ogni assioma, creiamo un OWLSubClassOfAxiom, in cui viene specificata la relazione di sottoclasse tra il concetto atomico(le variabili) e la sua ClassExpression corrispondente(concept expression).
 
 Infine chiediamo al reasoner HermiT di testare la soddisfacibilità di ogni concetto atomico presente negli assiomi di Leinberger. Se sono tutti soddisfacibili, allora significa che la query è abitabile, altrimenti non lo è.
 
 \newpage
 \section{OCaml Module - Type Checking}\label{sec:Type Checking}
-        Per implementare il type checking abbiamo usato come base il lambda calcolo tipato proposto dal libro di \textbf{Benjamin C. Pierce "Types and Programming Languages"} \cite{TypesAndProgrammingLanguages}.
-        Nella tesi parleremo strettamente delle regole di tipo e della loro implementazione per quanto riguarda la valutazioni si veda il libro di Pierce e la tesi di Leinberger \cite{leinbergerphdthesis}.
-        Il linguaggio presenta le principali caratteristiche di un \textbf{ $\boldsymbol{\lambda}$-calcolo tipato} con l'aggiunta dei \textbf{Record}, le \textbf{Liste} e le \textbf{Query SPARQL}.
+        Per implementare il type checking abbiamo usato come base il lambda calcolo tipato proposto dal libro di Benjamin C. Pierce \cite{TypesAndProgrammingLanguages}.
+        Nella tesi parleremo strettamente delle regole di tipo e della loro implementazione. Per quanto riguarda la semantica operazionale, si veda il libro di Pierce e la tesi di Leinberger\cite{leinbergerphdthesis}.
+        Il linguaggio presenta le principali caratteristiche di un \textbf{ $\boldsymbol{\lambda}$-calcolo tipato} con l'aggiunta dei \textbf{Record}, delle \textbf{Liste} e delle \textbf{Query SPARQL}.
         \begin{figure}[h] 
             \begin{minted}{ocaml}
                 type Term =
@@ -165,12 +172,12 @@ Infine chiediamo al reasoner HermiT di testare la soddisfacibilità di ogni conc
             \end{minted}
         \caption{termini del $\lambda_{DL}$}
         \end{figure}
-        TmRecord e quello che ci permette di avere nel nostro linguaggio termini come:
+        TmRecord è ciò che ci permette di avere nel nostro linguaggio termini come:
         \begin{minted}{OCaml}
         {x = 4; y = 0; z = 4} TmRecord ([("x", 4), ("y", 0), ("z", 4)])
         \end{minted}
         dove \code{x, y, z} sono le etichette del record, mentre \code{4, 0, 4} sono i termini associati alle etichette. Nella implementazione corrispondono rispettivamente alla
-        stringa e al termine della lista. \code{TmProj} invece è la proiezione di un record su una etichetta, quindi riprentendo dall'esmpio precedente 
+        stringa e al termine della lista. Il termine \code{TmProj} invece è la proiezione di un record su una etichetta, quindi riprentendo dall'esempio precedente: 
         \begin{minted}{Ocaml}
         {x = 4; y = 0; z = 4}.x 
         TmProj (TmRecord ([("x", 4), ("y", 0), ("z", 4)]) "x")
@@ -188,7 +195,8 @@ Infine chiediamo al reasoner HermiT di testare la soddisfacibilità di ogni conc
         \caption{esempi di termini con liste}
         \end{figure}
         Infine le query sono implementate come descritto nella sezione precedente \ref{sec:OCaml Module - Le query}.
-        \\I tipi hanno un datatype apposito. Oltre ad avere i classici tipi booleani (\code{TyBool}), numeri natoruali (\code{TyNat}) e il tipo freccia (\code{TyArr}) 
+        
+        I tipi hanno un datatype apposito. Oltre ad avere i classici tipi booleani (\code{TyBool}), numeri naturali (\code{TyNat}) e il tipo freccia (\code{TyArr}) 
         sono presenti i tipi per i nuovi costrutti (\code{TyRecord}, \code{TyList}, \code{TyConcept}). Il tipo \code{TyTop} è usato per il subtyping, in particolare per
         qualsiasi tipo $T$ vale che $\boldsymbol{T <: Top}$. La figura sottostante mostra il datatype costruito in OCaml.
         \begin{minted}{ocaml}
@@ -213,17 +221,22 @@ Infine chiediamo al reasoner HermiT di testare la soddisfacibilità di ogni conc
             TyList TyNat
             TyConcept Atomic("x")
         \end{minted}
-        Ora che abbiamo introdotto i costruttori di tipi utilizzati possiamo paralre dell'algoritmo di typing.
-        Come suggerito dal libro "Types and Programming Languages" \cite{TypesAndProgrammingLanguages} abbiamo utilizzato una funzione ricorsiva per determinare il tipo di un termine da un contesto
+        Ora che abbiamo introdotto i costruttori di tipo utilizzati possiamo parlare dell'algoritmo di typing.
+        Come suggerito dal libro \cite{TypesAndProgrammingLanguages} abbiamo utilizzato una funzione ricorsiva per determinare il tipo di un termine da un contesto
         inizialmente vuoto.
+ 
+ La funzione   
         \begin{minted}{ocaml}
             typeof : Context -> Term -> Ty
         \end{minted}
-        \code{typeof} effettua pattern matching sul termine passato come argomento per decidere quale regola applicare. La maggior parte delle regole sono puramente
-        sintattiche quindi \code{typeof} è sufficiente per la loro implementazione, per altre regole come quelle di subtyping o [T-ADD] è necessario utilizzare funzioni di supporto
-        oppure modificare l'implementazione delle regole precedenti. Un semplice esempio di implementazione di una regola di tipo è quello di [T-APP].
+        \code{typeof} 
+ effettua pattern matching sul termine passato come argomento per decidere quale regola applicare. La maggior parte delle regole sono puramente
+        sintattiche, quindi \code{typeof} è sufficiente per la loro implementazione, per altre regole come quelle di subtyping o [T-ADD] è stato necessario utilizzare funzioni di supporto
+        oppure modificare l'implementazione delle regole precedenti. 
+        
+Un semplice esempio di implementazione di una regola di tipo è quello di [T-APP].
         $$\myruleN{\Gamma \vdash t_1 : T_1 \rightarrow T_2 \quad \Gamma \vdash t_2 : T_1}{\Gamma \vdash t_1 \: t_2 : T_2}{T-APP}$$
-        la cui implementazione diventerà:
+        la cui implementazione diventa:
         \begin{minted}[escapeinside=||,mathescape=true, autogobble]{ocaml}
             let rec typeof ctx t =
                 match t with
@@ -239,19 +252,21 @@ Infine chiediamo al reasoner HermiT di testare la soddisfacibilità di ogni conc
 
                 |$\vdots$|
         \end{minted}
-        Prima attraverso pattern matching si controlla che il termine passato sia un'applicazione tra altri due termini \code{t1} e \code{t2}. Successivamente
-        viene effettuata la chiamata ricorsiva su \code{t1} e \code{t2} per ottenere i loro tipi \code{tyT1} e \code{tyT2} rispettivamente. Effettuando di nuovo pattern matching
+        Nella prima fase, attraverso il pattern matching si controlla che il termine passato sia un'applicazione tra altri due termini \code{t1} e \code{t2}. Successivamente
+        viene effettuata la chiamata ricorsiva su \code{t1} e \code{t2} per ottenere i loro tipi \code{tyT1} e \code{tyT2}, rispettivamente. Effettuando di nuovo pattern matching
         su \code{tyT1} si verifica che sia un tipo freccia \code{tyT11 $\rightarrow$ tyT12}. Infine se \code{tyT2 <: tyT11} allora si può stabilire che \code{t1 t2} ha tipo \code{tyT12}.
-        Come si vede dalla implementazione di [T-APP] è stata utilizzata una funzione per verificare il subtyping, ritornando \code{true} se e solo se $T_1 <: T_2$. 
+        Come si vede dalla implementazione di [T-APP] è stata utilizzata una funzione per verificare la relazione di subtyping, ritornando \code{true} se e solo se $T_1 <: T_2$:
         \begin{minted}{ocaml}
             subtype : Context -> Ty -> Ty -> Bool
         \end{minted}
+        
         Il linguaggio $\lambda_{DL}$ presenta il subtyping classico tra funzioni, record e liste le cui regole si possono trovare sia nella tesi di Leinberger \cite{leinbergerphdthesis} che
-        in "Types and Programming Languages" \cite{TypesAndProgrammingLanguages}. L'implementazione della funzione \code{subtype} è molto diretta rispetto alle regole. Come per \code{typeof}
+       nel libro \cite{TypesAndProgrammingLanguages}. L'implementazione della funzione \code{subtype} è molto diretta rispetto alle regole. Come per \code{typeof},
         si procede con il pattern matching tra i tipi passati come argomento e confrontando la loro struttura si può stabilire se sono in relazione di sottotipo.
         Per esempio la regola \textbf{[S-LIST]}
         $$\myruleN{T <: T'}{List \; T <: List \; T'}{S-LIST}$$
-        \\ viene implementata con con:
+ \noindent
+ viene implementata con:
         \begin{minted}[escapeinside =**, mathescape=true, autogobble]{ocaml}
             let rec subtype ctx tyS tyT =
                 tyeqv ctx tyS tyT ||
@@ -260,13 +275,14 @@ Infine chiediamo al reasoner HermiT di testare la soddisfacibilità di ogni conc
                      (TyList(tyS1),TyList(tyT1)) -> subtype ctx tyS1 tyT1
                     *$\vdots$*
         \end{minted}
-        La funzione \code{tyeqv} controlla l'ugualianza tra due tipi siccome la relazione di subtyping è riflessiva. l'ultime due funzioni di supporto
-        utilizzate per il typing calcolano il least upper bound (\code{join}) e il greatest lower bound (\code{meet}) tra due tipi.
+        La funzione \code{tyeqv} controlla l'uguaglianza tra due tipi, siccome la relazione di subtyping è riflessiva. 
+        
+Le ultime due funzioni di supporto utilizzate per il typing calcolano il least upper bound (\code{join}) e il greatest lower bound (\code{meet}) tra due tipi:
         \begin{minted}{ocaml}
             meet : Context -> Ty -> Ty -> Ty
             join : Context -> Ty -> Ty -> Ty
         \end{minted}
-        La figura sottostante mostra le regole di tipo aggiunte da Leinberger nel $\lambda_{DL}$ e nelle sottosezioni successive analizzeremo regola per regola
+        La Figura \ref{lambda_DL_rules} mostra le regole di tipo aggiunte da Leinberger nel $\lambda_{DL}$ e nelle sottosezioni successive analizzeremo regola per regola
         il loro significato e ne mostreremo una possibile implementazione.  
         \begin{figure}[h]
         \[\begin{array}{c}
@@ -296,19 +312,21 @@ Infine chiediamo al reasoner HermiT di testare la soddisfacibilità di ogni conc
             \myruleN{K \vDash C \sqsubseteq D}{K \vdash C <: D}{S-CONCEPT}
         \end{array}\]
         \caption{nuove regole di tipo per $\lambda_{DL}$}
+        \label{lambda_DL_rules}
         \end{figure}
         \newpage
         \subsection{La regola [T-PROJ]}
-            L'implementazione della regola [T-PROJ] segue alla lettera la definizione teorica in particolare abbiamo che la condizione $\Gamma,K \vdash t_1 : C_1$
-            è verificata attraverso il pattern matching (.1) in cui controlliamo che il tipo \code{t} sia una concept expression \code{TyConcept(C)}. La seconda ipotesi
+            L'implementazione della regola [T-PROJ] segue alla lettera la sua definizione, in particolare abbiamo che la condizione $\Gamma,K \vdash t_1 : C_1$
+            è verificata attraverso il pattern matching in cui controlliamo che il tipo \code{t} sia una concept expression \code{TyConcept(C)}. La seconda ipotesi
             $K \vDash C_1 \sqsubseteq \exists r . \top$ invece richiede la creazione di una nuova funzione:
             \begin{minted}[escapeinside=||,mathescape=true, framesep=4mm, autogobble]{ocaml}
                 subconcept : ConceptExpression -> ConceptExpression -> Bool
             \end{minted}
-            la funzione \code{subconcept} \ref{sec:OCaml Module - Le query} prende in input due concept expression $C_1$ e $C_2$ e ritorna $true$ se e solo se $C_1 \sqsubseteq C_2$. Quindi passando a \code{subconcept}
-            \code{C} e \code{Exist(Property(s), Top)} (.2) come argomento verifichiamo la seconda condizione.
-            \\Infine le conclusioni della regola $\Gamma,K \vdash t_1.r : \textrm{List}(\exists r^- . C_1)$ affermano che facendo la proiezione del termine $T_1$ attraverso $r$
-            otteniamo una lista di concept expression $\exists r^- . C_1$, per questo motivo la funzione \code{typeof} ritorna \\\code{TyList(TyConcept(Exist(PropertyInverse(s), c)))} (.3).
+            La funzione \code{subconcept} \ref{sec:OCaml Module - Le query} prende in input due concept expression $C_1$ e $C_2$ e ritorna $true$ se e solo se $C_1 \sqsubseteq C_2$. Quindi, passando a \code{subconcept}
+            \code{C} e \code{Exist(Property(s), Top)} come argomento verifichiamo la seconda condizione.
+            
+            Infine, le conclusioni della regola $\Gamma,K \vdash t_1.r : \textrm{List}(\exists r^- . C_1)$ affermano che, facendo la proiezione del termine $T_1$ attraverso $r$
+            si ottiene una lista di concept expression $\exists r^- . C_1$, per questo motivo la funzione \code{typeof} ritorna \\\code{TyList(TyConcept(Exist(PropertyInverse(s), c)))}.
             \begin{figure}[h] 
                 \begin{minted}[escapeinside=||,mathescape=true, frame=lines, framesep=4mm, autogobble]{ocaml}
                     let rec typeof ctx t =
@@ -316,9 +334,9 @@ Infine chiediamo al reasoner HermiT di testare la soddisfacibilità di ogni conc
                         |$\vdots $|
                         TmRoleProj(fi, t, Property(s)) ->
                             (match typeof ctx t with
-                            TyConcept(C) as t ->                                        .1
-                                if subconcept C Exist(Property(s), Top) then            .2
-                                    TyList(TyConcept(Exist(PropertyInverse(s), c)))     .3
+                            TyConcept(C) as t ->                                        
+                                if subconcept C Exist(Property(s), Top) then 
+                                    TyList(TyConcept(Exist(PropertyInverse(s), c)))
                                 else error fi "argument of role projection 
                                                 is not a proper subconcept")
                             _ -> error fi "argument of role projection 
@@ -332,7 +350,7 @@ Infine chiediamo al reasoner HermiT di testare la soddisfacibilità di ogni conc
             [T-QUERY] è la regola utilizzata per derivare il tipo di una query SPARQL. Per semplicità, rispetto alla teoria, prendiamo in considerazione solo le query
             aventi una variabile, ovvero dove l'insieme $Head(q)$ contiene un solo elemento. Anche questa regola richiede di consultare un reasoner per stabilire se
             gli assiomi generati dal typing della query q siano soddisfacibili $\forall x \in \textrm{Vars}(q) : K \cup K_q \nvDash A_x \sqsubseteq \bot$.
-            Nella definizione la funzione $Vars(q)$ ritorna l'insieme di tutte le variabili utilizzate nella query.
+            Nella definizione, la funzione $Vars(q)$ ritorna l'insieme di tutte le variabili utilizzate nella query.
             \begin{figure}[h]
                 \begin{minted}[escapeinside=||,mathescape=true, frame=lines, framesep=4mm, autogobble]{ocaml}
                     let rec typeof ctx t =
@@ -346,7 +364,8 @@ Infine chiediamo al reasoner HermiT di testare la soddisfacibilità di ogni conc
                 \end{minted}
             \caption{implementazione OCaml della regola [T-QUERY]}
             \end{figure}
-            \\Nella implementazione, per verificare le ipotesi utilizziamo due funzioni di supporto. la prima:
+   
+   Nella implementazione, per verificare le ipotesi utilizziamo due funzioni di supporto. la prima:
             \begin{minted}{OCaml}
             axioms: Gp -> Axiom List
             \end{minted}
@@ -354,23 +373,27 @@ Infine chiediamo al reasoner HermiT di testare la soddisfacibilità di ogni conc
             \begin{minted}{OCaml}
             allSatisfiable: Axioms List -> Var -> Bool
             \end{minted}
-            è la funzione che interroga la knowledge base per verificare che la lista degli assiomi sia soddisfacibile \ref{sec:OCaml Module - Le query}. Infine una volta verificate le ipotesi possiamo
+            è la funzione che interroga la knowledge base per verificare che la lista degli assiomi sia soddisfacibile \ref{sec:OCaml Module - Le query}. Infine, una volta verificate le ipotesi possiamo
             ritornare
             \code{TyList(TyRecord(var, TyConcept(Atomic \; var)))} che corrisponde a $\Gamma,K \cup K_q \vdash \textrm{query} \; q : \{l_i : A_{l_i}^{i \in 1...m}\} list$
             con l'unica differenza che nella nostra implementazione i record contengono una sola label, quella della unica variabile in $Head(q)$. Abbiamo deciso di
-            mantenere la lista di record nonostante la nostra semplificazine sulle query per rendere un futuro aggiornamento facile da implementare.
+            mantenere la lista di record nonostante la nostra semplificazione sulle query per rendere un futuro aggiornamento facile da implementare.
             \subsection{La regola [T-ADD]}
             [T-ADD] è la regola la cui implementazione è più interessante. Siccome non siamo di fronte ad una regola puramente sintattica
             non è possibile fare pattern matching sul termine per capire quando applicarla.
-            Prima di parlare dell'implementazione è importante capire a cosa serve e come viene utilizzada: [T-QUERY] assegna alle variabili in testa alla query
-            il tipo concept expression $A_x$ quando abbiamo un assioma nella query della forma $K_q = A_x \sqsubseteq D$, ma $A_x$ non sono propriamente da usare sintatticamente nel programma.
-            \\L'obiettivo è dare un significato al tipo $A_x$, in modo simile a una classica regola di subtyping. Quindi è possibile assegnate una concept espression $D$
+            Prima di parlare dell'implementazione è importante capire a cosa serve e come viene utilizzata. 
+            
+[T-QUERY] assegna alle variabili in testa alla query
+            il tipo concept expression $A_x$ quando abbiamo un assioma nella query della forma $A_x \sqsubseteq D$, ma $A_x$ non è propriamente da usare sintatticamente nel programma.
+            
+            L'obiettivo è dare un significato al tipo $A_x$: si deve risalire al concetto con cui è in relazione di subconcept (che è intuitivamente simile alla relazione di subtyping). Quindi è possibile assegnate una concept espression $D$
             a un termine t solo se è possibile assegnare a t $A_x$ usando una knowledge base $\Gamma,K \cup \{A_i \sqsubseteq C_i^{i \in 1...n}\} \vdash t : A_j^{1 \leq j \leq n}$
             e se K $\cup \{A_i \sqsubseteq C_i^{i \in 1...n}\} \vDash A_j \sqsubseteq D^{1 \leq j \leq n}$.
-            \\Come suggerito da Leinberger, abbiamo implementato la regola aggiungendo gli assiomi $K_q$ alla knowledge base durante la funzione \code{allSatisfiable}.
+
+Come suggerito da Leinberger, abbiamo implementato la regola aggiungendo gli assiomi $K_q$ alla knowledge base durante la funzione \code{allSatisfiable}.
             così insieme alla regola {[S-CONCEPT]} è possibile risalire alla concept $D$ senza avere bisogno di [T-ADD].
             \subsection{La regola [S-CONCEPT]}
-            Il linguaggio cotruito da Leinberger permette il subtyping tra tipi, sia quelli classici che quello tra concept expression con la regola [S-CONCEPT].
+            Il linguaggio costruito da Leinberger permette il subtyping tra tipi e il subconcept tra concept expression con la regola [S-CONCEPT].
             \begin{figure}[h]
                 \begin{minted}[escapeinside=||,mathescape=true, frame=lines, framesep=4mm, autogobble]{ocaml}
                     let rec subtype ctx tyS tyT =
