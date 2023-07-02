@@ -1,8 +1,8 @@
 \chapter[Implementazione]{Implementazione}
 \label{chap:Implementazione}
-In questo capitolo, presentiamo un'implementazione in OCaml \cite{} del calcolo $\lambda_{DL}}$ \cite{...}, in particolare del suo sistema di tipi. Due dei risultati di questa implementazione sono state l'apprendimento del linguaggio OCaml e un confronto tecnico tra OCaml e Haskell, dal punto di vista dell'utilizzo del paradigma funzionale nel contesto della rappresentazione della conoscenza.
+In questo capitolo, presentiamo un'implementazione in OCaml \footnote{www.ocaml.org} del calcolo $\lambda_{DL}$ \cite{leinbergerphdthesis} in particolare del suo sistema di tipi. Due dei risultati di questa implementazione sono state l'apprendimento del linguaggio OCaml e un confronto tecnico tra OCaml e Haskell, dal punto di vista dell'utilizzo del paradigma funzionale nel contesto della rappresentazione della conoscenza.
 
-La parte centrale dell'implementazione corrisponde al cuore del calcolo $\lambda_{DL}}$ e  ha l'obiettivo di verificare se un programma, composto da una o più query e da codice che ne usa i risultati, sia corretto o meno. Per le query si tratta di verificare se essa sia abitata (ovvero se restituisce dei risultati) o no. Per quanto riguarda invece l'uso dei risultati si tratta di verificare se siano ben tipati o meno. Per questi due \emph{task} abbiamo derivato due moduli: un modulo Reasoner, scritto in Java, che decide l'abitabilità delle query, e un modulo scritto in OCaml che si occupa di tipare il programma nella sua interezza.
+La parte centrale dell'implementazione corrisponde al cuore del calcolo $\lambda_{DL}$ e  ha l'obiettivo di verificare se un programma, composto da una o più query e da codice che ne usa i risultati, sia corretto o meno. Per le query si tratta di verificare se essa sia abitata (ovvero se restituisce dei risultati) o no. Per quanto riguarda invece l'uso dei risultati si tratta di verificare se siano ben tipati o meno. Per questi due \emph{task} abbiamo derivato due moduli: un modulo Reasoner, scritto in Java, che decide l'abitabilità delle query, e un modulo scritto in OCaml che si occupa di tipare il programma nella sua interezza.
 
 \section{Il linguaggio $\boldsymbol{\lambda_{DL}}$}
     Solitamente, nei software che lavorano sulle ontologie il processo di ragionamento e la \emph{detection} degli errori sono portati avanti entrambi a run-time. Non è quindi possibile garantire che un'esecuzione termini correttamente, ovvero che si otterrà il risultato aspettato. 
@@ -14,7 +14,7 @@ Uno studio significativo in questa direzione è già stato proposto nella tesi d
     in cui viene presentato un lambda calcolo tipato esteso con interrogazioni SPARQL \ref{sec:SPARQL} a basi di triple RDF e costrutti della logica descrittiva come tipi, chiamato $\lambda_{DL}$. Questo linguaggio garantisce di eseguire delle QUERY SPARQL che rispettano A-Box e T-Box dell'ontologia, spostando il controllo dell'abitabilità durante il type checking e
 permettendo di tipare i nodi ritornati dalle Query tramite le concept expressions della logica descrittiva.
     
-    L'esempio in Figura \ref{lambda_DL_ex}, preso dalla tesi di Leinberger, mostra un programma scritto in $\lambda_{DL}$ che espone chiaramente le potenzialità del linguaggio.
+    L'esempio in Figura \ref{lambdaDLex}, preso dalla tesi di Leinberger, mostra un programma scritto in $\lambda_{DL}$ che espone chiaramente le potenzialità del linguaggio.
     \begin{figure}[h]
         \captionsetup{singlelinecheck = false}
         $K_4 = $\{Students $\sqsubseteq$ Person
@@ -23,7 +23,7 @@ permettendo di tipare i nodi ritornati dalle Query tramite le concept expression
             (head (query x |$\leftarrow$| x type Student)).x
         \end{minted}
         \caption{Programma in $\lambda_{DL}$ avente come knowledge base $K_4$}
-        \label{lambda_DL_ex}
+        \label{lambdaDLex}
     \end{figure}
    
    Il programma esegue una query SPARQL che ritorna una lista di mapping tra la variabile \textbf{x} e nodi del grafo RDF che rispettino il vincolo
@@ -282,7 +282,7 @@ Le ultime due funzioni di supporto utilizzate per il typing calcolano il least u
             meet : Context -> Ty -> Ty -> Ty
             join : Context -> Ty -> Ty -> Ty
         \end{minted}
-        La Figura \ref{lambda_DL_rules} mostra le regole di tipo aggiunte da Leinberger nel $\lambda_{DL}$ e nelle sottosezioni successive analizzeremo regola per regola
+        La Figura \ref{lambdaDLrules} mostra le regole di tipo aggiunte da Leinberger nel $\lambda_{DL}$ e nelle sottosezioni successive analizzeremo regola per regola
         il loro significato e ne mostreremo una possibile implementazione.  
         \begin{figure}[h]
         \[\begin{array}{c}
@@ -312,7 +312,7 @@ Le ultime due funzioni di supporto utilizzate per il typing calcolano il least u
             \myruleN{K \vDash C \sqsubseteq D}{K \vdash C <: D}{S-CONCEPT}
         \end{array}\]
         \caption{nuove regole di tipo per $\lambda_{DL}$}
-        \label{lambda_DL_rules}
+        \label{lambdaDLrules}
         \end{figure}
         \newpage
         \subsection{La regola [T-PROJ]}
