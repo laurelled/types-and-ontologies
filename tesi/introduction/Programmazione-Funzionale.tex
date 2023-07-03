@@ -1,5 +1,5 @@
 \section{Programmazione funzionale}
-Il paradigma funzionale è un paradigma linguistico permette di scrivere in modo naturale programmi di facile comprensione e debugging grazie soprattutto all'assenza di \emph{side-effect} nelle funzioni.
+Il paradigma funzionale è un paradigma linguistico che permette di scrivere in modo naturale programmi di facile comprensione e debugging grazie soprattutto all'assenza di \emph{side-effect} nelle funzioni.
 I \emph{side-effect} o in italiano \emph{effetti collaterali}, si verificano quando si modifica lo stato di variabili al di fuori dello scope locale. Ad esempio consideriamo una semplice funzione Java:
 \begin{minted}{java}
 	void move(Point p){
@@ -29,7 +29,7 @@ Nei due esempi precedenti abbiamo usato silenziosamente un'altra feature molto u
 \code{move (x, y) = (x + 1, y + 1)} confronta l'argomento della funzione con i pattern. In questo caso l'argomento è di tipo \code{Point}, cioè
 una coppia di \code{Float}, quindi quando si scrive \code{move (x, y) = ...}, \code{x} e \code{y} avranno i valori dei campi dell'oggetto \code{Point}
 che potremo liberamente usare nel body della funzione (\code{(x + 1, y + 1)}).
-La funzione \code{map} sfrutta il {pattern matching per distinguere il caso in cui la lista è vuota \code{map \_ []} (caso base della ricorsione), dal caso in cui
+La funzione \code{map} sfrutta il pattern matching per distinguere il caso in cui la lista è vuota \code{map \_ []} (caso base della ricorsione), dal caso in cui
 bisogna applicare la ricorsione sulla lista \code{map f (x:xs)}. 
 
 I linguaggi funzionali sono spesso accompagnati da uno stretto ma flessibile sistema di tipi statico, che permette di catturare a tempo di compilazione molti errori che altrimenti ritroveremmo a run-time. I data type creati in linguaggi come Haskell o OCaml\footnote{\url{https://ocaml.org/}}
