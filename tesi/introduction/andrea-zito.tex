@@ -7,25 +7,25 @@ espressivo e efficiente sui dati presenti nel Web Semantico.
 \\Si pone sempre più, infatti, il problema di avere efficienza e, nel contempo, offrire semantiche espressive per manipolare tali dati. 
 \\In particolare, per i dati in formato RDF, la struttura semantica aggiunta dalle ontologie ai grafi RDF \'e sempre meno utilizzata
 in favore di tecniche sub-logiche, legate soprattutto al machine learning che sfruttano soprattutto le asserzioni sugli individui (A-Box). 
-\\I tipi e i linguaggi funzionali sono strumenti logici che sembrano avere potenzialità per recuperare la complessità sia dei T-Box che A-Box senza perdere troppo in efficienza, grazie alla fatto che permettono controlli statici, ovvero a monte del runtime, il quale diventa più snello. La sfida è scoprire se con i tipi si possano inferire proprietà interessanti da provare staticamente (specie su grandi moli di dati): una prima analisi in questo senso si trova nel Capitolo \ref{chap:Implementazione}.
+\\I tipi e i linguaggi funzionali sono strumenti logici che sembrano avere potenzialità per recuperare la espressività sia dei T-Box che A-Box senza perdere troppo in efficienza, grazie alla fatto che permettono controlli statici, ovvero a monte del runtime, il quale diventa più snello. La sfida è scoprire se con i tipi si possano inferire proprietà interessanti da provare staticamente (specie su grandi moli di dati): una prima analisi in questo senso si trova nel Capitolo \ref{chap:Implementazione}.
 \\La fase iniziale del lavoro è stata l'esplorazione del dominio di ricerca,
 studiando le basi delle ontologie e grafi RDF dai materiali dal corso "Modellazione Concettuale per il Web Semantico"\footnote{\url{https://informatica.i-learn.unito.it/course/view.php?id=2506}} 
 della professoressa Rossana Damiano.
-Successivamente ci siamo informatati sulla letteratura relativa all'uso dei sistemi tipi per il web semantico e in particolare ci siamo concentrati sulla tesi di
+Successivamente ci siamo informati sulla letteratura relativa all'uso dei sistemi tipi per il web semantico e in particolare ci siamo concentrati sulla tesi di
 dottorato "Type-safe Programming for the Semantic Web"\cite{leinbergerphdthesis} di Martin Leinberger che propone un linguaggio di programmazione ($\lambda_{DL}$) per manipolare ontologie con controlli di tipo statici. 
 \\Da questo punto in poi, avendo tutti le idee leggermente più chiare, ci siamo divisi i compiti. In particolare Lorenzo Bafunno si
-è occupato di continuare la ricerca e studio della letteratura \ref{chap:State-of-art} sullo stato dell'arte dell'applicazione dei linguaggi funzionali e dei sistemi di tipi statici alla rappresentazione della cononoscenza. Inoltre, illlustra alcuni argomenti sui quali, al meglio della nostra conoscenza, non esistono ancora modelli e strumenti che fanno uso del paradigma funzionale e dei tipi, ma che potrebbero trarre vantaggio da questo utilizzo. 
-Emanuele Rovaretto e io invece ci siamo concentrati sulla implementazione\ref{chap:Implementazione}
-del $\lambda_{DL}$: io mi sono occupato del type system \ref{sec:Type Checking} del linguaggio mentre Emanuele del tipaggio e esecuzione delle query SPARQL \ref{sec:OCaml Module - Le query}.
+è occupato di continuare la ricerca e studio della letteratura (Capitolo~\ref{chap:State-of-art}) sullo stato dell'arte dell'applicazione dei linguaggi funzionali e dei sistemi di tipi statici alla rappresentazione della cononoscenza. Inoltre, illlustra alcuni argomenti sui quali, al meglio della nostra conoscenza, non esistono ancora modelli e strumenti che fanno uso del paradigma funzionale e dei tipi, ma che potrebbero trarre vantaggio da questo utilizzo. 
+Emanuele Rovaretto e io invece ci siamo concentrati sulla implementazione (Capitolo~\ref{chap:Implementazione})
+del $\lambda_{DL}$: io mi sono occupato del type system \autoref{sec:Type Checking} del linguaggio mentre Emanuele del tipaggio e esecuzione delle query SPARQL (\autoref{sec:OCaml Module - Le query}).
 Il mio lavoro è stato innanzitutto capire il linguaggio da utilizzare per l'implementazione. I primi esperimenti sono stati in Haskell, ma siccome le librerie
-sull'integrazione di reasoner su ontologie sono poche e non offrono le funzionalità che ci servivano, abbiamo optato di passare a OCaml.. 
+sull'integrazione di reasoner su ontologie sono poche e non offrono le funzionalità che ci servivano, abbiamo optato di passare a OCaml. 
 Prima di passare direttamente alla scrittura del codice ho letto il libro "Types and Programming Languages" \cite{TypesAndProgrammingLanguages} di Benjamin C. Pierce dove spiega da un punto di vista
-più ingegneristico (ma formale) i sistemi di tipi e mostra passo passo come implementare un linguaggio di programmazione basato sul $\lambda$-calco utilizzando OCaml.
+più ingegneristico (ma formale) i sistemi di tipi e mostra passo passo come implementare un linguaggio di programmazione basato sul $\lambda$-calcolo utilizzando OCaml.
 Con tutto lo studio preliminare, la scrittura del codice è stata molto diretta, senza incontrare grosse difficoltà.
 \\L'implementazione si è rilevata molto utile per aiutarmi a comprendere meglio come le ontologie vengono usate e le potenzialità che offrono chiarendo anche
 quali sono gli attuali problemi che si presentano quando si lavora sulle ontologie e come i tipi possono essere di aiuto. Inoltre l'implementazione è stato un ottimo
 esercizio di programmazione funzionale e di conoscenza dei linguaggi di programmazione.
-\\Il lavoro di tesi si è concluso con un'ultima grossa parte corale, per la quale ci siamo confrontati con gli esperti
+\\Il lavoro di tesi si è concluso con un'ultima grossa parte corale, nella quale ci siamo confrontati con gli esperti
 di Web Semantico Marco Antonio Stranisci, Antonio Lieto e Rossana Damiano. Da questi incontri sono stati chiariti molti dubbi e sono nate anche alcune idee, introdotte
-spiegate nella sezione di Future Works \ref{chap:FutureWork}.
+spiegate nella sezione di Future Works (\autoref{chap:FutureWork}).
 \\In conclusione, gli argomenti trattati sono vari e necessiterebbero molta più investigazione, ma appare che le potenzialità di questa direzione di ricerca esistano e siano attualmente poco esplorate. 
