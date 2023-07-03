@@ -68,7 +68,17 @@ Il parsificatore così generato riconosce se la query rispetta la grammatica\ref
 
 \begin{figure}[H]
     \centering
-    \includegraphics[scale=0.7]{pictures/queryType.png}
+    \begin{minted}{ocaml}
+    	type var = V of string
+    	type obj = O of string
+    	type role = P of string | I of string | Type
+    	
+    	type gp =
+    		CP of gp * gp
+    		| SP of var * role * obj
+    		| OP of obj * role * var
+    		| DP of var * role * var
+    \end{minted}
     \caption{tipo Query corrispondente alla sintassi delle query SPARQL CQ}
     \label{fig:querType}
 \end{figure}
@@ -97,7 +107,18 @@ Introduciamo il tipo ClassExpression, definito ispirandosi alle regole di deriva
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=\textwidth]{pictures/classExpressionType.png}
+    \begin{minted}{ocaml}
+    	     type classExpression =
+  	         Property of string
+    	     | PropertyInverse of string
+    	     | Atomic of string
+    	     | Top
+    	     | Conjunction of classExpression * classExpression
+    	     | Exist of classExpression * classExpression
+    	
+    	
+      	   type axiom = string * classExpression
+    \end{minted}
     \caption{Il tipo ClassExpression e Axiom}
     \label{fig:enter-label}
 \end{figure}
@@ -115,12 +136,9 @@ L'esempio diventa dunque:
 \begin{minted}[escapeinside=||,mathescape=true, autogobble, breaklines, linenos]{ocaml}
 x : Pizza : x : hasTopping SOME y : y : INVERSE hasTopping x : y : GorgonzolaTopping
 \end{minted}
-Viene dunque invocato il modulo Reasoner e gli viene passato come parametro la lista in formato stringa.
+Viene dunque invocato il modulo Reasoner per controllare l'abitabilità della query (vedere \autoref{sec:SPARQLIntro}), passandogli come parametro la lista in formato stringa. La risposta, \texttt{true} o \texttt{false}, viene restituita al modulo OCaml ed esso informa l'utente.
 
-\subsection{Uso del risultato}
-La risposta, true o false, che risponde alla domanda "la query è abitabile?" viene restituita al modulo OCaml e esso informa l'utente.
-
-\newpage
+%\newpage
 \section{Reasoner}
 Il modulo Reasoner ha la responsabilità di decidere se un insieme di concept expression è soddisfacibile nell'ontologia che la query interroga. In questo modulo vengono utilizzate due risorse:
 \begin{enumerate}
