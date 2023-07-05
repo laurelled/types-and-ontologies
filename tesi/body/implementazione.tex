@@ -142,15 +142,15 @@ Viene dunque invocato il modulo Reasoner per controllare l'abitabilità della qu
 \section{Reasoner}
 Il modulo Reasoner ha la responsabilità di decidere se un insieme di concept expression è soddisfacibile nell'ontologia che la query interroga. In questo modulo vengono utilizzate due risorse:
 \begin{enumerate}
-    \item Il file HermiT.jar\cite{HermiT}, è un reasoner sviluppato dall'università di Oxford, che eseguire ragionamenti sulle ontologie OWL.
-    \item Il file DLQueryExample\cite{DLQueryExample} utilizzato per parsificare una stringa che rappresenta una concept expression, scritta in Manchester OWL Syntax, in una ClassExpression, che è la formalizzazione in Java di una concept expression, utilizzabile da HermiT.
+    \item Il file HermiT.jar\cite{HermiTWhitepaper}, è un reasoner sviluppato dall'università di Oxford, che eseguire ragionamenti sulle ontologie OWL.
+    \item Il file DLQueryExample\footnote{\url{https://github.com/phillord/owl-api/blob/b2a5bfb9a0c6730c8ff950776af8f9bf19c78eac/contract/src/test/java/org/coode/owlapi/examples/DLQueryExample.java}} utilizzato per parsificare una stringa che rappresenta una concept expression, scritta in Manchester OWL Syntax, in una ClassExpression, che è la formalizzazione in Java di una concept expression, utilizzabile da HermiT.
 \end{enumerate}
 
 Il Reasoner prende in input dal modulo OCaml, una lista di assiomi di Leinberger in formato stringa, ognuno con la forma \(A_{x} : C\) e con la semantica \( A_{x}\sqsubseteq C \) in Description Logic.
 
 Nell'assioma, \(A_{x}\) è un concetto atomico e \(C\) è una concept expression scritta nella Manchester OWL syntax \cite{ManchesterOWLSyntax}. La concept expression viene trasformata dal DLQueryParser in un oggetto ClassExpression. L'idea iniziale era di creare da zero un parsificatore che trasformasse una stringa in un oggetto ClassExpression, poi facendo ricerche ho scoperto l'esistenza della Manchester OWL syntax che presentava già un parsificatore capace di realizzare esattamente quello che volevamo. Abbiamo quindi adattato il modulo OCaml affinché producesse una stringa nella Manchester OWL syntax.
 
-Utilizzando poi la OWLDataFactory (factory delle OWLApi che permette la costruzione di OWLAxiom e di dichiarare OWLClass, entrambi assiomi della T-Box) e il reasoner HermiT\cite{HermiT}, dichiariamo all'interno dell'ontologia tutti i concetti atomici che compaiono negli assiomi di Leinberger\ref{fig:leinbergerSyntax}, corrispondenti alle variabili della query.
+Utilizzando poi la OWLDataFactory (factory delle OWLApi che permette la costruzione di OWLAxiom e di dichiarare OWLClass, entrambi assiomi della T-Box) e il reasoner HermiT\cite{HermiTWhitepaper}, dichiariamo all'interno dell'ontologia tutti i concetti atomici che compaiono negli assiomi di Leinberger\ref{fig:leinbergerSyntax}, corrispondenti alle variabili della query.
 
 Successivamente per ogni assioma, creiamo un OWLSubClassOfAxiom, in cui viene specificata la relazione di sottoclasse tra il concetto atomico(le variabili) e la sua ClassExpression corrispondente(concept expression).
 
@@ -158,7 +158,7 @@ Infine chiediamo al reasoner HermiT di testare la soddisfacibilità di ogni conc
 
 \newpage
 \section{OCaml Module - Type Checking}\label{sec:Type Checking}
-        Per implementare il type checking abbiamo usato come base il lambda calcolo tipato proposto dal libro di Benjamin C. Pierce \cite{TypesAndProgrammingLanguages}.
+        Per implementare il type checking abbiamo usato come base il lambda calcolo tipato proposto dal libro di Benjamin C. Pierce \cite{pierceTypesBook}.
         Nella tesi parleremo strettamente delle regole di tipo e della loro implementazione. Per quanto riguarda la semantica operazionale, si veda il libro di Pierce e la tesi di Leinberger\cite{leinbergerphdthesis}.
         Il linguaggio presenta le principali caratteristiche di un \textbf{ $\boldsymbol{\lambda}$-calcolo tipato} con l'aggiunta dei \textbf{Record}, delle \textbf{Liste} e delle \textbf{Query SPARQL}.
         \begin{figure}[h] 
@@ -240,7 +240,7 @@ Infine chiediamo al reasoner HermiT di testare la soddisfacibilità di ogni conc
             TyConcept Atomic("x")
         \end{minted}
         Ora che abbiamo introdotto i costruttori di tipo utilizzati possiamo parlare dell'algoritmo di typing.
-        Come suggerito dal libro \cite{TypesAndProgrammingLanguages} abbiamo utilizzato una funzione ricorsiva per determinare il tipo di un termine da un contesto
+        Come suggerito dal libro \cite{pierceTypesBook} abbiamo utilizzato una funzione ricorsiva per determinare il tipo di un termine da un contesto
         inizialmente vuoto.
  
  La funzione   
@@ -279,7 +279,7 @@ Un semplice esempio di implementazione di una regola di tipo è quello di [T-APP
         \end{minted}
         
         Il linguaggio $\lambda_{DL}$ presenta il subtyping classico tra funzioni, record e liste le cui regole si possono trovare sia nella tesi di Leinberger \cite{leinbergerphdthesis} che
-       nel libro \cite{TypesAndProgrammingLanguages}. L'implementazione della funzione \code{subtype} è molto diretta rispetto alle regole. Come per \code{typeof},
+       nel libro \cite{pierceTypesBook}. L'implementazione della funzione \code{subtype} è molto diretta rispetto alle regole. Come per \code{typeof},
         si procede con il pattern matching tra i tipi passati come argomento e confrontando la loro struttura si può stabilire se sono in relazione di sottotipo.
         Per esempio la regola \textbf{[S-LIST]}
         $$\myruleN{T <: T'}{List \; T <: List \; T'}{S-LIST}$$

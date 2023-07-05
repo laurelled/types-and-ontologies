@@ -206,7 +206,6 @@ Un aspetto fondamentale che differenzia un'ontologia dai sistemi di tipi è la f
 			public int empty(){ return true; }
 		}
 \end{minted}
-\newpage\noindent
 Nei linguaggi funzionali questo stesso costrutto prende il nome di \textit{dichiarazione di tipo}:
 \begin{minted}{haskell}
 	data Tree Int = Leaf | Branch Int (Tree Int) (Tree Int)
@@ -231,8 +230,6 @@ Nell'articolo \cite{verifiableontologybasedcomputation} sono discusse le potenzi
 \end{enumerate}
 
 L'editor di ontologie (f OWL) \cite{fOWL} è scritto in un dialetto di LISP, Clojure\footnote{\url{https://clojure.org/}}. Clojure è un linguaggio funzionale che compila con la Java Virtual Machine, in questo modo è altamente portabile. L'editor (f OWL) implementa la sintassi funzionale di OWL 2. Il risultato ottenuto è un'alternativa alla diffusa OWL API, scritta in Java, per quei programmatori di linguaggi funzionali interessati all'ingegnerizzazione delle ontologie. Allo stesso tempo, utilizza la lazy evaluation dei linguaggi funzionali per semplificare la creazione e modifica di un'ontologia, come mostrato nella parte finale dell'articolo in cui vengono confrontote le prestazioni di OWL API e (f OWL). Quest'ultima eccelle soprattutto nella normalizzazione dell'ontologia nella Negation Normal Form (NNF), una forma di normalizzazione approvata dalla comunità per andare a confrontare uniformemente l'espressività degli assiomi di classe di un largo numero di ontologie.
-
-
 \noindent
-È utile menzionare anche i lavori \cite{khun1995ontology, kuhngeo2001} come contributi storici nell'utilizzo del linguaggio funzionale Haskell \cite{o2008real} per fornire strumenti per ricavare ontologie di domini geografici da testi in linguaggio naturale che descrivono attività umane. Inoltre, il lavoro \cite{baggi2008XMLFiltering} propone un sistema, scritto in Haskell, per il filtraggio approssimativo dei dati XML basato su ontologie. Fondamentalmente, consente di estrarre dati rilevanti e di escludere contenuti inutili e fuorvianti da un documento XML.
+È utile menzionare anche i lavori \cite{khun1995ontology, kuhngeo2001} come contributi storici nell'utilizzo del linguaggio funzionale Haskell \cite{o2008real} per fornire strumenti per ricavare ontologie di domini geografici da testi in linguaggio naturale che descrivono attività umane. Inoltre, il lavoro \cite{baggi2008XMLFiltering} propone un sistema, scritto in Haskell, per il filtraggio approssimativo dei dati XML basato su ontologie.
 
