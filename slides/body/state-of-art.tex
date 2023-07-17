@@ -1,9 +1,136 @@
 \section{Stato dell'arte}
-\begin{frame}{Stato dell'arte}
+
+\subsection{Ontologie e Sistemi di Tipi}
+\begin{frame}[containsverbatim]{Ontologie e Sistemi di Tipi}
+	Le ontologie usate nel Web Semantico possono essere comparate sotto certi aspetti ai sistemi di tipi. Ci basiamo sull'intuizione di \blue{Thierry Despeyroux} per trattare questa parte:
+	
+	\begin{columns}
+		\begin{column}[T]{0.45\textwidth}
+		\begin{center}
+			\blue{Ontologia OWL}
+		\end{center}
+			Raggruppa nodi dei grafi RDF con le stesse proprietà in insiemi chiamati \blue{concetti};
+			\begin{example}
+%				I nodi che sono \texttt{Studenti} devono essere \textit{iscritti} a un \texttt{CdL}.
+				$\texttt{Studente}~\sqsubseteq~\exists iscrittoA.\texttt{CdL}$
+			\end{example}
+%			\item Definisce relazioni tassonomiche fra concetti (\blue{sotto concetto})
+%			\item permette di specificare asserzioni su individui tramite \textsc{A-Box} e attraverso un \blue{reasoner} si possono inferire quelle implicite.
+		
+	\end{column}
+	\hspace{0.05\textwidth}
+	\begin{column}[T]{0.45\textwidth}
+		\begin{center}
+			\blue{Sistema di tipi}
+		\end{center}
+		Raggruppa espressioni con le stesse proprietà in insiemi chiamati \blue{tipi};
+		\begin{example}
+			\begin{minted}{haskell}
+data Nat = Succ Nat | Zero
+			\end{minted}
+		\end{example}
+%		\begin{itemize}
+%			\item Raggruppa espressioni con stesse proprietà in insiemi chiamati \blue{tipi};
+%			\item Può permettere di definire relazioni tassonomiche fra tipi (\blue{subtyping})
+%			\item permette di assegnare un tipo a un'espressione tramite \blue{regole di derivazione}.
+%		\end{itemize}
+	\end{column}
+	\end{columns}
+	
+\end{frame}
+\begin{frame}[containsverbatim]{Ontologie e Sistemi di Tipi}
+	Le ontologie usate nel Web Semantico possono essere comparate sotto certi aspetti ai sistemi di tipi. Ci basiamo sull'intuizione di \blue{Thierry Despeyroux} per trattare questa parte:
+	
+	\begin{columns}
+		\begin{column}[T]{0.45\textwidth}
+			\begin{center}
+				\blue{Ontologia OWL}
+			\end{center}			
+			Definisce relazioni tassonomiche fra concetti (\blue{subconcept})
+			\begin{example}
+				$\texttt{$\texttt{CdLUG }\sqsubseteq \texttt{CdL}$}$
+				$\texttt{StudenteUG}~\sqsubseteq~\texttt{Studente}$\\
+				\texttt{StudenteUG}~$\sqsubseteq$~\texttt{$\exists iscrittoA.\texttt{CdLUG}$}
+			\end{example}
+			
+		\end{column}
+		\hspace{0.05\textwidth}
+		\begin{column}[T]{0.45\textwidth}
+			\begin{center}
+				\blue{Sistema di tipi}
+			\end{center}
+			Permette di definire relazioni tassonomiche fra tipi (\blue{subtyping})
+			\begin{example}
+				Nel sistema di tipi di Java, \mbox{\texttt{PosInteger extends Integer}} permette di definire la classe di interi \blue{positivi} come sottotipo di \texttt{Integer}.
+			\end{example}
+				%			\item permette di assegnare un tipo a un'espressione tramite \blue{regole di derivazione}.
+				%		\end{itemize}
+		\end{column}
+	\end{columns}
 	
 \end{frame}
 
-\subsection{Riuso delle ontologie}
-\begin{frame}
-	content
+\begin{frame}[containsverbatim]{Ontologie e Sistemi di Tipi}
+	Le ontologie usate nel Web Semantico possono essere comparate sotto certi aspetti ai sistemi di tipi. Ci basiamo sull'intuizione di \blue{Thierry Despeyroux} per trattare questa parte:
+	\begin{columns}[T]
+		\begin{column}[T]{0.45\textwidth}
+			\begin{center}
+				\blue{Ontologia OWL}
+			\end{center}			
+			Permette di specificare asserzioni su individui tramite \textsc{A-Box} e attraverso un \blue{reasoner} si possono inferire quelle implicite.
+			\begin{example}
+				$\text{Informatica} : \texttt{CdL}$.\\
+				$(\text{Alessio}, \text{Informatica}) : \textit{iscrittoA}$.\\
+				\blue{$\implies \text{Alessio} : \texttt{Studente}$}.
+			\end{example}
+			
+		\end{column}
+		\hspace{0.05\textwidth}
+		\begin{column}[T]{0.45\textwidth}
+			\begin{center}
+				\blue{Sistema di tipi}
+			\end{center}
+			Permette di assegnare un tipo a un'espressione tramite \blue{regole di derivazione}.
+			\begin{example}
+				\begin{center}
+					\myruleN{\Gamma \vdash n : Nat}{\Gamma \vdash Succ\ n : Nat}{T-SUCC}
+				\end{center}
+			\end{example}
+	\end{column}
+\end{columns}
+
+\end{frame}
+
+\begin{frame}{Ontologie e Sistemi di Tipi}
+Da questo confronto si potrebbe pensare a modi per usare i sistemi di tipi per controllare certe proprietà delle ontologie. Al meglio delle nostre conoscenze, in letteratura ci sono stati pochi contributi di questo genere:
+\begin{itemize}
+	\item R.~Dapoigny e P.~Barlatier, \blue{teoria di tipi intuizionista} (\textsc{K-DTT}) per rappresentare ontologie, utilizzando i tipi dipendenti per la loro capacità di supportare un'elevata espressività e un ragionamento potente. La teoria presentata è più espressiva e complessa della normale logica dei predicati.
+	\item M.~Leinberger, \blue{$\lambda_{DL}$} per controllare a tempo di compilazione se una query SPARQL può avere un risultato o meno, utilizzando i tipi (spiegato più avanti). Questo permette di evitare errori inattesi a tempo di esecuzione.
+\end{itemize}
+\end{frame}
+
+\subsection{Ontologie e Linguaggi Funzionali}
+\begin{frame}{Linguaggi Funzionali nel Web Semantico\\{\large Perchè non vengono usati?}}
+	La maggior parte degli strumenti e reasoner presenti in letteratura viene sviluppato usando linguaggi di programmazione \blue{object-oriented}, in particolare Java.
+	\begin{itemize}
+		\item I concetti di un'ontologia sono facilmente rappresentabili come classi e gli individui come oggetti.
+		\item La relazione di subtyping è molto simile a quella di subconcept.
+		\item Da più di dieci anni è stata sviluppata OWL API, che facilita il compito di scrivere strumenti per le ontologie in Java.\\
+		$\implies$ molti reasoner sono sviluppati in Java (es. \blue{HermiT})		
+	\end{itemize}
+	
+	Tutta l'inferenza e i controlli su proprietà dell'ontologia in questi approcci vengono fatti a tempo di esecuzione.
+\end{frame}
+
+\begin{frame}{Linguaggi Funzionali nel Web Semantico}
+	Siamo convinti che i linguaggi funzionali con tipi statici permettano di manipolare un'ontologia più facilmente, in maniera modulare e sicura.
+	
+	P. Hitzler, \blue{(f OWL)}: un editor e API per le ontologie OWL (2).
+	\begin{itemize}
+		\item Sviluppato in \blue{Clojure}. Altamente portabile, usa la JVM per compilare;
+		\item usa la \blue{lazy evaluation}, tipica dei linguaggi funzionali, e una \blue{struttura omogenea} per velocizzare e semplificare la creazione e modifica di un'ontologia;\\
+		\blue{$\implies$ le funzioni scritte per singoli assiomi o espressioni spesso funzionano in modo identico su qualsiasi parte di un'ontologia, persino sull'intera ontologia stessa.}
+		\item anche se ha prestazioni peggiori nella lettura di un'ontologia da file, eccelle nella trasformazione in forma normale negata degli assiomi dell'ontologia. % Portare un'ontologia in questa forma permette di confrontarne l'espressività con altre ontologie, permettendo di valutarne la bontà per il suo riutilizzo.
+	\end{itemize}
+	
 \end{frame}

@@ -1,27 +1,37 @@
 \documentclass{beamer}
 \usepackage[utf8]{inputenc}
+\usepackage{minted}
+\usepackage{prooftree}
+
+\usepackage{tikz} %library per grafi RDF
+\usetikzlibrary{positioning, quotes} %per posiziomento relativo dei nodi
+
 \title[Tipi e Ontologie]{Sull'utilità dei sistemi di tipi e dei linguaggi funzionali per la Knowledge Representation}
 \subtitle{Stato dell'arte, $\lambda_{DL}$ e possibili direzioni future}
 \author[Bafunno, Rovaretto, Zito]{L.~Bafunno, E.~Rovaretto, A.~Zito}
 \institute[UniTo]{Dipartimento di Informatica\\
 Università degli Studi di Torino}
-\date{\today}
+\date{July 14, 2023}
 
-\usetheme{Madrid}
+\input{macros.tex}
+\usetheme{Boadilla}
 \usecolortheme{default}
 \AtBeginSection[]
 {
 	\begin{frame}
 		\frametitle{Contenuti}
-		\tableofcontents[currentsection]
+		\tableofcontents[currentsection, hideothersubsections]
 	\end{frame}
 }
 \begin{document}
 	\maketitle
 	\begin{frame}
 		\frametitle{Contenuti}
-		\tableofcontents
+		\tableofcontents[hideallsubsections]
 	\end{frame}
 	\input{body/purpose}
+	\input{body/preliminaries}
 	\input{body/state-of-art}
+        \input{body/implementation}
+	\input{body/future-works}
 \end{document}

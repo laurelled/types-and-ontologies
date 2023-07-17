@@ -1,0 +1,223 @@
+\section{Implementazione $\lambda_{DL}$}
+\subsection{Query SPARQL CQ}
+\begin{frame}{Query SPARQL CQ}
+    \begin{block}{Definizione}
+        Una query SPARQL CQ è un sistema di interrogazione per i grafi RDF, in cui le clausole sono in forma congiuntiva
+    \end{block}
+    \begin{block}{Query abitabile}
+        In una query SPARQL, il concetto di abitabilità identifica
+le query che possono ritornare almeno un elemento
+    \end{block}
+    
+    \begin{example}
+        Query abitabile: \\
+        query x $\leftarrow$ x type Pizza
+    \end{example}
+    \begin{example}
+        Query non abitabile: \\
+        query x $\leftarrow$ x type Pizza $\land$ x type Gelato
+    \end{example}
+ 
+\end{frame}
+
+\subsection{$\lambda_{DL}$}
+\begin{frame}[containsverbatim]{$\lambda_{DL}$}
+\blue{Martin Leinberger} nella sua tesi di dottorato propone il \blue{$\lambda_{DL}$}, un \blue{$\lambda$-calcolo tipato}
+per poter lavorare con ontologie e avere controlli statici sulle interazioni con esse. Le novit\`a principali sono:
+\begin{itemize}
+\item Liste e operazioni su di esse come head e tail
+\begin{example}
+\begin{minted}{haskell}
+["L", "a", "y", "t", "o"]
+\end{minted}
+\end{example}
+\item Record e la proiezione su una label
+\begin{example}
+\begin{minted}{haskell}
+{y = 10, i = 0}
+\end{minted}
+\end{example}
+\item Query SPARQL CQ
+\begin{example}
+\begin{minted}{haskell}
+query x <- x type Student
+\end{minted}
+\end{example}
+\end{itemize}
+\end{frame}
+
+\begin{frame}[containsverbatim]{$\lambda_{DL}$}
+    Per dare un \blue{tipo} ai nodi del grafo RDF, ottenuti dall'esecuzione delle Query SPARQL CQ, \`e stato aggiunta ai tipi standard la \blue{Concept Expression}
+    della logica descrittiva:
+    ~\\
+    \begin{example}
+        $K_4 = $\{Student $\sqsubseteq$ Person
+        \\Professor $\sqsubseteq$ Person\}
+        \begin{minted}[escapeinside=||,mathescape=true, autogobble]{ocaml}
+            (head (query x <- x type Student)).x : Student 
+        \end{minted}
+    \end{example}
+    ~\\
+Siccome \blue{Student~$\sqsubseteq$~Person} l'espressione ha anche tipo \blue{Person}.
+\end{frame}
+
+\subsection{Sull'implementazione del $\lambda_{DL}$}
+\begin{frame}{Sull'implementazione del $\lambda_{DL}$}
+    Questa implementazione del calcolo di Leinberger prende ispirazione dell'implementazione in Scala dell'autore, ma è originale ed è la prima implementazione di $\lambda_{DL}$ che viene fatta in OCaml. 
+    \\\`{E} strutturata in due moduli:
+    \begin{itemize}
+        \item Modulo OCaml: scritto nell'omonimo linguaggio funzionale. 
+        \item Modulo Reasoner: scritto in Java.
+    \end{itemize}
+\end{frame}
+
+\subsection{Sull'implementazione del $\lambda_{DL}$: OCaml Module}
+\begin{frame}{Sull'implementazione del $\lambda_{DL}$: OCaml Module}
+    Il modulo OCaml si occupa di parsificare la query, inferire gli assiomi e invocare il modulo Reasoner.
+    \begin{block}{Tipi di supporto}
+        Il modulo si avvale di alcuni Tipi per rappresentare l'informazione in OCaml:
+        \begin{itemize}
+            \item Il tipo Query, viene usato per rappresentare nel programma le query SPARQL.
+            \item Il tipo ClassExpression per rappresentare una concept expression.
+            \item Il tipo Axiom, rappresenta un assioma di Leinberger. 
+        \end{itemize}
+    \end{block}
+    \begin{block}{Manchester OWL Syntax}
+    Inoltre viene utilizzata come lingua veicolare di dialogo fra il modulo OCaml e il modulo Reasoner.
+    \end{block}
+\end{frame}
+
+\begin{frame}{Sull'implementazione del $\lambda_{DL}$: OCaml Module}
+    % 1 query e tipo query esempio
+    % 2 ocaml trasforma query in tipo query 
+
+    \begin{itemize}
+        \item Parsifica una query in formato stringa in un tipo Query
+        \begin{example}
+            query x $\leftarrow$ x type Pizza $\Rightarrow$
+            Q (x, SP(V x, TYPE, A Pizza))
+        \end{example}
+        \item Inferisce gli assiomi di Leinberger sul tipo Query
+        \begin{example}
+            Q (x, SP(V x, TYPE, A Pizza))
+            $\Rightarrow$ 
+            (x, Atomic(Pizza))
+        \end{example}
+        \item Traduce gli assiomi in sintassi di Manchester e li inoltra al Reasoner
+        \begin{example}
+            (x, Atomic(Pizza))
+            $\Rightarrow$ 
+            x : Pizza
+        \end{example}
+    \end{itemize}
+\end{frame}
+
+\subsection{Sull'implementazione del $\lambda_{DL}$: Reasoner Module}
+\begin{frame}{Sull'implementazione del $\lambda_{DL}$: Soddisfacibilità di un ontologia}
+    \begin{block}{Soddisfacibilità di un ontologia}
+        Data un ontologia il reasoner HermiT decide se l'ontologia è soddisfacibile, cioè decide se esiste un modello che soddisfa l'ontologia.
+     \end{block}
+    \begin{example}
+        Per esempio, l'ontologia che presenta un unico assioma di sottoclasse tra il concetto atomico X e la congiunzione tra Pizza e Gelato non è soddisfacibile.
+    \end{example}
+\end{frame}
+
+\begin{frame}{Sull'implementazione del $\lambda_{DL}$: Reasoner Module}
+    Il modulo Reasoner si occupa di verificare la soddisfacibilità degli assiomi di Leinberger, avvalendosi del un reasoner HermiT.
+    \begin{block}{Comportamento del modulo}
+        \begin{itemize}
+            \item Il modulo aggiunge gli assiomi di Leinberger ricevuti dal modulo OCaml all'ontologia.
+            \item HermiT decide se l'ontolgia è soddisfacibile.
+            \item Se lo è vuol dire che la query è abitata, altrimenti no. 
+        \end{itemize} 
+    \end{block}
+\end{frame}
+\subsection{Sistema di Tipi del $\lambda_{DL}$}
+\begin{frame}[containsverbatim]{Sistema di Tipi del $\lambda_{DL}$}
+    Per implementare il sistema di tipi\footnote{\scriptsize Abbiamo preso spunto da "Type and Programming Languages" di Benjamin C. Pierce \\} abbiamo definito i \blue{termini} del linguaggio:
+    \begin{block}{data type per i Termini del $\lambda_{DL}$}
+    \begin{minted}[escapeinside=&&,mathescape=true, autogobble]{ocaml}
+    type Term =
+        | TmRecord of info * (string * term) list 
+        | TmProj of info * term * string 
+        | TmNil of info * ty 
+        | TmCons of info * term * term 
+        | TmIsNil of info * term 
+        | TmHead of info * term 
+        | TmTail of info * term  
+        | TmQuery of info * var * gp
+        | TmRoleProj of info * term * role
+        | TmNode of info * string
+    \end{minted}
+    \end{block}
+\end{frame}
+
+\begin{frame}[containsverbatim]{Sistema di Tipi del $\lambda_{DL}$}
+Bisogna definire i \blue{tipi} del linguaggio
+    \begin{block}{data type per i tipi del $\lambda_{DL}$}
+    \begin{minted}[escapeinside=&&,mathescape=true, autogobble]{ocaml}
+    type Ty =
+          TyTop 
+        | TyBool 
+        | TyRecord of (string * ty) list 
+        | TyArr of ty * ty 
+        | TyNat 
+        | TyList of ty
+        | TyCe of ce
+    \end{minted}
+    \end{block}
+    e definire la funzione che preso un termine restituisce il suo tipo:
+    \begin{block}{Funzione typeof}
+    \begin{minted}[escapeinside=&&,mathescape=true, autogobble]{ocaml}
+    typeof :: Context -> Term -> Ty
+    \end{minted}
+    \end{block}
+\end{frame}
+
+\begin{frame}[containsverbatim]{Sistema di Tipi del $\lambda_{DL}$}
+la funzione \code{typeof} \`e implementata seguendo le regole di tipo. Un esempio interessante \`e la regola per dare un tipo alle query:
+~\\
+\begin{block}{implementazione [T-QUERY]}
+\begin{minted}[escapeinside=||,mathescape=true, autogobble]{ocaml}
+    let rec typeof ctx t =
+        match t with
+        |$\vdots $|
+        TmQuery(fi, var, gp) ->
+            if allSatisfiable(axioms(gp), var) then
+            TyList(TyRecord(var, TyCe(Atomic var))) else
+                error fi "axioms unsatisibale"
+        |$\vdots$|
+\end{minted}
+\end{block}
+\end{frame}
+
+\begin{frame}[containsverbatim]{Sistema di Tipi del $\lambda_{DL}$}
+Per il subtyping abbiamo definito la funzione \code{subtype}:
+\begin{block}{Funzione subtype}
+\begin{minted}{ocaml}
+subtype ::  Context -> Ty -> Ty -> Bool
+\end{minted}
+\end{block}
+Ad esempio per il subtyping tra Concept Expression abbiamo:  
+\begin{block}{implementazione [S-CONCEPT]}
+\begin{minted}[escapeinside=&&,mathescape=true, autogobble]{ocaml}
+    let rec subtype ctx tyS tyT =
+        tyeqv ctx tyS tyT ||
+        match (tyS,tyT) with
+        &$\vdots $&
+        | (TyCe(ceS1),TyCe(ceT1)) -> subconcept ceS1 ceT1
+        &$\vdots$&
+\end{minted}
+\end{block}
+\end{frame}
+
+\begin{frame}{Sistema di Tipi del $\lambda_{DL}$}
+    Perch\`e implementare $\lambda_{DL}$?
+    \begin{itemize}
+        \item Ci ha aiutato a capire meglio come i sistemi di tipi statici possono essere utilizzati con le ontologie.\\~\\
+        \item Abbiamo concluso che OCaml \`e un linguaggio adatto per l'implementazione di linguaggi di programmazione e per interfacciarsi con altri linguaggi per fare reasoning su ontologie. \\~\\
+        \item \`E stato un ottimo esercizio di programmazione funzionale.\\~\\
+        \item Ci ha spinto ad approfondire le ontologie, la logica descrittiva e i linguaggi di programmazione.\\~\\
+        \item I risultati ottenuti incoraggiano lo studio su possibili direzioni future sull'utilizzo di linguaggi funzionali e sistemi tipi statici per il Web Semantico.
+    \end{itemize}
+\end{frame}

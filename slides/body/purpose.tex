@@ -1,4 +1,45 @@
-\section{Motivazioni della tesi}
-\begin{frame}
-	content
+\section{Motivazioni della ricerca}
+
+\begin{frame}{WWW $\to$ Web Semantico}
+	\begin{columns}
+		\begin{column}{0.7\textwidth}
+			I problemi del World Wide Web (WWW):
+			\begin{itemize}
+				\item HTML (+ CSS + JavaScript) descrive solo la struttura del contenuto e la sua impaginazione
+				\item Web incentrato sulla \blue{fruizione umana}
+			\end{itemize}
+			\begin{block}{Tim Berners-Lee, 2001}
+				\textsl{"Il Web Semantico non è un Web separato, ma un'\blue{estensione} dell'attuale World Wide Web, in cui le informazioni hanno un \blue{significato ben definito}, per \blue{consentire alle macchine di comprendere i documenti e dati presenti nel Web}"}.
+			\end{block}			
+		\end{column}
+	\begin{column}{0.3\textwidth}
+		\begin{figure}
+			\includegraphics[width=0.8\textwidth]{pictures/berners-lee.png}
+		\end{figure}
+	\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Web Semantico}
+
+    \begin{itemize}
+        \item Per raggiungere lo scopo di dare significato ai dati sono state introdotte strutturazioni attraverso formalismi logici (come le ontologie), tanto potenti quanto complessi e inefficienti.
+        
+        \item Il Semantic Web però oggigiorno sembra che prediliga le prestazioni all'espressività (ne è un esempio il machine learning), non usando dunque le strutturazioni complesse per dare ulteriore significato ai dati. 
+    \end{itemize}
+        
+\end{frame}
+\begin{frame}{L'obiettivo della tesi}
+        \begin{block}{La nostra idea}
+            L'idea è stata quella di cercare di conciliare prestazioni ed espressività, utilizzando i linguaggi funzionali e attuando controlli di tipo statico. Questi controlli, eseguiti prima del runtime, andrebbero a diminuire la complessità con l'intento di rendere di nuovo appetibile le strutturazioni dei dati oggi trascurata.
+        \end{block} 
+        \begin{block}{Proprietà dei linguaggi funzionali}
+            Cerchiamo di sfruttare a pieno le proprietà di questi linguaggi quali: 
+            \begin{itemize}
+                \item funzioni di ordine superiore
+                \item data type
+                \item pattern matching
+                \item garanzia di correttezza
+            \end{itemize}    
+        \end{block}
 \end{frame}

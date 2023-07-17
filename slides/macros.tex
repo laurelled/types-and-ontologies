@@ -1,0 +1,15 @@
+\definecolor{codegray}{gray}{0.9}
+\newcommand{\blue}[1]{{\color{blue} #1}}
+\newcommand{\code}[1]{\colorbox{codegray}{\texttt{#1}}}
+\newcommand{\rn}[1]{[{\small{#1}}]}
+\newcommand{\rnQ}[1]{\rn{[#1]}}
+\newcommand{\myruleN}[3]{\text{\prooftree
+		#1
+		\justifies
+		#2
+		%\thickness=0.08em
+		\using \text{\rn{#3}}
+		\endprooftree}}
+\makeatletter
+\@addtoreset{footnote}{section}
+\makeatother
